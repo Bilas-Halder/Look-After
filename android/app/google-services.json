@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "893561718177",
+    "project_id": "flash-chat-fb48f",
+    "storage_bucket": "flash-chat-fb48f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893561718177:android:470297f553ea2ac3ff37e0",
+        "android_client_info": {
+          "package_name": "com.bilashalder.flash_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893561718177-488qlalnrpn4oikrmsvk0hcpdk7i2tn7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALK_2xMWQJbbWkOOwEybMiFLeh4hvUhzM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "893561718177-488qlalnrpn4oikrmsvk0hcpdk7i2tn7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
