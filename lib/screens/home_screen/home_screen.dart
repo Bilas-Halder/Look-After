@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:look_after/screens/home_screen/Tasks.dart';
 import 'package:look_after/screens/home_screen/appbar.dart';
 import 'package:look_after/screens/home_screen/goPremium.dart';
 class HomeScreen extends StatelessWidget {
@@ -15,6 +16,20 @@ class HomeScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GoPremium(),
+          Container(
+            padding: EdgeInsets.all(15),
+            child: Text(
+              'Tasks',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+          ),
+
+          Expanded(
+            child: Tasks(),
+          )
         ],
       ),
     );
