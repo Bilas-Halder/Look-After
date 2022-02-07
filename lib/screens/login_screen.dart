@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 1,
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center         ,
                           children: <Widget>[
                             Hero(
                               tag: 'logo',
