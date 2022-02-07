@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:flutter/material.dart';
+import 'package:look_after/screens/OnBoarding_screen.dart';
 import 'package:look_after/screens/welcome_screen.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:look_after/screens/registration_screen.dart';
@@ -35,8 +36,9 @@ class LookAfter extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-        initialRoute: WelcomeScreen.path,
+        initialRoute: OnBoardingPage.path,
         routes: {
+          OnBoardingPage.path: (context) => OnBoardingPage(),
           WelcomeScreen.path: (context) => WelcomeScreen(),
           LoginScreen.path: (context) => LoginScreen(),
           RegistrationScreen.path: (context) => RegistrationScreen(),

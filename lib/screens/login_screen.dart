@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:look_after/screens/registration_screen.dart';
@@ -48,22 +49,38 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(
                           height: 1,
                         ),
-                        Hero(
-                          tag: 'logo',
-                          child: Center(
-                              child: Text(
-                            'Login',
-                            style: TextStyle(
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                shadows: [
-                                  Shadow(
-                                      color: Colors.grey,
-                                      offset: Offset(2, 5),
-                                      blurRadius: 10.0),
-                                ]),
-                          )),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Hero(
+                              tag: 'logo',
+                              child: Container(
+                                child: Image.asset('images/square-logo.png'),
+                                height: 60.0,
+                              ),
+                            ),
+                            SizedBox(width: 10,),
+                            AnimatedTextKit(
+                              repeatForever: true,
+                              animatedTexts: [
+                                TypewriterAnimatedText(
+                                  'Login',
+                                  speed: Duration(milliseconds: 120),
+                                  curve: Curves.easeInOut,
+                                  textStyle: TextStyle(
+                                      fontSize: 40,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      shadows: [
+                                        Shadow(
+                                            color: Colors.grey,
+                                            offset: Offset(2, 5),
+                                            blurRadius: 10.0),
+                                      ]),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
