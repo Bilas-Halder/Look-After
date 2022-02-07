@@ -51,7 +51,6 @@ app.*.map.json
 /lib/utilities/
 
 /lib/screens/chat_screen.dart
-/lib/screens/registration_screen.dart
 /lib/screens/welcome_screen.dart
 
 messageStreamBuilder.dart

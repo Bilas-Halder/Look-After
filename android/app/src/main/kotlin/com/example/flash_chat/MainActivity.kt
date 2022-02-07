@@ -1,4 +1,4 @@
-package com.example.flash_chat
+package com.bilashalder.look_after
 
 import io.flutter.embedding.android.FlutterActivity
 
