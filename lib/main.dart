@@ -4,6 +4,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:look_after/screens/OnBoarding_screen.dart';
+import 'package:look_after/screens/home_screen/home_screen.dart';
 import 'package:look_after/screens/welcome_screen.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:look_after/screens/registration_screen.dart';
@@ -36,13 +37,15 @@ class LookAfter extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-        initialRoute: OnBoardingPage.path,
+        debugShowCheckedModeBanner: false,
+        initialRoute: HomeScreen.path,
         routes: {
           OnBoardingPage.path: (context) => OnBoardingPage(),
           WelcomeScreen.path: (context) => WelcomeScreen(),
           LoginScreen.path: (context) => LoginScreen(),
           RegistrationScreen.path: (context) => RegistrationScreen(),
           ChatScreen.path: (context) => ChatScreen(),
+          HomeScreen.path:(context) => HomeScreen(),
         },
       ),
     );

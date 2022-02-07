@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:look_after/screens/chat_screen.dart';
+import 'package:look_after/screens/home_screen/home_screen.dart';
 import 'package:look_after/screens/welcome_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'login_screen.dart';
 
 class OnBoardingPage extends StatefulWidget {
   static const String path = '/';
@@ -10,6 +15,28 @@ class OnBoardingPage extends StatefulWidget {
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
+  dynamic prefs;
+  bool isBack, isSignedIn;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // getIsBack();
+    super.initState();
+  }
+  void getIsBack () async {
+    prefs = await SharedPreferences.getInstance();
+    isBack = prefs.getBool('isBack');
+    isSignedIn = prefs.getBool('signedIn');
+    print(isBack.toString()+'..............................................');
+  }
+  void setIsBack () async {
+    await prefs.setBool('isBack', true);
+    await getIsBack();
+
+    print(isBack.toString()+'..............................................');
+  }
+
 
   void _onIntroEnd(context) {
     Navigator.pushReplacementNamed(context, WelcomeScreen.path);
@@ -40,6 +67,19 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       pageColor: Colors.white,
       imagePadding: EdgeInsets.zero,
     );
+
+    ///code for going to home/login screen.
+    // if(isBack==null || isBack==false){
+    //   setIsBack();
+    //   getIsBack();
+    // }
+    // else if(isSignedIn==null || isSignedIn==false){
+    //   Navigator.pushReplacementNamed(context, WelcomeScreen.path);
+    // }
+    // else{
+    //   Navigator.pushReplacementNamed(context, ChatScreen.path);
+    // }
+
 
     return Scaffold(
       backgroundColor: Colors.white,
