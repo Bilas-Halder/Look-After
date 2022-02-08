@@ -8,7 +8,7 @@ class Tasks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(15),
+      padding: EdgeInsets.only(left: 15,right: 15, top: 15, bottom: 15),
       child: GridView.builder(
         itemCount: taskList.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -58,7 +58,7 @@ class Tasks extends StatelessWidget {
                 task.icon, color: task.iconColor,size: 35,
               ),
               Icon(
-                  Icons.more_vert_outlined, color: Colors.white,size: 25,
+                  Icons.more_vert_outlined, color: Colors.black,size: 25,
               ),
             ],
           ),

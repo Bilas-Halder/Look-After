@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:look_after/screens/home_screen/Tasks.dart';
 import 'package:look_after/screens/home_screen/appbar.dart';
 import 'package:look_after/screens/home_screen/goPremium.dart';
+
+import 'bottomNavigationBar.dart';
 class HomeScreen extends StatelessWidget {
   static const String path = '/home_screen';
 
@@ -17,7 +19,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           GoPremium(),
           Container(
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.only(left: 15,right: 15,top: 10),
             child: Text(
               'Tasks',
               style: TextStyle(
@@ -26,11 +28,18 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-
           Expanded(
             child: Tasks(),
           )
         ],
+      ),
+      bottomNavigationBar: BottomNavBar(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        backgroundColor: Colors.black,
+        onPressed: (){},
+        child: Icon(Icons.add,size: 30,),
       ),
     );
   }

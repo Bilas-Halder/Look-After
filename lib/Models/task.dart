@@ -13,27 +13,27 @@ class Task{
       Task(
         icon: Icons.person_rounded,
         title: 'Personal',
-        backgroundColor: Color(0xFFD2D292),
-        iconColor: Color(0xFFBABA00),
-        btnColor: Colors.yellow,
+        backgroundColor: Colors.blue.withOpacity(0.25),
+        iconColor: Colors.blue,
+        btnColor: Colors.blue.withOpacity(0.3),
         left: 3,
         done: 1
       ),
       Task(
-        icon: Icons.person_rounded,
+        icon: Icons.cases_rounded,
         title: 'Work',
-        backgroundColor: Color(0xFFBF8398),
-        iconColor: Color(0xFFB7B769),
-        btnColor: Colors.yellow,
+        backgroundColor: Color(0xFF109F8E).withOpacity(0.25),
+        iconColor: Color(0xFF109F8E),  
+        btnColor: Color(0xFF109F8E).withOpacity(0.4),
         left: 3,
         done: 1
       ),
       Task(
-        icon: Icons.person_rounded,
+        icon: Icons.favorite_rounded,
         title: 'Health',
-        backgroundColor: Color(0x9598987b),
-        iconColor: Color(0xFFBABA00),
-        btnColor: Colors.yellow,
+        backgroundColor: Color(0xff96032c).withOpacity(0.25),
+        iconColor: Color(0xff96032c),
+        btnColor: Color(0xff96032c).withOpacity(0.3),
         left: 3,
         done: 1
       ),
