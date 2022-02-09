@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:look_after/screens/home_screen/Tasks.dart';
+import 'package:look_after/screens/home_screen/taskCategories.dart';
 import 'package:look_after/screens/home_screen/appbar.dart';
 import 'package:look_after/screens/home_screen/goPremium.dart';
 
@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Tasks(),
+            child: TaskCategories(),
           )
         ],
       ),

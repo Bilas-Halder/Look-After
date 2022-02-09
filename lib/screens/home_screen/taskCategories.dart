@@ -1,11 +1,11 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:look_after/Models/task.dart';
+import 'package:look_after/Models/taskCategory.dart';
 import 'package:look_after/screens/tasks_screen/tasks_screen.dart';
 
-class Tasks extends StatelessWidget {
+class TaskCategories extends StatelessWidget {
 
-  final taskList = Task.generateTasks();
+  final taskList = TaskCategory.generateTasks();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,7 +46,7 @@ class Tasks extends StatelessWidget {
 
 
 class BuildTask extends StatelessWidget {
-  final Task task;
+  final TaskCategory task;
   BuildTask(this.task);
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class BuildTask extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
-            color: task.backgroundColor,
+            color: task.color.withOpacity(0.25),///background color
             borderRadius: BorderRadius.circular(20)
         ),
         child: Column(
@@ -70,7 +70,9 @@ class BuildTask extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Icon(
-                  task.icon, color: task.iconColor,size: 35,
+                  task.icon,
+                  color: task.color, ///Icon color
+                  size: 35,
                 ),
                 Icon(
                   Icons.more_vert_outlined, color: Colors.black,size: 25,
@@ -93,7 +95,7 @@ class BuildTask extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
                   decoration: BoxDecoration(
-                      color: task.btnColor,
+                      color: task.color.withOpacity(0.35),///btn color
                       borderRadius: BorderRadius.circular(20)
                   ),
                   child: Text('Left ${task.left}',style: TextStyle(color: Colors.black),),

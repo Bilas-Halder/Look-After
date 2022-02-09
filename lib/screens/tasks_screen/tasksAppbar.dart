@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:look_after/Models/task.dart';
+import 'package:look_after/Models/taskCategory.dart';
 
 class TasksAppbar extends StatelessWidget {
 
-  final Task task;
+  final TaskCategory task;
   TasksAppbar(this.task);
 
   @override
