@@ -1,6 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:look_after/Models/task.dart';
+import 'package:look_after/screens/tasks_screen/tasks_screen.dart';
 
 class Tasks extends StatelessWidget {
 
@@ -16,7 +17,7 @@ class Tasks extends StatelessWidget {
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
         ),
-        itemBuilder: (context, index) => taskList[index].isLast==true ? buildAddTask():buildTask(context,taskList[index]),
+        itemBuilder: (context, index) => taskList[index].isLast==true ? buildAddTask():BuildTask(taskList[index]),
       ),
     );
   }
@@ -40,61 +41,77 @@ class Tasks extends StatelessWidget {
     );
   }
 
-  Widget buildTask(BuildContext context, Task task){
-    return Container(
-      padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: task.backgroundColor,
-        borderRadius: BorderRadius.circular(20)
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(
-                task.icon, color: task.iconColor,size: 35,
-              ),
-              Icon(
-                  Icons.more_vert_outlined, color: Colors.black,size: 25,
-              ),
-            ],
-          ),
-          Text(
-            task.title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                decoration: BoxDecoration(
-                  color: task.btnColor,
-                  borderRadius: BorderRadius.circular(20)
-                ),
-                child: Text('Left ${task.left}',style: TextStyle(color: Colors.black),),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20)
-                ),
-                child: Text('Done ${task.done}',style: TextStyle(color: Colors.black),),
-              ),
-            ],
-          )
-        ],
-      ),
-
-    );
-  }
-
 }
 
+
+
+class BuildTask extends StatelessWidget {
+  final Task task;
+  BuildTask(this.task);
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context)=> TasksScreen(task))
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(15),
+        decoration: BoxDecoration(
+            color: task.backgroundColor,
+            borderRadius: BorderRadius.circular(20)
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(
+                  task.icon, color: task.iconColor,size: 35,
+                ),
+                Icon(
+                  Icons.more_vert_outlined, color: Colors.black,size: 25,
+                ),
+              ],
+            ),
+            Hero(
+              tag: 'tasksTitle',
+              child: Text(
+                task.title,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                  decoration: BoxDecoration(
+                      color: task.btnColor,
+                      borderRadius: BorderRadius.circular(20)
+                  ),
+                  child: Text('Left ${task.left}',style: TextStyle(color: Colors.black),),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)
+                  ),
+                  child: Text('Done ${task.done}',style: TextStyle(color: Colors.black),),
+                ),
+              ],
+            )
+          ],
+        ),
+
+      ),
+    );
+  }
+}

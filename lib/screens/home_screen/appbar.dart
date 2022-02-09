@@ -33,7 +33,7 @@ AppBar buildAppbar(){
       Icon(
         Icons.more_vert_outlined,
         color: Colors.black,
-        size: 35,
+        size: 30,
       ),
       SizedBox(width: 5,)
     ],
