@@ -11,6 +11,7 @@ import 'package:provider/src/provider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'chat_screen.dart';
+import 'home_screen/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static final String path = '/login';
@@ -142,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       setState(() {
                                         error = false;
                                       });
-                                      Navigator.pushNamed(context, ChatScreen.path);
+                                      Navigator.pushNamed(context, HomeScreen.path);
                                     } else {
                                       setState(() {
                                         error = true;

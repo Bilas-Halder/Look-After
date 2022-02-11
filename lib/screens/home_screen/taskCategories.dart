@@ -50,7 +50,7 @@ class BuildTask extends StatelessWidget {
   BuildTask(this.task);
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: (){
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context)=> TasksScreen(task))
@@ -81,11 +81,13 @@ class BuildTask extends StatelessWidget {
             ),
             Hero(
               tag: 'tasksTitle',
-              child: Text(
-                task.title,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              child: Container(
+                child: Text(
+                  task.title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

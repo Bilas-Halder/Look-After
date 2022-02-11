@@ -39,7 +39,7 @@ class LookAfter extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: HomeScreen.path,
+        initialRoute: OnBoardingPage.path,
         routes: {
           OnBoardingPage.path: (context) => OnBoardingPage(),
           WelcomeScreen.path: (context) => WelcomeScreen(),

@@ -24,12 +24,14 @@ class TasksAppbar extends StatelessWidget {
           children: [
             Hero(
               tag: 'tasksTitle',
-              child: Text(
-                '${task.title} tasks!',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white
+              child: Container(
+                child: Text(
+                  '${task.title} tasks!',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white
+                  ),
                 ),
               ),
             ),

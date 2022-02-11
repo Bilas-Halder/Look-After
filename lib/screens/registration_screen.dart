@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import 'home_screen/home_screen.dart';
+
 class RegistrationScreen extends StatefulWidget {
   static final String path ='/registration';
   @override
@@ -181,7 +183,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               setState(() {
                                 error = false;
                               });
-                              Navigator.pushNamed(context, ChatScreen.path);
+                              Navigator.pushNamed(context, HomeScreen.path);
                             } else {
                               setState(() {
                                 error = true;
