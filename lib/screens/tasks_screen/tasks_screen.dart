@@ -7,9 +7,11 @@ import 'package:look_after/Models/taskCategory.dart';
 import 'package:look_after/Models/tasks.dart';
 import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/controllers/task_controller.dart';
+import 'package:look_after/providers/SelectedDateProvider.dart';
 import 'package:look_after/providers/task_providers.dart';
 import 'package:look_after/screens/home_screen/bottomNavigationBar.dart';
 import 'package:look_after/screens/tasks_screen/add_task.dart';
+import 'package:look_after/screens/tasks_screen/appbar.dart';
 import 'package:look_after/screens/tasks_screen/datePickerTimeline.dart';
 import 'package:look_after/screens/tasks_screen/tasksAppbar.dart';
 import 'package:look_after/screens/tasks_screen/tasksListBuilder.dart';
@@ -20,9 +22,9 @@ import 'package:provider/provider.dart';
 
 class TasksScreen extends StatefulWidget {
   static const String path = '/task_screen';
-  final TaskCategory task;
+  final TaskCategory taskCategory;
 
-  TasksScreen(this.task);
+  TasksScreen(this.taskCategory);
 
   @override
   State<TasksScreen> createState() => _TasksScreenState();
@@ -34,6 +36,7 @@ class _TasksScreenState extends State<TasksScreen> {
   @override
   void initState() {
     Provider.of<TaskProvider>(context,listen: false).getTasks();
+    context.read<SelectedDateProvider>().setCurrentDate();
     setState(() {
 
     });
@@ -46,9 +49,10 @@ class _TasksScreenState extends State<TasksScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // context.read<SelectedDateProvider>().setCurrentDate();
     return Scaffold(
-      appBar: _appBar(),
-      backgroundColor: Colors.black,
+      appBar: buildTaskScreenAppbar(widget.taskCategory),
+      backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: floatingAddButton(context),
@@ -62,36 +66,13 @@ class _TasksScreenState extends State<TasksScreen> {
         ),
         child: Column(
           children: [
-            _addTaskBar(),
-            _addDateBar(),
+            SelectedDate(),
+            AddDateBar(),
             SizedBox(height: 10),
             _showTasks()
           ],
         ),
       ),
-    );
-  }
-
-  _appBar(){
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      leading: GestureDetector(
-        onTap: (){
-          Get.back();
-        },
-        child: Icon(
-          Icons.arrow_back_ios,
-          color: Colors.black,
-          size: 20,
-        ),
-      ),
-      actions: [
-        CircleAvatar(
-          backgroundImage: AssetImage("images/hridoy.png"),
-        ),
-        SizedBox(width: 10,),
-      ],
     );
   }
 
@@ -147,7 +128,6 @@ class _TasksScreenState extends State<TasksScreen> {
                             children: [
                               GestureDetector(
                                   onTap: (){
-                                    print('clickedd');
                                     _showBottomSheet(context, provider, task);
                                   },
                                   child: TaskTile(task)
@@ -264,127 +244,68 @@ class _TasksScreenState extends State<TasksScreen> {
     );
   }
 
-  _addTaskBar() {
+}
+
+class AddDateBar extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    final dateProvider = context.read<SelectedDateProvider>();
+
     return Container(
-      margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
-      child: Container(
-        margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(DateFormat.yMMMd().format(DateTime.now()),
-                      style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey
-                      )
-                  ),
-                  Text(
-                      "Today",
-                      style: TextStyle(
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold
-                      )
-                  )
-
-                ],
-              ),
-            ),
-
-          ],
-        ),
-      ),
-    );
-  }
-
-  _addDateBar() {
-    return Container(
-      margin: const EdgeInsets.only(top: 20, left: 20),
+      margin: const EdgeInsets.only(top: 5, left: 20),
       child: DatePicker(
         DateTime.now(),
-        height: 85,
-        width: 60,
+        height: 65,
+        width: 50,
         initialSelectedDate: DateTime.now(),
-        selectionColor: Colors.red,
+        selectionColor: Colors.teal,
         selectedTextColor: Colors.white,
         dateTextStyle: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey
-        ),
-        dayTextStyle: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
             color: Colors.grey
         ),
-        monthTextStyle: TextStyle(
+        dayTextStyle: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: Colors.grey
         ),
+        monthTextStyle: TextStyle(
+            fontSize: 0,
+            fontWeight: FontWeight.w100,
+            color: Colors.grey,
+            height: 0.0
+        ),
         onDateChange: (date) {
-          setState(() {
-            _selectedDate = date;
-          });
+          dateProvider.setNewSelectedDate(date);
         },
       ),
     );
   }
 }
 
-/*
-body : CustomScrollView(
-        slivers: [
-          TasksAppbar(task),
-          SliverToBoxAdapter(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                )
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DatePickerTimeline(),
-                  TasksListBuilder(),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
- */
 
-/*
-body: CustomScrollView(
-        slivers: [
-          TasksAppbar(task),
-          SliverToBoxAdapter(
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                  )
-              ),
-              child: Column(
-                children: [
-                  _addTaskBar(),
-                  _addDateBar(),
-                  //_showTasks()
-                ],
-              ),
-            ),
+
+
+class SelectedDate extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 23, right: 20, top: 20),
+          child: Text(DateFormat.yMMMd().format(context.watch<SelectedDateProvider>().selectedDate),
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xdd484848)
+              )
           ),
-        ],
-      ),
- */
+        ),
+      ],
+    );
+  }
+}

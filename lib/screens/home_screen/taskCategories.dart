@@ -17,7 +17,7 @@ class TaskCategories extends StatelessWidget {
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
         ),
-        itemBuilder: (context, index) => taskList[index].isLast==true ? buildAddTask():BuildTask(taskList[index]),
+        itemBuilder: (context, index) => taskList[index].isLast==true ? buildAddTask():BuildTaskCategory(taskList[index]),
       ),
     );
   }
@@ -45,9 +45,9 @@ class TaskCategories extends StatelessWidget {
 
 
 
-class BuildTask extends StatelessWidget {
+class BuildTaskCategory extends StatelessWidget {
   final TaskCategory task;
-  BuildTask(this.task);
+  BuildTaskCategory(this.task);
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -80,7 +80,7 @@ class BuildTask extends StatelessWidget {
               ],
             ),
             Hero(
-              tag: 'tasksTitle',
+              tag: 'tasks${task.title}',
               child: Container(
                 child: Text(
                   task.title,
