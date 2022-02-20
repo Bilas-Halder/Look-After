@@ -3,25 +3,37 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:flutter/material.dart';
+import 'package:look_after/DB/db_helper.dart';
+import 'package:look_after/Services/notification_services.dart';
+import 'package:look_after/providers/task_providers.dart';
 import 'package:look_after/screens/OnBoarding_screen.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
+import 'package:look_after/screens/tasks_screen/add_task.dart';
 import 'package:look_after/screens/tasks_screen/tasks_screen.dart';
 import 'package:look_after/screens/welcome_screen.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:look_after/screens/registration_screen.dart';
 import 'package:look_after/screens/chat_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FlutterNativeSplash.removeAfter(initialization);
 
+
+  var notifyHelper;
+  notifyHelper = NotifyHelper();
+  notifyHelper.initializeNotification();
+  notifyHelper.requestIOSPermissions();
   runApp(LookAfter());
 }
+
 void initialization (BuildContext context) async {
   await Future.delayed(const Duration(milliseconds: 500));
 }
+
 
 class LookAfter extends StatelessWidget {
   @override
@@ -35,7 +47,9 @@ class LookAfter extends StatelessWidget {
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
           initialData: null,
-        )
+        ),
+
+        ChangeNotifierProvider(create: (_) => TaskProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -47,6 +61,7 @@ class LookAfter extends StatelessWidget {
           RegistrationScreen.path: (context) => RegistrationScreen(),
           ChatScreen.path: (context) => ChatScreen(),
           HomeScreen.path:(context) => HomeScreen(),
+          AddTaskPage.path:(context) => AddTaskPage(),
           // TasksScreen.path:(context) => TasksScreen()
         },
       ),

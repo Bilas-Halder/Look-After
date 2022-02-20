@@ -25,6 +25,18 @@ dependencies:
   shared_preferences: ^2.0.13
   dotted_border: ^2.0.0+2
 
+#  Added by hriody
+  get: ^4.6.1
+  google_fonts:
+  date_picker_timeline:
+  sqflite:
+  flutter_staggered_animations:
+  flutter_local_notifications:
+  flutter_native_timezone:
+#-----------------
+
+
+
 flutter_native_splash:
   color: "#ffffff"
   image: images/Look-After-Logo.png

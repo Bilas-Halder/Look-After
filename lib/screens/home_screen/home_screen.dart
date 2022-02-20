@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:look_after/screens/home_screen/taskCategories.dart';
 import 'package:look_after/screens/home_screen/appbar.dart';
 import 'package:look_after/screens/home_screen/goPremium.dart';
+import 'package:look_after/utilities/buttons.dart';
 
 import 'bottomNavigationBar.dart';
 class HomeScreen extends StatelessWidget {
@@ -35,12 +36,7 @@ class HomeScreen extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        backgroundColor: Colors.black,
-        onPressed: (){},
-        child: Icon(Icons.add,size: 30,),
-      ),
+      floatingActionButton:  floatingAddButton(context),
     );
   }
 }

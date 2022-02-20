@@ -94,21 +94,26 @@ class BuildTask extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                  decoration: BoxDecoration(
-                      color: task.color.withOpacity(0.35),///btn color
-                      borderRadius: BorderRadius.circular(20)
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                    decoration: BoxDecoration(
+                        color: task.color.withOpacity(0.35),///btn color
+                        borderRadius: BorderRadius.circular(20)
+                    ),
+                    child: Center(child: Text('Left ${task.left}',style: TextStyle(color: Colors.black),)),
                   ),
-                  child: Text('Left ${task.left}',style: TextStyle(color: Colors.black),),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20)
+                SizedBox(width: 10,),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20)
+                    ),
+                    child: Center(child: Text('Done ${task.done}',style: TextStyle(color: Colors.black),)),
                   ),
-                  child: Text('Done ${task.done}',style: TextStyle(color: Colors.black),),
                 ),
               ],
             )
