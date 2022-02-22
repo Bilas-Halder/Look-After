@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+
+
 class Task{
   int id;
   String title;
@@ -51,4 +54,37 @@ class Task{
     data['repeat'] = this.repeat;
     return data;
   }
+}
+
+class TaskModel{
+  int id;
+  String title;
+  String note;
+  int status;
+  DateTime date;
+  String startTime;
+  String endTime;
+  Color color;
+  int remind;
+  String repeat;
+  int priority;
+  String category;
+
+  TaskModel({
+
+    this.id,
+    this.title,
+    this.note,
+    this.status,
+    this.date,
+    this.startTime,
+    this.endTime,
+    this.color,
+    this.remind,
+    this.repeat,
+    this.priority,
+    this.category
+  });
+
+
 }

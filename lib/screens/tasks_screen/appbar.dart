@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:look_after/Models/taskCategory.dart';
+import 'package:look_after/screens/tasks_screen/taskCard.dart';
 
 AppBar buildTaskScreenAppbar(TaskCategory taskCategory){
   return AppBar(
@@ -62,6 +63,7 @@ AppBar buildTaskScreenAppbar(TaskCategory taskCategory){
         color: Colors.black,
         size: 30,
       ),
+      TaskPopupMenu(),
       SizedBox(width: 5,)
     ],
   );

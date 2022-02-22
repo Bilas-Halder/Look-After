@@ -17,3 +17,23 @@ const kMessageContainerDecoration = BoxDecoration(
     top: BorderSide(color: Colors.lightBlueAccent, width: 2.0),
   ),
 );
+
+
+final List<Map<String, dynamic>> status = [
+  {
+    'color': Colors.green[800],
+    'message': 'Completed',
+    'icon': Icons.task_alt_outlined
+  },
+  {
+    'color': Colors.yellow[900],
+    'message': 'In Progress',
+    'icon': Icons.check_circle_outline
+  },
+  {
+    'color': Colors.grey[600],
+    'message': 'Add Progress Status',
+    'icon': Icons.add_task_outlined
+  },
+];
+final priorityColors = [Colors.red[800], Colors.yellow[900], Colors.grey[600]];

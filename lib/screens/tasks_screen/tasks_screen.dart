@@ -13,6 +13,7 @@ import 'package:look_after/screens/home_screen/bottomNavigationBar.dart';
 import 'package:look_after/screens/tasks_screen/add_task.dart';
 import 'package:look_after/screens/tasks_screen/appbar.dart';
 import 'package:look_after/screens/tasks_screen/datePickerTimeline.dart';
+import 'package:look_after/screens/tasks_screen/taskCard.dart';
 import 'package:look_after/screens/tasks_screen/tasksAppbar.dart';
 import 'package:look_after/screens/tasks_screen/tasksListBuilder.dart';
 import 'package:look_after/utilities/buttons.dart';
@@ -43,13 +44,80 @@ class _TasksScreenState extends State<TasksScreen> {
     super.initState();
   }
 
-  getData()async{
-
-  }
-
   @override
   Widget build(BuildContext context) {
     // context.read<SelectedDateProvider>().setCurrentDate();
+
+    final List <TaskModel> tasks=[
+      TaskModel(
+      id: 1, title: 'Online Team Meeting in zoom.',
+      note: 'Topic is how lower the development time. Our boss will be there.',
+      status: 0,
+      date: DateTime.now(),
+      startTime: DateFormat.jm().format(DateTime.now()).toString(),
+      endTime: DateFormat.jm().format(DateTime.now().add(Duration(hours:2))).toString(),
+      color: Colors.teal,
+      priority: 0,
+      category: 'Personal',
+      // remind:
+      // repeat:
+    ),
+      TaskModel(
+      id: 1, title: 'Online Class of ShafkatSir',
+      note: 'Topic is how lower the development time. Our boss will be there.',
+      status: 2,
+      date: DateTime.now(),
+      startTime: DateFormat.jm().format(DateTime.now()).toString(),
+      endTime: DateFormat.jm().format(DateTime.now().add(Duration(hours:2))).toString(),
+      color: Colors.white,
+      priority: 1,
+      // remind:
+      // repeat:
+        category: 'Personal',
+    ),
+      TaskModel(
+      id: 1, title: 'Online Team Meeting in Google Meet',
+      note: 'Business Meeting.',
+      status: 1,
+      date: DateTime.now(),
+      startTime: DateFormat.jm().format(DateTime.now()).toString(),
+      endTime: DateFormat.jm().format(DateTime.now().add(Duration(hours:2))).toString(),
+      color: Colors.cyan,
+      priority: 2,
+      // remind:
+      // repeat:
+        category: 'Personal',
+    ),
+      TaskModel(
+      id: 1, title: 'Zoom Meeting',
+      note: 'Topic is how lower the development time. Our boss will be there.',
+      status: 2,
+      date: DateTime.now(),
+      startTime: DateFormat.jm().format(DateTime.now()).toString(),
+      endTime: DateFormat.jm().format(DateTime.now().add(Duration(hours:2))).toString(),
+      color: Colors.redAccent,
+      priority: 1,
+      // remind:
+      // repeat:
+        category: 'Personal',
+    ),
+      TaskModel(
+        id: 1, title: 'Online Team Meeting in zoom.',
+        note: 'Topic is how lower the development time. Our boss will be there.',
+        status: 0,
+        date: DateTime.now(),
+        startTime: DateFormat.jm().format(DateTime.now()).toString(),
+        endTime: DateFormat.jm().format(DateTime.now().add(Duration(hours:2))).toString(),
+        color: Colors.teal,
+        priority: 0,
+        // remind:
+        // repeat:
+        category: 'Super Personal',
+      ),
+    ];
+
+
+
     return Scaffold(
       appBar: buildTaskScreenAppbar(widget.taskCategory),
       backgroundColor: Colors.white,
@@ -65,11 +133,22 @@ class _TasksScreenState extends State<TasksScreen> {
             )
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             SelectedDate(),
             AddDateBar(),
             SizedBox(height: 10),
-            _showTasks()
+            TasksListBuilder(),
+            Expanded(
+              child: ListView.builder(
+                itemCount: tasks.length+1,
+                  itemBuilder: (context,index){
+                return TaskCard(task: index==tasks.length ? null : tasks[index],);
+              },
+              ),
+            )
+
+            // _showTasks()
           ],
         ),
       ),
@@ -296,7 +375,7 @@ class SelectedDate extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 23, right: 20, top: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
           child: Text(DateFormat.yMMMd().format(context.watch<SelectedDateProvider>().selectedDate),
               style: TextStyle(
                   fontSize: 20.0,

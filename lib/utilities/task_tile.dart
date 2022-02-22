@@ -30,7 +30,7 @@ class TaskTile extends StatelessWidget {
                   style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                        color: Colors.white,),
 
                 ),
                 SizedBox(

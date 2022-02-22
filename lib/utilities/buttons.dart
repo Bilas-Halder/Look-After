@@ -52,6 +52,57 @@ class LogInButton extends StatelessWidget {
   }
 }
 
+class CustomButton extends StatelessWidget {
+  final Color color,textColor;
+  final String title;
+  final Function onPressed;
+  final double width;
+  final BorderRadiusGeometry borderRadius;
+  final bool reversed;
+  CustomButton({this.reversed,this.title,this.color,@required this.onPressed,this.textColor, this.width, this.borderRadius});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: InkWell(
+        onTap: onPressed!=null?onPressed:(){},
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          height: 42.0,
+          width: width!=null ? width : double.infinity,
+          decoration: BoxDecoration(
+            color: color!=null? reversed==true? Colors.white : color : Colors.teal,
+            border: Border.all(
+              color: color ,
+              width: 2,
+            ),
+            borderRadius: borderRadius?? BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 2.0,
+                spreadRadius: 0.0,
+                offset: Offset(1.0, 2.0), // shadow direction: bottom right
+              )
+            ],
+          ),
+
+          child: Center(
+            child: Text(
+              title,
+              style: TextStyle(
+                color:textColor ?? (reversed==true? color: Colors.white),
+                    fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 
 class AddTask extends StatelessWidget {
