@@ -1,25 +1,24 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
+import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/Models/taskCategory.dart';
 import 'package:look_after/Models/tasks.dart';
 import 'package:look_after/Services/notification_services.dart';
-import 'package:look_after/controllers/task_controller.dart';
+import 'package:look_after/boxes.dart';
 import 'package:look_after/providers/SelectedDateProvider.dart';
 import 'package:look_after/providers/task_providers.dart';
 import 'package:look_after/screens/home_screen/bottomNavigationBar.dart';
-import 'package:look_after/screens/tasks_screen/add_task.dart';
 import 'package:look_after/screens/tasks_screen/appbar.dart';
-import 'package:look_after/screens/tasks_screen/datePickerTimeline.dart';
 import 'package:look_after/screens/tasks_screen/taskCard.dart';
-import 'package:look_after/screens/tasks_screen/tasksAppbar.dart';
 import 'package:look_after/screens/tasks_screen/tasksListBuilder.dart';
 import 'package:look_after/utilities/buttons.dart';
 import 'package:get/get.dart';
 import 'package:look_after/utilities/task_tile.dart';
 import 'package:provider/provider.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class TasksScreen extends StatefulWidget {
   static const String path = '/task_screen';
@@ -48,73 +47,7 @@ class _TasksScreenState extends State<TasksScreen> {
   Widget build(BuildContext context) {
     // context.read<SelectedDateProvider>().setCurrentDate();
 
-    final List <TaskModel> tasks=[
-      TaskModel(
-      id: 1, title: 'Online Team Meeting in zoom.',
-      note: 'Topic is how lower the development time. Our boss will be there.',
-      status: 0,
-      date: DateTime.now(),
-      startTime: DateFormat.jm().format(DateTime.now()).toString(),
-      endTime: DateFormat.jm().format(DateTime.now().add(Duration(hours:2))).toString(),
-      color: Colors.teal,
-      priority: 0,
-      category: 'Personal',
-      // remind:
-      // repeat:
-    ),
-      TaskModel(
-      id: 1, title: 'Online Class of ShafkatSir',
-      note: 'Topic is how lower the development time. Our boss will be there.',
-      status: 2,
-      date: DateTime.now(),
-      startTime: DateFormat.jm().format(DateTime.now()).toString(),
-      endTime: DateFormat.jm().format(DateTime.now().add(Duration(hours:2))).toString(),
-      color: Colors.white,
-      priority: 1,
-      // remind:
-      // repeat:
-        category: 'Personal',
-    ),
-      TaskModel(
-      id: 1, title: 'Online Team Meeting in Google Meet',
-      note: 'Business Meeting.',
-      status: 1,
-      date: DateTime.now(),
-      startTime: DateFormat.jm().format(DateTime.now()).toString(),
-      endTime: DateFormat.jm().format(DateTime.now().add(Duration(hours:2))).toString(),
-      color: Colors.cyan,
-      priority: 2,
-      // remind:
-      // repeat:
-        category: 'Personal',
-    ),
-      TaskModel(
-      id: 1, title: 'Zoom Meeting',
-      note: 'Topic is how lower the development time. Our boss will be there.',
-      status: 2,
-      date: DateTime.now(),
-      startTime: DateFormat.jm().format(DateTime.now()).toString(),
-      endTime: DateFormat.jm().format(DateTime.now().add(Duration(hours:2))).toString(),
-      color: Colors.redAccent,
-      priority: 1,
-      // remind:
-      // repeat:
-        category: 'Personal',
-    ),
-      TaskModel(
-        id: 1, title: 'Online Team Meeting in zoom.',
-        note: 'Topic is how lower the development time. Our boss will be there.',
-        status: 0,
-        date: DateTime.now(),
-        startTime: DateFormat.jm().format(DateTime.now()).toString(),
-        endTime: DateFormat.jm().format(DateTime.now().add(Duration(hours:2))).toString(),
-        color: Colors.teal,
-        priority: 0,
-        // remind:
-        // repeat:
-        category: 'Super Personal',
-      ),
-    ];
+
 
 
 
@@ -140,12 +73,18 @@ class _TasksScreenState extends State<TasksScreen> {
             SizedBox(height: 10),
             TasksListBuilder(),
             Expanded(
-              child: ListView.builder(
-                itemCount: tasks.length+1,
-                  itemBuilder: (context,index){
-                return TaskCard(task: index==tasks.length ? null : tasks[index],);
-              },
-              ),
+              child: ValueListenableBuilder<Box<TaskModel>>(
+                valueListenable: Boxes.getTaskModel().listenable(),
+                builder: (context, box, _){
+                  final tasks= box.values.toList().cast<TaskModel>();
+                  return ListView.builder(
+                    itemCount: tasks.length+1,
+                    itemBuilder: (context,index){
+                      return TaskCard(task: index==tasks.length ? null : tasks[index],);
+                    },
+                  );
+                },
+              )
             )
 
             // _showTasks()

@@ -15,8 +15,10 @@ import 'package:look_after/screens/welcome_screen.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:look_after/screens/registration_screen.dart';
 import 'package:look_after/screens/chat_screen.dart';
-import 'package:provider/provider.dart';
-import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import 'Models/hive_task_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +29,13 @@ Future<void> main() async {
   notifyHelper = NotifyHelper();
   notifyHelper.initializeNotification();
   notifyHelper.requestIOSPermissions();
+
+  /// hive database
+  await Hive.initFlutter();
+  
+  Hive.registerAdapter(TaskModelAdapter());
+  await Hive.openBox<TaskModel>('taskModels');
+
   runApp(LookAfter());
 }
 
@@ -35,6 +44,7 @@ void initialization(BuildContext context) async {
 }
 
 class LookAfter extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return OurProvider(

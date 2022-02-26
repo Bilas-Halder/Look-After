@@ -63,7 +63,6 @@ AppBar buildTaskScreenAppbar(TaskCategory taskCategory){
         color: Colors.black,
         size: 30,
       ),
-      TaskPopupMenu(),
       SizedBox(width: 5,)
     ],
   );

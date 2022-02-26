@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/Models/tasks.dart';
 import 'package:look_after/screens/tasks_screen/taskCard.dart';
 
 class TasksListBuilder extends StatelessWidget {
   final List<TaskModel> tasks = [
     TaskModel(
-      id: 1, title: 'Online Team Meeting in zoom',
+      email: 'bilas@gmail.com', title: 'Online Team Meeting in zoom',
       note: 'Topic is how lower the development time. Our boss will be there.',
       status: 1,
       date: DateTime.now(),

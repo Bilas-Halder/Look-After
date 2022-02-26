@@ -26,7 +26,12 @@ dependencies:
   dotted_border: ^2.0.0+2
   timeline_tile: ^2.0.0
 
-#  Added by hriody
+  #  hive database
+  hive: ^2.0.3
+  hive_flutter: ^1.0.0
+
+
+  #  Added by hriody
   get: ^4.6.1
   google_fonts:
   date_picker_timeline:
@@ -49,6 +54,10 @@ flutter_native_splash:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+#  hive database generator
+  hive_generator: ^1.0.1
+  build_runner: ^1.12.2
 
 flutter:
   uses-material-design: true

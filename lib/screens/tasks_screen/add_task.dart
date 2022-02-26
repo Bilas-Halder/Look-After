@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/Models/tasks.dart';
 import 'package:look_after/Services/notification_services.dart';
+import 'package:look_after/boxes.dart';
 import 'package:look_after/controllers/task_controller.dart';
 import 'package:look_after/providers/task_providers.dart';
 import 'package:look_after/utilities/buttons.dart';
@@ -40,9 +43,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
     "Monthly"
   ];
 
-  int _selectedColor = 0;
+
+  Color _selectedColor;
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<User>();
+
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -166,7 +172,28 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _colorPallete(),
-                    AddTask(label: "Create Task", onTap: ()=>_validateDate())
+                    AddTask(label: "Create Task",
+                     onTap: (){
+                       _validateDate();
+                       addTaskModelToHiveDB(
+                         TaskModel(
+                           email: user.email,
+                           title: _titleController.text,
+                           note: _noteController.text,
+                           date: _selectedDate,
+                           startTime: _startTime,
+                           endTime: _endTime,
+                           remind: _selectedRemind,
+                           repeat: _selectedRepeat,
+                           color: _selectedColor,
+                           status: 0,
+                           priority: 0,
+                           category: 'Personal',
+                           // remind:
+                           // repeat:
+                         ),
+                       );
+                    })
                   ],
                 )
               ],
@@ -177,9 +204,17 @@ class _AddTaskPageState extends State<AddTaskPage> {
     );
   }
 
+  ///adding taskModel to hive database
+  void addTaskModelToHiveDB(TaskModel task){
+    final box = Boxes.getTaskModel();
+    box.add(task);
+    print(box.keys);
+    print(box.values);
+  }
+
   _validateDate(){
     if(_titleController.text.isNotEmpty && _noteController.text.isNotEmpty){
-      _addTaskToDb();
+      // _addTaskToDb();
       NotifyHelper().displayNotification(
         title: "Your Task Has been Added",
         body: _noteController.text
@@ -212,16 +247,17 @@ class _AddTaskPageState extends State<AddTaskPage> {
           children: List<Widget>.generate(
               3,
                   (int indx){
+                List colors = [Colors.blue,Colors.pink,Colors.yellow];
                 return GestureDetector(
                   onTap: (){
                     setState(() {
-                      _selectedColor = indx;
+                      _selectedColor = indx==0?Colors.blue:indx==1?Colors.pink:Colors.yellow;
                     });
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: CircleAvatar(
-                      child: _selectedColor==indx?Icon(Icons.done,
+                      child: _selectedColor==colors[indx]?Icon(Icons.done,
                         color: Colors.white,
                         size: 16,):Container(),
                       radius: 14,
@@ -277,23 +313,23 @@ class _AddTaskPageState extends State<AddTaskPage> {
     );
   }
 
-  _addTaskToDb() async{
-    Task ts = Task(
-      note: _noteController.text,
-      title: _titleController.text,
-      date: DateFormat.yMd().format(_selectedDate),
-      startTime: _startTime,
-      endTime: _endTime,
-      remind: _selectedRemind,
-      repeat: _selectedRepeat,
-      color: _selectedColor,
-      isCompleted: 0,
-    );
-
-    int value = await TaskProvider().addTask(
-        task: ts
-    );
-
-    print("My id is: " + "$value");
-  }
+  // _addTaskToDb() async{
+  //   Task ts = Task(
+  //     note: _noteController.text,
+  //     title: _titleController.text,
+  //     date: DateFormat.yMd().format(_selectedDate),
+  //     startTime: _startTime,
+  //     endTime: _endTime,
+  //     remind: _selectedRemind,
+  //     repeat: _selectedRepeat,
+  //     color: _selectedColor,
+  //     isCompleted: 0,
+  //   );
+  //
+  //   int value = await TaskProvider().addTask(
+  //       task: ts
+  //   );
+  //
+  //   print("My id is: " + "$value");
+  // }
 }

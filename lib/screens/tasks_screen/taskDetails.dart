@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/Models/tasks.dart';
 import 'package:look_after/constants.dart';
 import 'package:look_after/utilities/buttons.dart';
@@ -50,7 +51,7 @@ class TaskDetailDialog extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 6),
+                      SizedBox(height: 14),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [

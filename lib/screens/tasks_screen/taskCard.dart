@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/Models/tasks.dart';
 import 'package:look_after/screens/tasks_screen/taskDetails.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -55,7 +56,7 @@ class TaskCard extends StatelessWidget {
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.85,
                 decoration: BoxDecoration(
-                  color: task.color.withOpacity(0.4),
+                  color: Color(task.color).withOpacity(0.4),
                   borderRadius: borderRadius,
                 ),
                 child: Padding(
