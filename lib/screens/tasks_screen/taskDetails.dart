@@ -129,7 +129,7 @@ class TaskDetailDialog extends StatelessWidget {
                     ],
                   ),
                 ),
-                BottomDesign(),
+                BottomDesign(task: task,),
               ],
             ),
           ),
@@ -189,8 +189,8 @@ class TaskCategoryDesign extends StatelessWidget {
 }
 
 class BottomDesign extends StatelessWidget {
-  final String task;
-  BottomDesign({this.task});
+  final TaskModel task;
+  BottomDesign({@required this.task});
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +222,11 @@ class BottomDesign extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            ///deleting task from hive database
+                            task.delete();
+                            Navigator.pop(context);
+                          },
                           color: Colors.teal,
                           title: 'Delete',
                           width: 70,

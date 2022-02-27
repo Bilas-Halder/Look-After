@@ -61,26 +61,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             SizedBox(width: 10,),
-                            AnimatedTextKit(
-                              repeatForever: true,
-                              animatedTexts: [
-                                TypewriterAnimatedText(
-                                  'Login',
-                                  speed: Duration(milliseconds: 120),
-                                  curve: Curves.easeInOut,
-                                  textStyle: TextStyle(
-                                      fontSize: 40,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      shadows: [
-                                        Shadow(
-                                            color: Colors.grey,
-                                            offset: Offset(2, 5),
-                                            blurRadius: 10.0),
-                                      ]),
-                                ),
-                              ],
-                            ),
+                            Text(
+                              'Login',
+                              style: TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                      color: Colors.grey,
+                                      offset: Offset(2, 5),
+                                      blurRadius: 10.0),
+                                ],),
+                            )
                           ],
                         ),
                         Column(

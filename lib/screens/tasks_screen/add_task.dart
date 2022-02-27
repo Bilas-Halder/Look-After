@@ -12,6 +12,7 @@ import 'package:look_after/providers/task_providers.dart';
 import 'package:look_after/utilities/buttons.dart';
 import 'package:look_after/utilities/input_field.dart';
 import 'package:provider/provider.dart';
+
 class AddTaskPage extends StatefulWidget {
   static const String path = '/add_task';
   @override
@@ -23,28 +24,23 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
-  String _endTime = DateFormat("hh:mm a").format(DateTime.now().add(Duration(hours:1)));
+  String _endTime =
+      DateFormat("hh:mm a").format(DateTime.now().add(Duration(hours: 1)));
   String _startTime = DateFormat("hh:mm a").format(DateTime.now());
   int _selectedRemind = 5;
-  List<int> remindList = [
-    5,
-    10,
-    15,
-    20,
-    30,
-    60
-  ];
+  List<int> remindList = [5, 10, 15, 20, 30, 60];
 
   String _selectedRepeat = "None";
-  List<String> repeatList = [
-    "None",
-    "Daily",
-    "Weekly",
-    "Monthly"
-  ];
+  List<String> repeatList = ["None", "Daily", "Weekly", "Monthly"];
 
+  Color _selectedColor=Color(Colors.teal.value);
 
-  Color _selectedColor;
+  List<String> priorityList = ['High', 'Medium', 'Low'];
+  List<String> categoryList = ['Personal', 'Work', 'Health'];
+  List<int> colorsList = [Colors.teal.value, Colors.blue.value, Colors.orange.value, Colors.redAccent.value, Colors.pink.value, Colors.yellow.value];
+  int _selectedPriority = 0;
+  int _selectedCategory = 0;
+
   @override
   Widget build(BuildContext context) {
     final user = context.watch<User>();
@@ -54,117 +50,192 @@ class _AddTaskPageState extends State<AddTaskPage> {
         child: Container(
           padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
           child: SingleChildScrollView(
-
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                        'Add Task',
+                    Text('Add Task',
                         style: TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey
-                        )
-                    ),
+                            color: Colors.grey)),
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.pop(context);
                       },
-                      child: Icon(
-                          Icons.close,
-                          color: Colors.grey
-                      ),
+                      child: Icon(Icons.close, color: Colors.grey),
                     )
                   ],
                 ),
-                MyInputField(title: "Title", hint: "Enter Your Title", controller: _titleController,),
-                MyInputField(title: "Note", hint: "Enter Your Note", controller: _noteController,),
-                MyInputField(title: "Date", hint: DateFormat.yMd().format(_selectedDate),
+                MyInputField(
+                  title: "Title",
+                  hint: "Enter Your Title",
+                  controller: _titleController,
+                ),
+                MyInputField(
+                  title: "Note",
+                  hint: "Enter Your Note",
+                  controller: _noteController,
+                ),
+                MyInputField(
+                  title: "Date",
+                  hint: DateFormat.yMd().format(_selectedDate),
                   widget: IconButton(
-                    icon: Icon(Icons.calendar_today_outlined, color: Colors.grey,),
-                    onPressed: (){
+                    icon: Icon(
+                      Icons.calendar_today_outlined,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
                       _getDateFromUser();
-                },
-                  ),),
+                    },
+                  ),
+                ),
                 Row(
                   children: [
                     Expanded(
                         child: MyInputField(
-                          title: "Start Time",
-                          hint: _startTime,
-                          widget: IconButton(
-                            onPressed: () {
-                              _getTimeFromUser(true);
-                            },
-                            icon: Icon(Icons.access_time_rounded, color: Colors.grey,),
-                          ),
-                        )
-                    ),
+                      title: "Start Time",
+                      hint: _startTime,
+                      widget: IconButton(
+                        onPressed: () {
+                          _getTimeFromUser(true);
+                        },
+                        icon: Icon(
+                          Icons.access_time_rounded,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )),
                     SizedBox(width: 12),
                     Expanded(
                         child: MyInputField(
-                          title: "End Time",
-                          hint: _endTime,
-                          widget: IconButton(
-                            onPressed: () {
-                              _getTimeFromUser(false);
-                            },
-                            icon: Icon(Icons.access_time_rounded, color: Colors.grey,),
-                          ),
-                        )
-                    )
+                      title: "End Time",
+                      hint: _endTime,
+                      widget: IconButton(
+                        onPressed: () {
+                          _getTimeFromUser(false);
+                        },
+                        icon: Icon(
+                          Icons.access_time_rounded,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ))
                   ],
                 ),
-                MyInputField(title: "Remindeer", hint: "$_selectedRemind minutes early",
-                widget: DropdownButton(
-                  icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
-                  iconSize: 32,
-                  elevation: 4,
-                  underline: Container(
-                    height: 0,
+                Row(
+                  children: [
+                    Expanded(
+                      child: MyInputField(
+                        title: "Category",
+                        hint: categoryList[_selectedCategory],
+                        widget: DropdownButton(
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.grey,
+                          ),
+                          iconSize: 30,
+                          elevation: 4,
+                          underline: Container(
+                            height: 0,
+                          ),
+                          onChanged: (int newValue) {
+                            setState(() {
+                              _selectedCategory = newValue;
+                            });
+                          },
+                          items: List<DropdownMenuItem<int>>.generate(
+                              categoryList.length, (int index) {
+                            return DropdownMenuItem(
+                              value: index,
+                              child: Text(categoryList[index]),
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: MyInputField(
+                        title: "Priority",
+                        hint: '${priorityList[_selectedPriority]} Priority',
+                        widget: DropdownButton(
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.grey,
+                          ),
+                          iconSize: 30,
+                          elevation: 4,
+                          underline: Container(
+                            height: 0,
+                          ),
+                          onChanged: (int newValue) {
+                            setState(() {
+                              _selectedPriority = newValue;
+                            });
+                          },
+                          items: List<DropdownMenuItem<int>>.generate(
+                              priorityList.length, (int index) {
+                            return DropdownMenuItem(
+                              value: index,
+                              child: Text(priorityList[index]),
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                MyInputField(
+                  title: "Remindeer",
+                  hint: "$_selectedRemind minutes early",
+                  widget: DropdownButton(
+                    icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                    iconSize: 32,
+                    elevation: 4,
+                    underline: Container(
+                      height: 0,
+                    ),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        _selectedRemind = int.parse(newValue);
+                      });
+                    },
+                    items:
+                        remindList.map<DropdownMenuItem<String>>((int value) {
+                      return DropdownMenuItem<String>(
+                        value: value.toString(),
+                        child: Text(value.toString()),
+                      );
+                    }).toList(),
                   ),
-                  onChanged: (String newValue){
-                    setState(() {
-                      _selectedRemind = int.parse(newValue);
-                    });
-                  },
-                  items:remindList.map<DropdownMenuItem<String>>((int value){
-                    return DropdownMenuItem<String>(
-                      value: value.toString(),
-                      child: Text(value.toString()),
-                    );
-                  }
-
-                  ).toList(),
                 ),
-                ),
-                MyInputField(title: "Repeat", hint: "$_selectedRepeat",
-                widget: DropdownButton(
-                  icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
-                  iconSize: 32,
-                  elevation: 4,
-                  underline: Container(
-                    height: 0,
+                MyInputField(
+                  title: "Repeat",
+                  hint: "$_selectedRepeat",
+                  widget: DropdownButton(
+                    icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                    iconSize: 32,
+                    elevation: 4,
+                    underline: Container(
+                      height: 0,
+                    ),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        _selectedRepeat = newValue;
+                      });
+                    },
+                    items: repeatList
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child:
+                            Text(value, style: TextStyle(color: Colors.grey)),
+                      );
+                    }).toList(),
                   ),
-                  onChanged: (String newValue){
-                    setState(() {
-                      _selectedRepeat = newValue;
-                    });
-                  },
-                  items:repeatList.map<DropdownMenuItem<String>>((String value){
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value, style: TextStyle(
-                        color: Colors.grey
-                      )),
-                    );
-                  }
-
-                  ).toList(),
-                ),
                 ),
                 SizedBox(height: 18),
                 Row(
@@ -172,28 +243,29 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _colorPallete(),
-                    AddTask(label: "Create Task",
-                     onTap: (){
-                       _validateDate();
-                       addTaskModelToHiveDB(
-                         TaskModel(
-                           email: user.email,
-                           title: _titleController.text,
-                           note: _noteController.text,
-                           date: _selectedDate,
-                           startTime: _startTime,
-                           endTime: _endTime,
-                           remind: _selectedRemind,
-                           repeat: _selectedRepeat,
-                           color: _selectedColor,
-                           status: 0,
-                           priority: 0,
-                           category: 'Personal',
-                           // remind:
-                           // repeat:
-                         ),
-                       );
-                    })
+                    AddTask(
+                        label: "Add Task",
+                        onTap: () {
+                          _validateDate();
+                          addTaskModelToHiveDB(
+                            TaskModel(
+                              email: user.email,
+                              title: _titleController.text,
+                              note: _noteController.text,
+                              date: _selectedDate,
+                              startTime: _startTime,
+                              endTime: _endTime,
+                              remind: _selectedRemind,
+                              repeat: _selectedRepeat,
+                              color: _selectedColor.value,
+                              status: 2,
+                              priority: _selectedPriority,
+                              category: categoryList[_selectedCategory],
+                              // remind:
+                              // repeat:
+                            ),
+                          );
+                        })
                   ],
                 )
               ],
@@ -205,33 +277,30 @@ class _AddTaskPageState extends State<AddTaskPage> {
   }
 
   ///adding taskModel to hive database
-  void addTaskModelToHiveDB(TaskModel task){
+  void addTaskModelToHiveDB(TaskModel task) {
     final box = Boxes.getTaskModel();
     box.add(task);
     print(box.keys);
     print(box.values);
   }
 
-  _validateDate(){
-    if(_titleController.text.isNotEmpty && _noteController.text.isNotEmpty){
+  _validateDate() {
+    if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
       // _addTaskToDb();
       NotifyHelper().displayNotification(
-        title: "Your Task Has been Added",
-        body: _noteController.text
-      );
+          title: "Your Task Has been Added", body: _noteController.text);
       // Get.back();
       Navigator.pop(context);
-    }else{
+    } else {
       Get.snackbar("Required", "All Fields are Required",
-      snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.white,
-        colorText: Colors.pink,
-        icon: Icon(Icons.warning_amber_rounded)
-      );
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.white,
+          colorText: Colors.pink,
+          icon: Icon(Icons.warning_amber_rounded));
     }
   }
 
-  _colorPallete(){
+  _colorPallete() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -242,74 +311,72 @@ class _AddTaskPageState extends State<AddTaskPage> {
             fontWeight: FontWeight.w400,
           ),
         ),
-        SizedBox(height: 18),
+        SizedBox(height: 10),
         Wrap(
-          children: List<Widget>.generate(
-              3,
-                  (int indx){
-                List colors = [Colors.blue,Colors.pink,Colors.yellow];
-                return GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      _selectedColor = indx==0?Colors.blue:indx==1?Colors.pink:Colors.yellow;
-                    });
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: CircleAvatar(
-                      child: _selectedColor==colors[indx]?Icon(Icons.done,
-                        color: Colors.white,
-                        size: 16,):Container(),
-                      radius: 14,
-                      backgroundColor: indx==0?Colors.blue:indx==1?Colors.pink:Colors.yellow,
-                    ),
-                  ),
-                );
-              }
-          ),
+          children: List<Widget>.generate(colorsList.length, (int indx) {
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedColor = Color(colorsList[indx]);
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: CircleAvatar(
+                  child: _selectedColor == Color(colorsList[indx])
+                      ? Icon(
+                          Icons.done,
+                          color: Colors.white,
+                          size: 16,
+                        )
+                      : Container(),
+                  radius: 14,
+                  backgroundColor: Color(colorsList[indx]),
+                ),
+              ),
+            );
+          }),
         )
       ],
     );
   }
-  _getDateFromUser() async{
+
+  _getDateFromUser() async {
     DateTime _pickerDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime(2015),
-        lastDate: DateTime(2115)
-    );
-    if(_pickerDate!=null){
+        lastDate: DateTime(2115));
+    if (_pickerDate != null) {
       setState(() {
         _selectedDate = _pickerDate;
       });
-    }else{
-
-    }
+    } else {}
   }
 
-  _getTimeFromUser(bool isStartTime) async{
+  _getTimeFromUser(bool isStartTime) async {
     var _pickedTime = await _showTimePicker();
     String _formatedTime = _pickedTime.format(context);
-    if(_pickedTime==null){
-
-    }else if(isStartTime == true){
+    if (_pickedTime == null) {
+    } else if (isStartTime == true) {
       setState(() {
         _startTime = _formatedTime;
       });
-    }else{
+    } else {
       setState(() {
         _endTime = _formatedTime;
       });
     }
   }
+
   _showTimePicker() {
     return showTimePicker(
-        initialEntryMode: TimePickerEntryMode.dial,
-        context: context,
-        initialTime: TimeOfDay(
-            hour: int.parse(_startTime.split(":")[0]),
-            minute: int.parse(_startTime.split(":")[1].split(" ")[0]),
-    ),
+      initialEntryMode: TimePickerEntryMode.dial,
+      context: context,
+      initialTime: TimeOfDay(
+        hour: int.parse(_startTime.split(":")[0]),
+        minute: int.parse(_startTime.split(":")[1].split(" ")[0]),
+      ),
     );
   }
 

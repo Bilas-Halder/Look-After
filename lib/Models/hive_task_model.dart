@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 part 'hive_task_model.g.dart';
 
 @HiveType(typeId: 0)
-class TaskModel{
+class TaskModel extends HiveObject{
   @HiveField(0)
   String email;
 
@@ -56,8 +56,24 @@ class TaskModel{
     this.repeat,
     this.priority,
     this.category,
-    Color color : Colors.teal
-  }){
-    this.color = color.value ;
-  }
+    this.color
+  });
+}
+
+@HiveType(typeId: 1)
+class TaskCategoryModel extends HiveObject{
+  @HiveField(0)
+  String title;
+
+  @HiveField(1)
+  int color;
+
+  @HiveField(2)
+  int icon;
+
+  TaskCategoryModel({
+    this.title,
+    this.color,
+    this.icon
+  });
 }

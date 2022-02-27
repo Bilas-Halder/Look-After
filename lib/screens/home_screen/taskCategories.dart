@@ -11,30 +11,48 @@ class TaskCategories extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(left: 15,right: 15, top: 15, bottom: 15),
       child: GridView.builder(
-        itemCount: taskList.length,
+        itemCount: taskList.length+1,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
         ),
-        itemBuilder: (context, index) => taskList[index].isLast==true ? buildAddTask():BuildTaskCategory(taskList[index]),
+        itemBuilder: (context, index) => index==taskList.length ? buildAddTask():BuildTaskCategory(taskList[index]),
       ),
     );
   }
 
   Widget buildAddTask(){
-    return DottedBorder(
-      borderType: BorderType.RRect,
-      radius: Radius.circular(20),
-      dashPattern: [10,10],
-      color: Colors.grey,
-      strokeWidth: 2,
-      child: Center(
-        child: Text(
-          '+ Add',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold
+    return GestureDetector(
+      onTap: (){
+        print(Colors.teal.computeLuminance());
+        print(Colors.white.computeLuminance());
+        if ((Colors.yellow.computeLuminance() + 0.05) * (Colors.yellow.computeLuminance() + 0.05) > 0.25) {
+          print('Bright');
+          print((Colors.yellow.computeLuminance() + 0.05) * (Colors.yellow.computeLuminance() + 0.05));
+        }
+        else print('Dark');
+
+        if ((Colors.white.computeLuminance() + 0.05) * (Colors.white.computeLuminance() + 0.05) > 0.15) {
+          print('Bright');
+        }
+        else print('Dark');
+
+
+      },
+      child: DottedBorder(
+        borderType: BorderType.RRect,
+        radius: Radius.circular(20),
+        dashPattern: [10,10],
+        color: Colors.grey,
+        strokeWidth: 2,
+        child: Center(
+          child: Text(
+            '+ Add',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold
+            ),
           ),
         ),
       ),
@@ -101,18 +119,18 @@ class BuildTaskCategory extends StatelessWidget {
                         color: task.color.withOpacity(0.35),///btn color
                         borderRadius: BorderRadius.circular(20)
                     ),
-                    child: Center(child: Text('Left ${task.left}',style: TextStyle(color: Colors.black),)),
+                    child: Center(child: Text('Left',style: TextStyle(color: Colors.black),)),
                   ),
                 ),
                 SizedBox(width: 10,),
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20)
                     ),
-                    child: Center(child: Text('Done ${task.done}',style: TextStyle(color: Colors.black),)),
+                    child: Center(child: Text('Done',style: TextStyle(color: Colors.black),)),
                   ),
                 ),
               ],

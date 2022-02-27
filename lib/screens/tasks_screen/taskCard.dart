@@ -6,7 +6,14 @@ import 'package:look_after/Models/tasks.dart';
 import 'package:look_after/screens/tasks_screen/taskDetails.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
+import '../../boxes.dart';
 import '../../constants.dart';
+
+///adding taskModel to hive database
+void deleteTaskFromHiveDB(int key){
+  final box = Boxes.getTaskModel();
+  box.delete(key);
+}
 
 class TaskCard extends StatelessWidget {
   final borderRadius = BorderRadius.only(
@@ -20,7 +27,6 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     if(task==null)return Container(height: 40,);
 
     return Padding(

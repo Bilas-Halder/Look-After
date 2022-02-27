@@ -52,22 +52,31 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         SizedBox(
                           height: 1,
                         ),
-                        Hero(
-                          tag: 'logo',
-                          child: Center(
-                              child: Text(
-                                'Register',
-                                style: TextStyle(
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    shadows: [
-                                      Shadow(
-                                          color: Colors.grey,
-                                          offset: Offset(2, 5),
-                                          blurRadius: 10.0),
-                                    ],),
-                              ),),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center         ,
+                          children: <Widget>[
+                            Hero(
+                              tag: 'logo',
+                              child: Container(
+                                child: Image.asset('images/square-logo.png'),
+                                height: 60.0,
+                              ),
+                            ),
+                            SizedBox(width: 10,),
+                            Text(
+                              'Register',
+                              style: TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                      color: Colors.grey,
+                                      offset: Offset(2, 5),
+                                      blurRadius: 10.0),
+                                ],),
+                            )
+                          ],
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,

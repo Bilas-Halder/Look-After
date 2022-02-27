@@ -31,7 +31,6 @@ class TaskCategory{
         left: 3,
         done: 1
       ),
-      TaskCategory(isLast: true),
     ];
   }
 }

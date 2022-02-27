@@ -15,7 +15,7 @@ class TasksListBuilder extends StatelessWidget {
       endTime: DateFormat.jm()
           .format(DateTime.now().add(Duration(hours: 2)))
           .toString(),
-      color: Colors.teal,
+      color: Colors.teal.value,
       priority: 1,
       // remind:
       // repeat:
