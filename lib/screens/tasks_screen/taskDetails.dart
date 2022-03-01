@@ -234,7 +234,11 @@ class BottomDesign extends StatelessWidget {
                         ),
                         SizedBox(width: 5,),
                         CustomButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            task.status=0;
+                            task.save();
+                            Navigator.pop(context);
+                          },
                           color: Colors.teal,
                           title: 'Completed',
                           width: 100,

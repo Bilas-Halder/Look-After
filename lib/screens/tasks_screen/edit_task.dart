@@ -16,19 +16,23 @@ import 'package:provider/provider.dart';
 
 import '../../constants.dart';
 
-class AddTaskPage extends StatefulWidget {
-  static const String path = '/add_task';
+class EditTaskPage extends StatefulWidget {
+  static const String path = '/edit_task';
+  final TaskModel task;
+  EditTaskPage({this.task});
   @override
-  State<AddTaskPage> createState() => _AddTaskPageState();
+  State<EditTaskPage> createState() => _EditTaskPageState();
 }
 
-class _AddTaskPageState extends State<AddTaskPage> {
-  //const AddTaskPage({Key? key}) : super(key: key);
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _noteController = TextEditingController();
+class _EditTaskPageState extends State<EditTaskPage> {
+
+
+  TextEditingController _titleController;
+  TextEditingController _noteController;
+
   DateTime _selectedDate = DateTime.now();
   String _endTime =
-      DateFormat("hh:mm a").format(DateTime.now().add(Duration(hours: 1)));
+  DateFormat("hh:mm a").format(DateTime.now().add(Duration(hours: 1)));
   String _startTime = DateFormat("hh:mm a").format(DateTime.now());
   int _selectedRemind = 5;
   List<int> remindList = [5, 10, 15, 20, 30, 60];
@@ -53,6 +57,26 @@ class _AddTaskPageState extends State<AddTaskPage> {
   int _selectedCategory = 0;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    _titleController = TextEditingController(text: widget.task.title);
+    _noteController = TextEditingController(text: widget.task.note);
+
+    _selectedDate = widget.task.date;
+    _selectedPriority= widget.task.priority;
+    _selectedCategory= categoryList.indexOf(widget.task.category);
+    _selectedColor = Color(widget.task.color);
+    _selectedRemind = widget.task.remind;
+    _selectedRepeat = widget.task.repeat;
+
+
+    _startTime = widget.task.startTime;
+    _endTime = widget.task.endTime;
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final user = context.watch<User>();
 
@@ -67,7 +91,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Add Task',
+                    Text('Edit The Task',
                         style: TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
@@ -81,6 +105,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ],
                 ),
                 MyInputField(
+                  initialString: widget.task.title,
                   title: "Title",
                   hint: "Enter Your Title",
                   controller: _titleController,
@@ -107,33 +132,33 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   children: [
                     Expanded(
                         child: MyInputField(
-                      title: "Start Time",
-                      hint: _startTime,
-                      widget: IconButton(
-                        onPressed: () {
-                          _getTimeFromUser(true);
-                        },
-                        icon: Icon(
-                          Icons.access_time_rounded,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    )),
+                          title: "Start Time",
+                          hint: _startTime,
+                          widget: IconButton(
+                            onPressed: () {
+                              _getTimeFromUser(true);
+                            },
+                            icon: Icon(
+                              Icons.access_time_rounded,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )),
                     SizedBox(width: 12),
                     Expanded(
                         child: MyInputField(
-                      title: "End Time",
-                      hint: _endTime,
-                      widget: IconButton(
-                        onPressed: () {
-                          _getTimeFromUser(false);
-                        },
-                        icon: Icon(
-                          Icons.access_time_rounded,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ))
+                          title: "End Time",
+                          hint: _endTime,
+                          widget: IconButton(
+                            onPressed: () {
+                              _getTimeFromUser(false);
+                            },
+                            icon: Icon(
+                              Icons.access_time_rounded,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ))
                   ],
                 ),
                 Row(
@@ -215,7 +240,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       });
                     },
                     items:
-                        remindList.map<DropdownMenuItem<String>>((int value) {
+                    remindList.map<DropdownMenuItem<String>>((int value) {
                       return DropdownMenuItem<String>(
                         value: value.toString(),
                         child: Text(value.toString()),
@@ -243,7 +268,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       return DropdownMenuItem<String>(
                         value: value,
                         child:
-                            Text(value, style: TextStyle(color: Colors.grey)),
+                        Text(value, style: TextStyle(color: Colors.grey)),
                       );
                     }).toList(),
                   ),
@@ -255,30 +280,23 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   children: [
                     _colorPallete(),
                     AddTask(
-                        label: "Add Task",
-                        onTap: () {
-                          if(_validate()) {
-                            addTaskModelToHiveDB(
-                              TaskModel(
-                                email: user.email,
-                                title: _titleController.text,
-                                note: _noteController.text,
-                                date: _selectedDate,
-                                startTime: _startTime,
-                                endTime: _endTime,
-                                remind: _selectedRemind,
-                                repeat: _selectedRepeat,
-                                color: _selectedColor.value,
-                                status: 2,
-                                priority: _selectedPriority,
-                                category: categoryList[_selectedCategory],
-                                // remind:
-                                // repeat:
-                              ),
-                            );
-                            Navigator.pop(context);
-                          }
-                        },
+                      label: "Save",
+                      onTap: () {
+                        if(_validate()) {
+                          widget.task.title= _titleController.text;
+                          widget.task.note= _noteController.text;
+                          widget.task.date= _selectedDate;
+                          widget.task.startTime= _startTime;
+                          widget.task.endTime= _endTime;
+                          widget.task.remind= _selectedRemind;
+                          widget.task.repeat= _selectedRepeat;
+                          widget.task.color= _selectedColor.value;
+                          widget.task.priority= _selectedPriority;
+
+                          widget.task.save();
+                          Navigator.pop(context);
+                        }
+                      },
                     )
                   ],
                 )
@@ -352,12 +370,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   child: CircleAvatar(
                     child: index == 5 ? Container()
                         : _selectedColor == Color(colorsList[index])
-                            ? Icon(
-                                Icons.done,
-                                color: isBrightColor(_selectedColor)? Colors.black : Colors.white,
-                                size: 16,
-                              )
-                            : Container(),
+                        ? Icon(
+                      Icons.done,
+                      color: isBrightColor(_selectedColor)? Colors.black : Colors.white,
+                      size: 16,
+                    )
+                        : Container(),
                     radius: 14,
                     backgroundColor: Color(colorsList[index]),
                     backgroundImage: index == 5 ? AssetImage('images/ColorPicker.png') : null,
@@ -373,7 +391,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   void _colorPickerDialog(BuildContext context) =>
       showDialog(
-      context: context,
+        context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text('Pick a color!'),
           content: SingleChildScrollView(
@@ -398,14 +416,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
             ),
           ],
         ),
-    );
+      );
 
 
 
   _getDateFromUser() async {
     DateTime _pickerDate = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: _selectedDate,
         firstDate: DateTime(2015),
         lastDate: DateTime(2115));
     if (_pickerDate != null) {
@@ -416,7 +434,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   }
 
   _getTimeFromUser(bool isStartTime) async {
-    var _pickedTime = await _showTimePicker();
+    var _pickedTime = await _showTimePicker(isStartTime);
     String _formatedTime = _pickedTime.format(context);
     if (_pickedTime == null) {
     } else if (isStartTime == true) {
@@ -430,36 +448,36 @@ class _AddTaskPageState extends State<AddTaskPage> {
     }
   }
 
-  _showTimePicker() {
+  _showTimePicker(bool isStartTime) {
     return showTimePicker(
       initialEntryMode: TimePickerEntryMode.dial,
       context: context,
       initialTime: TimeOfDay(
-        hour: int.parse(_startTime.split(":")[0]),
-        minute: int.parse(_startTime.split(":")[1].split(" ")[0]),
+        hour: isStartTime ? int.parse(_startTime.split(":")[0]) : int.parse(_endTime.split(":")[0]),
+        minute: isStartTime ? int.parse(_startTime.split(":")[1].split(" ")[0]) : int.parse(_endTime.split(":")[1].split(" ")[0]),
       ),
     );
   }
 
-  // _addTaskToDb() async{
-  //   Task ts = Task(
-  //     note: _noteController.text,
-  //     title: _titleController.text,
-  //     date: DateFormat.yMd().format(_selectedDate),
-  //     startTime: _startTime,
-  //     endTime: _endTime,
-  //     remind: _selectedRemind,
-  //     repeat: _selectedRepeat,
-  //     color: _selectedColor,
-  //     isCompleted: 0,
-  //   );
-  //
-  //   int value = await TaskProvider().addTask(
-  //       task: ts
-  //   );
-  //
-  //   print("My id is: " + "$value");
-  // }
+// _addTaskToDb() async{
+//   Task ts = Task(
+//     note: _noteController.text,
+//     title: _titleController.text,
+//     date: DateFormat.yMd().format(_selectedDate),
+//     startTime: _startTime,
+//     endTime: _endTime,
+//     remind: _selectedRemind,
+//     repeat: _selectedRepeat,
+//     color: _selectedColor,
+//     isCompleted: 0,
+//   );
+//
+//   int value = await TaskProvider().addTask(
+//       task: ts
+//   );
+//
+//   print("My id is: " + "$value");
+// }
 }
 SnackBar showSnackBar(String text){
   return SnackBar(
@@ -468,14 +486,14 @@ SnackBar showSnackBar(String text){
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Icon(
-            Icons.warning_amber_rounded,
+          Icons.warning_amber_rounded,
           color: Colors.redAccent,
         ),
         SizedBox(width: 5,),
         Text(
           text,
           style: TextStyle(
-            color: Colors.redAccent
+              color: Colors.redAccent
           ),
         )
       ],

@@ -25,6 +25,7 @@ dependencies:
   shared_preferences: ^2.0.13
   dotted_border: ^2.0.0+2
   timeline_tile: ^2.0.0
+  flutter_colorpicker: ^1.0.3
 
   #  hive database
   hive: ^2.0.3

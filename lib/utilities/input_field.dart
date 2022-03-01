@@ -8,11 +8,13 @@ class MyInputField extends StatelessWidget {
   final String hint;
   final TextEditingController controller;
   final Widget widget;
+  final String initialString;
   const MyInputField({
     this.title,
     this.hint,
     this.controller,
-    this.widget
+    this.widget,
+    this.initialString
   });
 
   @override

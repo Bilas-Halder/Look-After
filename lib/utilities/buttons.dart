@@ -118,7 +118,7 @@ class AddTask extends StatelessWidget {
         height: 50,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Colors.blue
+            color: Colors.teal
         ),
         child: Center(
           child: Text(

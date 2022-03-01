@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/Models/tasks.dart';
+import 'package:look_after/screens/tasks_screen/edit_task.dart';
 import 'package:look_after/screens/tasks_screen/taskDetails.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -73,16 +74,8 @@ class TaskCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          child: Icon(
-                            Icons.star_rounded,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                              color: priorityColors[task.priority],
-                              shape: BoxShape.circle),
+                        GestureDetector(
+                          child: PriorityPopupMenu(task: task,),
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width * 0.65,
@@ -140,8 +133,9 @@ class TaskCard extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              TaskPopupMenu(),
+                              TaskPopupMenu(task: task,),
                               ProgressPopupMenu(
+                                task:task,
                                 initialValue: task.status,
                                 tooltip: status[task.status]['message'],
                                 icon: Icon(
@@ -203,11 +197,113 @@ class BuildDotedTimeline extends StatelessWidget {
   }
 }
 
+class PriorityPopupMenu extends StatelessWidget {
+  final TaskModel task;
+  PriorityPopupMenu({@required this.task,});
+  @override
+  Widget build(BuildContext context) {
+    var value = task.priority;
+    return PopupMenuButton(
+      initialValue: value,
+      onSelected: (selectedValue) {
+        task.priority=selectedValue;
+        task.save();
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 0,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                child: Icon(
+                  Icons.star_rounded,
+                  color: Colors.white,
+                  size: 16,
+                ),
+                padding: EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                    color: Colors.red[800],
+                    shape: BoxShape.circle),
+              ),
+              SizedBox(width: 6,),
+              Text('High Priority')
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 1,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                child: Icon(
+                  Icons.star_rounded,
+                  color: Colors.white,
+                  size: 16,
+                ),
+                padding: EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                    color: Colors.yellow[900],
+                    shape: BoxShape.circle),
+              ),
+              SizedBox(width: 5,),
+              Text('Medium Priority')
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 2,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+
+              Container(
+                child: Icon(
+                  Icons.star_rounded,
+                  color: Colors.white,
+                  size: 16,
+                ),
+                padding: EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                    color: Colors.grey[600],
+                    shape: BoxShape.circle),
+              ),
+              SizedBox(width: 5,),
+              Text('Low Priority')
+            ],
+          ),
+        ),
+      ],
+
+      padding: EdgeInsets.all(0),
+      child: Container(
+        child: Icon(
+          Icons.star_rounded,
+          color: Colors.white,
+          size: 20,
+        ),
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+            color: priorityColors[task.priority],
+            shape: BoxShape.circle),
+      ),
+      iconSize: 24,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0),),
+      ),
+      offset: Offset(33, 0),
+    );
+  }
+}
+
+
 class ProgressPopupMenu extends StatelessWidget {
   final Icon icon;
   final String tooltip;
   final int initialValue;
-  ProgressPopupMenu({this.icon, this.tooltip, this.initialValue});
+  final TaskModel task;
+  ProgressPopupMenu({@required this.task, this.icon, this.tooltip, this.initialValue});
   @override
   Widget build(BuildContext context) {
     var value = initialValue;
@@ -215,7 +311,9 @@ class ProgressPopupMenu extends StatelessWidget {
       tooltip: tooltip,
       initialValue: value,
       onSelected: (selectedValue) {
-        onProgressionSelection(context , selectedValue);
+        onProgressionSelection(context , selectedValue, task.status, task);
+        task.status=selectedValue;
+        task.save();
       },
       itemBuilder: (context) => [
         PopupMenuItem(
@@ -274,10 +372,21 @@ class ProgressPopupMenu extends StatelessWidget {
 }
 
 class TaskPopupMenu extends StatelessWidget {
+  final TaskModel task;
+  TaskPopupMenu({this.task});
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-      onSelected: (selectedValue) => onTaskMenuSelection(context , selectedValue),
+      onSelected: (selectedValue){
+        if(selectedValue==1){
+          task.delete();
+        }
+        else if(selectedValue==0){
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context)=> EditTaskPage(task: task,))
+          );
+        }
+      },
       itemBuilder: (context) => [
         PopupMenuItem(
           value: 0,
@@ -308,38 +417,31 @@ class TaskPopupMenu extends StatelessWidget {
   }
 }
 
-void onTaskMenuSelection(BuildContext context, int value) {
+
+
+void onProgressionSelection(BuildContext context, int value, int lastStatus, TaskModel task) {
   switch (value){
     case 0:
-      ScaffoldMessenger.of(context).showSnackBar(showSnackBar('Edit Action will be Executed.'));
+      ScaffoldMessenger.of(context).showSnackBar(showSnackBar('Congratulation the task is Completed.', lastStatus, task));
       break;
     case 1:
-      ScaffoldMessenger.of(context).showSnackBar(showSnackBar('Delete Action will be Executed.'));
-      break;
-  }
-}
-void onProgressionSelection(BuildContext context, int value) {
-  switch (value){
-    case 0:
-      ScaffoldMessenger.of(context).showSnackBar(showSnackBar('Congratulation the task is Completed.'));
-      break;
-    case 1:
-      ScaffoldMessenger.of(context).showSnackBar(showSnackBar('Good News the task is In Progress.'));
+      ScaffoldMessenger.of(context).showSnackBar(showSnackBar('Good News the task is In Progress.', lastStatus, task));
       break;
     case 2:
-      ScaffoldMessenger.of(context).showSnackBar(showSnackBar('There is No Progress for this task.'));
+      ScaffoldMessenger.of(context).showSnackBar(showSnackBar('There is No Progress for this task.', lastStatus, task));
       break;
   }
 }
 
-SnackBar showSnackBar(String text){
+SnackBar showSnackBar(String text, int lastStatus, TaskModel task){
   return SnackBar(
     content: Text(text),
     behavior: SnackBarBehavior.floating,
     action: SnackBarAction(
       label: 'Undo',
       onPressed: () {
-        // Some code to undo the change.
+        task.status=lastStatus;
+        task.save();
       },
     ),
   );

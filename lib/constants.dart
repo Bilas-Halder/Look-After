@@ -37,3 +37,14 @@ final List<Map<String, dynamic>> status = [
   },
 ];
 final priorityColors = [Colors.red[800], Colors.yellow[900], Colors.grey[600]];
+
+bool isBrightColor(Color color){
+  if ((color.computeLuminance() + 0.05) * (color.computeLuminance() + 0.05) > 0.25) {
+    print('Bright');
+    return true;
+  }
+  else {
+    print('Dark');
+    return false;
+  }
+}
