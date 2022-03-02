@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 const kSendButtonTextStyle = TextStyle(
   color: Colors.lightBlueAccent,
@@ -40,11 +41,14 @@ final priorityColors = [Colors.red[800], Colors.yellow[900], Colors.grey[600]];
 
 bool isBrightColor(Color color){
   if ((color.computeLuminance() + 0.05) * (color.computeLuminance() + 0.05) > 0.25) {
-    print('Bright');
+    // print('Bright');
     return true;
   }
   else {
-    print('Dark');
+    // print('Dark');
     return false;
   }
 }
+
+
+String formatDate(DateTime date) => DateFormat.yMMMd().format(date);

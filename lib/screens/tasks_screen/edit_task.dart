@@ -40,7 +40,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
   String _selectedRepeat = "None";
   List<String> repeatList = ["None", "Daily", "Weekly", "Monthly"];
 
-  Color _selectedColor = Color(Colors.teal.value);
+  Color _selectedColor;
   Color _pickerColor;
 
   List<String> priorityList = ['High', 'Medium', 'Low'];
@@ -72,6 +72,11 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
     _startTime = widget.task.startTime;
     _endTime = widget.task.endTime;
+
+    if(colorsList.indexOf(widget.task.color)==-1){
+      colorsList.insert(0, widget.task.color);
+      colorsList.removeAt(colorsList.length-2);
+    }
 
     super.initState();
   }
@@ -299,7 +304,8 @@ class _EditTaskPageState extends State<EditTaskPage> {
                       },
                     )
                   ],
-                )
+                ),
+                SizedBox(height: 18),
               ],
             ),
           ),
@@ -317,10 +323,10 @@ class _EditTaskPageState extends State<EditTaskPage> {
   }
 
   bool _validate() {
-    if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
+    if (_titleController.text.isNotEmpty) {
       // _addTaskToDb();
       NotifyHelper().displayNotification(
-          title: "Your Task Has been Added", body: _noteController.text);
+          title: "Your Task Has been Saved", body: _noteController.text);
       // Get.back();
       return true;
     } else {
@@ -369,7 +375,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                   ),
                   child: CircleAvatar(
                     child: index == 5 ? Container()
-                        : _selectedColor == Color(colorsList[index])
+                        : _selectedColor?.value == colorsList[index]
                         ? Icon(
                       Icons.done,
                       color: isBrightColor(_selectedColor)? Colors.black : Colors.white,
@@ -408,8 +414,19 @@ class _EditTaskPageState extends State<EditTaskPage> {
               child: const Text('Pick it'),
               onPressed: () {
                 setState(() {
-                  colorsList.insert(0, _pickerColor.value);
-                  _selectedColor = _pickerColor;
+                  if(_pickerColor!=null){
+                    if(colorsList.indexOf(_pickerColor.value)==-1){
+                      colorsList.insert(0, _pickerColor.value);
+                      colorsList.removeAt(colorsList.length-2);
+                      _selectedColor = _pickerColor;
+                      _pickerColor=null;
+                    }
+                    else{
+                      _selectedColor = _pickerColor;
+                      _pickerColor=null;
+                    }
+                  }
+
                 });
                 Navigator.of(context).pop();
               },

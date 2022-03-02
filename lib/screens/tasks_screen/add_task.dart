@@ -47,7 +47,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     Colors.orange.value,
     Colors.redAccent.value,
     Colors.pink.value,
-    Colors.pink.value,
+    100001
   ];
   int _selectedPriority = 0;
   int _selectedCategory = 0;
@@ -281,7 +281,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         },
                     )
                   ],
-                )
+                ),
+                SizedBox(height: 18),
               ],
             ),
           ),
@@ -299,7 +300,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   }
 
   bool _validate() {
-    if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
+    if (_titleController.text.isNotEmpty) {
       // _addTaskToDb();
       NotifyHelper().displayNotification(
           title: "Your Task Has been Added", body: _noteController.text);
@@ -307,7 +308,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       return true;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(showSnackBar('All Fields are Required.'));
-      Get.snackbar("Required", "All Fields are Required",
+      Get.snackbar("Required", "Title Field is Required",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.white,
           colorText: Colors.pink,
@@ -351,7 +352,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ),
                   child: CircleAvatar(
                     child: index == 5 ? Container()
-                        : _selectedColor == Color(colorsList[index])
+                        : _selectedColor.value == colorsList[index]
                             ? Icon(
                                 Icons.done,
                                 color: isBrightColor(_selectedColor)? Colors.black : Colors.white,
@@ -390,8 +391,19 @@ class _AddTaskPageState extends State<AddTaskPage> {
               child: const Text('Pick it'),
               onPressed: () {
                 setState(() {
-                  colorsList.insert(0, _pickerColor.value);
-                  _selectedColor = _pickerColor;
+                  if(_pickerColor!=null){
+                    if(colorsList.indexOf(_pickerColor.value)==-1){
+                      colorsList.insert(0, _pickerColor.value);
+                      colorsList.removeAt(colorsList.length-2);
+                      _selectedColor = _pickerColor;
+                      _pickerColor=null;
+                    }
+                    else{
+                      _selectedColor = _pickerColor;
+                      _pickerColor=null;
+                    }
+                  }
+
                 });
                 Navigator.of(context).pop();
               },

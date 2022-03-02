@@ -101,7 +101,7 @@ class BuildTaskCategory extends StatelessWidget {
               tag: 'tasks${task.title}',
               child: Container(
                 child: Text(
-                  task.title,
+                  task.title=='All'?'All Tasks':task.title,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

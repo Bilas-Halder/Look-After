@@ -11,23 +11,23 @@ class TaskCategory{
   static List<TaskCategory> generateTasks(){
     return[
       TaskCategory(
+        icon: Icons.border_all_rounded,
+        title: 'All',
+        color: Colors.teal,
+        left: 3,
+        done: 1
+      ),
+      TaskCategory(
         icon: Icons.person_rounded,
         title: 'Personal',
-        color: Colors.blue,
+        color: Color(0xff96032c),
         left: 3,
         done: 1
       ),
       TaskCategory(
         icon: Icons.cases_rounded,
         title: 'Work',
-        color: Color(0xFF109F8E),
-        left: 3,
-        done: 1
-      ),
-      TaskCategory(
-        icon: Icons.favorite_rounded,
-        title: 'Health',
-        color: Color(0xff96032c),
+        color: Colors.blue,
         left: 3,
         done: 1
       ),
