@@ -24,7 +24,7 @@ import '../../constants.dart';
 
 class TasksScreen extends StatefulWidget {
   static const String path = '/task_screen';
-  final TaskCategory taskCategory;
+  final TaskCategoryModel taskCategory;
 
   TasksScreen(this.taskCategory);
 
@@ -76,25 +76,31 @@ class _TasksScreenState extends State<TasksScreen> {
                 builder: (context, box, _){
                   final tasks= box.values.toList().cast<TaskModel>();
                   bool isEmpty = true;
+                  bool allEmpty = true;
 
                   for(var task in tasks){
                     if( formatDate(context.watch<SelectedDateProvider>().selectedDate)==formatDate(task.date)
                         && task.category==widget.taskCategory.title
                     ){
                       isEmpty = false;
-                      break;
+                    }
+                    if(formatDate(context.watch<SelectedDateProvider>().selectedDate)==formatDate(task.date) ){
+                      allEmpty = false;
                     }
                   }
 
                   if(isEmpty && widget.taskCategory.title!='All'){
                     return showNoTask(context, widget.taskCategory.title, formatDate(context.watch<SelectedDateProvider>().selectedDate));
                   }
+                  else if(allEmpty){
+                    return showNoTask(context, '', formatDate(context.watch<SelectedDateProvider>().selectedDate));
+                  }
 
                   return ListView.builder(
                     itemCount: tasks.length+1,
                     itemBuilder: (context,index){
                       if(index==tasks.length) return TaskCard(task: null,);
-                      if(widget.taskCategory.title=='All') return TaskCard(task: tasks[index],);
+                      if(widget.taskCategory.title=='All' && formatDate(context.watch<SelectedDateProvider>().selectedDate)==formatDate(tasks[index].date)) return TaskCard(task: tasks[index],);
 
                       if(
                       formatDate(context.watch<SelectedDateProvider>().selectedDate)==formatDate(tasks[index].date)

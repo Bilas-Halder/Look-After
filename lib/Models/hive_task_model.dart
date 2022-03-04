@@ -71,9 +71,50 @@ class TaskCategoryModel extends HiveObject{
   @HiveField(2)
   int icon;
 
+  @HiveField(3)
+  int left;
+
+  @HiveField(4)
+  int done;
+
+  @HiveField(5)
+  bool deleteAble;
+
   TaskCategoryModel({
     this.title,
     this.color,
-    this.icon
+    this.icon,
+    this.left,
+    this.done,
+    this.deleteAble
   });
+
+  static List<TaskCategoryModel> generateDefaultTaskCategories(){
+    return[
+      TaskCategoryModel(
+          icon: Icons.border_all_rounded.codePoint,
+          title: 'All',
+          color: Colors.teal.value,
+          left: 0,
+          done: 0,
+          deleteAble: false
+      ),
+      TaskCategoryModel(
+          icon: Icons.person_rounded.codePoint,
+          title: 'Personal',
+          color: Color(0xff96032c).value,
+          left: 0,
+          done: 0,
+          deleteAble: false
+      ),
+      TaskCategoryModel(
+          icon: Icons.cases_rounded.codePoint,
+          title: 'Work',
+          color: Colors.blue.value,
+          left: 0,
+          done: 0,
+          deleteAble: false
+      ),
+    ];
+  }
 }

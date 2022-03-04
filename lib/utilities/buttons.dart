@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:look_after/providers/task_providers.dart';
 import 'package:look_after/screens/tasks_screen/add_task.dart';
 import 'package:provider/provider.dart';
@@ -105,10 +103,10 @@ class CustomButton extends StatelessWidget {
 
 
 
-class AddTask extends StatelessWidget {
+class AddTaskButton extends StatelessWidget {
   final String label;
   final Function onTap;
-  const AddTask({this.label, this.onTap});
+  const AddTaskButton({this.label, this.onTap});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

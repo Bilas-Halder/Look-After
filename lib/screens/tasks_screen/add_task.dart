@@ -1,15 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:look_after/Models/hive_task_model.dart';
-import 'package:look_after/Models/tasks.dart';
 import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/boxes.dart';
-import 'package:look_after/controllers/task_controller.dart';
-import 'package:look_after/providers/task_providers.dart';
 import 'package:look_after/utilities/buttons.dart';
 import 'package:look_after/utilities/input_field.dart';
 import 'package:provider/provider.dart';
@@ -18,12 +13,13 @@ import '../../constants.dart';
 
 class AddTaskPage extends StatefulWidget {
   static const String path = '/add_task';
+
   @override
   State<AddTaskPage> createState() => _AddTaskPageState();
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
-  //const AddTaskPage({Key? key}) : super(key: key);
+
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
@@ -40,7 +36,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Color _pickerColor;
 
   List<String> priorityList = ['High', 'Medium', 'Low'];
-  List<String> categoryList = ['Personal', 'Work', 'Health'];
+  List<TaskCategoryModel> categoryList = Boxes.getTaskCategoryModel()
+      .values
+      .toList()
+      .cast<TaskCategoryModel>();
+
+  int _selectedPriority = 0;
+  int _selectedCategory = 1;
+
   List<int> colorsList = [
     Colors.teal.value,
     Colors.blue.value,
@@ -49,8 +52,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
     Colors.pink.value,
     100001
   ];
-  int _selectedPriority = 0;
-  int _selectedCategory = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +142,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     Expanded(
                       child: MyInputField(
                         title: "Category",
-                        hint: categoryList[_selectedCategory],
+                        hint: categoryList[_selectedCategory].title,
                         widget: DropdownButton(
                           icon: Icon(
                             Icons.keyboard_arrow_down,
@@ -158,10 +159,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             });
                           },
                           items: List<DropdownMenuItem<int>>.generate(
-                              categoryList.length, (int index) {
+                              categoryList.length-1, (int index) {
                             return DropdownMenuItem(
                               value: index,
-                              child: Text(categoryList[index]),
+                              child: Text(categoryList[index+1].title),
                             );
                           }),
                         ),
@@ -200,7 +201,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ],
                 ),
                 MyInputField(
-                  title: "Remindeer",
+                  title: "Reminder",
                   hint: "$_selectedRemind minutes early",
                   widget: DropdownButton(
                     icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
@@ -254,15 +255,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _colorPallete(),
-                    AddTask(
+                    AddTaskButton(
                         label: "Add Task",
                         onTap: () {
                           if(_validate()) {
                             addTaskModelToHiveDB(
                               TaskModel(
                                 email: user.email,
-                                title: _titleController.text,
                                 note: _noteController.text,
+                                title: _titleController.text,
                                 date: _selectedDate,
                                 startTime: _startTime,
                                 endTime: _endTime,
@@ -271,7 +272,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 color: _selectedColor.value,
                                 status: 2,
                                 priority: _selectedPriority,
-                                category: categoryList[_selectedCategory],
+                                category: categoryList[_selectedCategory].title,
                                 // remind:
                                 // repeat:
                               ),
@@ -308,11 +309,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
       return true;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(showSnackBar('All Fields are Required.'));
-      Get.snackbar("Required", "Title Field is Required",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.white,
-          colorText: Colors.pink,
-          icon: Icon(Icons.warning_amber_rounded));
     }
     return false;
   }

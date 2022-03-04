@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:look_after/Models/hive_task_model.dart';
-import 'package:look_after/Models/tasks.dart';
 import 'package:look_after/screens/tasks_screen/edit_task.dart';
 import 'package:look_after/screens/tasks_screen/taskDetails.dart';
 import 'package:timeline_tile/timeline_tile.dart';

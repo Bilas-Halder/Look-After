@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/Models/taskCategory.dart';
 import 'package:look_after/screens/tasks_screen/taskCard.dart';
 
-AppBar buildTaskScreenAppbar(TaskCategory taskCategory){
+AppBar buildTaskScreenAppbar(TaskCategoryModel taskCategory){
   return AppBar(
     backgroundColor: Colors.white,
     automaticallyImplyLeading: false,

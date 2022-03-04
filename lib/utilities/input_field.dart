@@ -9,12 +9,14 @@ class MyInputField extends StatelessWidget {
   final TextEditingController controller;
   final Widget widget;
   final String initialString;
+  final int readOnly;
   const MyInputField({
     this.title,
     this.hint,
     this.controller,
     this.widget,
-    this.initialString
+    this.initialString,
+    this.readOnly,
   });
 
   @override
@@ -47,7 +49,7 @@ class MyInputField extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextFormField(
-                    readOnly: widget==null?false:true,
+                    readOnly: widget!=null || readOnly==1 ?true:false,
                     autofocus: false,
                     cursorColor: Colors.grey[700],
                     controller: controller,

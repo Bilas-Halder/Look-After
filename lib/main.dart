@@ -1,16 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:look_after/Authentication/Authentication.dart';
 import 'package:flutter/material.dart';
-import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/providers/Provider.dart';
-import 'package:look_after/providers/task_providers.dart';
 import 'package:look_after/screens/OnBoarding_screen.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
 import 'package:look_after/screens/tasks_screen/add_task.dart';
-import 'package:look_after/screens/tasks_screen/tasks_screen.dart';
 import 'package:look_after/screens/welcome_screen.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:look_after/screens/registration_screen.dart';
@@ -35,6 +30,8 @@ Future<void> main() async {
   
   Hive.registerAdapter(TaskModelAdapter());
   await Hive.openBox<TaskModel>('taskModels');
+  Hive.registerAdapter(TaskCategoryModelAdapter());
+  await Hive.openBox<TaskCategoryModel>('taskCategoryModels');
 
   runApp(LookAfter());
 }

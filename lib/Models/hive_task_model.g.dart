@@ -87,19 +87,28 @@ class TaskCategoryModelAdapter extends TypeAdapter<TaskCategoryModel> {
       title: fields[0] as String,
       color: fields[1] as int,
       icon: fields[2] as int,
+      left: fields[3] as int,
+      done: fields[4] as int,
+      deleteAble: fields[5] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, TaskCategoryModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
       ..write(obj.color)
       ..writeByte(2)
-      ..write(obj.icon);
+      ..write(obj.icon)
+      ..writeByte(3)
+      ..write(obj.left)
+      ..writeByte(4)
+      ..write(obj.done)
+      ..writeByte(5)
+      ..write(obj.deleteAble);
   }
 
   @override

@@ -1,85 +1,121 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/Models/taskCategory.dart';
+import 'package:look_after/screens/tasks_screen/add_task.dart';
 import 'package:look_after/screens/tasks_screen/tasks_screen.dart';
 
-class TaskCategories extends StatelessWidget {
+import '../../boxes.dart';
+import 'add_&_edit_category.dart';
 
+class TaskCategories extends StatefulWidget {
+  @override
+  State<TaskCategories> createState() => _TaskCategoriesState();
+}
+
+class _TaskCategoriesState extends State<TaskCategories> {
   final taskList = TaskCategory.generateTasks();
+
+  @override
+  void initState() {
+    final taskCategories =
+        Boxes.getTaskCategoryModel().values.toList().cast<TaskCategoryModel>();
+    if (taskCategories.isEmpty) {
+      List<TaskCategoryModel> categories =
+          TaskCategoryModel.generateDefaultTaskCategories();
+      int i = 0;
+      for (var category in categories) {
+        addTaskCategoryModelToHiveDB(category);
+        print('Added ${i++}');
+      }
+    }
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(left: 15,right: 15, top: 15, bottom: 15),
-      child: GridView.builder(
-        itemCount: taskList.length+1,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        itemBuilder: (context, index) => index==taskList.length ? buildAddTask():BuildTaskCategory(taskList[index]),
-      ),
+    return ValueListenableBuilder<Box<TaskCategoryModel>>(
+      valueListenable: Boxes.getTaskCategoryModel().listenable(),
+      builder: (context, box, _) {
+        final taskCategories = box.values.toList().cast<TaskCategoryModel>();
+
+        return Container(
+          padding: EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 15),
+          child: GridView.builder(
+            itemCount: taskCategories.length + 1,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemBuilder: (context, index) => index == taskCategories.length
+                ? buildAddTask()
+                : BuildTaskCategory(taskCategories[index], index),
+          ),
+        );
+      },
     );
   }
 
-  Widget buildAddTask(){
+  Widget buildAddTask() {
     return GestureDetector(
-      onTap: (){
-        print(Colors.teal.computeLuminance());
-        print(Colors.white.computeLuminance());
-        if ((Colors.yellow.computeLuminance() + 0.05) * (Colors.yellow.computeLuminance() + 0.05) > 0.25) {
-          print('Bright');
-          print((Colors.yellow.computeLuminance() + 0.05) * (Colors.yellow.computeLuminance() + 0.05));
-        }
-        else print('Dark');
-
-        if ((Colors.white.computeLuminance() + 0.05) * (Colors.white.computeLuminance() + 0.05) > 0.15) {
-          print('Bright');
-        }
-        else print('Dark');
-
-
+      onTap: () {
+        showDialog(context: context, useRootNavigator: false, builder: (_) => ShowAddCategoryDialog());
       },
       child: DottedBorder(
         borderType: BorderType.RRect,
         radius: Radius.circular(20),
-        dashPattern: [10,10],
+        dashPattern: [10, 10],
         color: Colors.grey,
         strokeWidth: 2,
         child: Center(
           child: Text(
             '+ Add',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
       ),
     );
   }
-
 }
 
 
-
 class BuildTaskCategory extends StatelessWidget {
-  final TaskCategory task;
-  BuildTaskCategory(this.task);
+  final TaskCategoryModel category;
+  final int index;
+  BuildTaskCategory(this.category, this.index);
   @override
   Widget build(BuildContext context) {
+    Icon icon = category.deleteAble ? Icon(
+      Icons.trip_origin,
+      color: Color(category.color),
+
+      ///Icon color
+      size: 35,
+    ):
+    Icon(
+        IconData(category.icon, fontFamily: 'MaterialIcons'),
+        color: Color(category.color),
+
+    ///Icon color
+    size: 35,
+    );
+
     return InkWell(
-      onTap: (){
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context)=> TasksScreen(task))
-        );
+      onTap: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => TasksScreen(category)));
       },
       child: Container(
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
-            color: task.color.withOpacity(0.25),///background color
-            borderRadius: BorderRadius.circular(20)
-        ),
+            color: Color(category.color).withOpacity(0.25),
+
+            ///background color
+            borderRadius: BorderRadius.circular(20)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,21 +123,16 @@ class BuildTaskCategory extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(
-                  task.icon,
-                  color: task.color, ///Icon color
-                  size: 35,
-                ),
-                Icon(
-                  Icons.more_vert_outlined, color: Colors.black,size: 25,
-                ),
+                icon
+                ,
+                CategoryPopupMenu(category: category,index:index)
               ],
             ),
             Hero(
-              tag: 'tasks${task.title}',
+              tag: 'tasks${category.title}',
               child: Container(
                 child: Text(
-                  task.title=='All'?'All Tasks':task.title,
+                  category.title == 'All' ? 'All Tasks' : category.title,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -114,31 +145,110 @@ class BuildTaskCategory extends StatelessWidget {
               children: [
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     decoration: BoxDecoration(
-                        color: task.color.withOpacity(0.35),///btn color
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Center(child: Text('Left',style: TextStyle(color: Colors.black),)),
+                        color: Color(category.color).withOpacity(0.35),
+
+                        ///btn color
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Center(
+                        child: Text(
+                      'Left',
+                      style: TextStyle(color: Colors.black),
+                    )),
                   ),
                 ),
-                SizedBox(width: 10,),
+                SizedBox(
+                  width: 10,
+                ),
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                     decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Center(child: Text('Done',style: TextStyle(color: Colors.black),)),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Center(
+                        child: Text(
+                      'Done',
+                      style: TextStyle(color: Colors.black),
+                    )),
                   ),
                 ),
               ],
             )
           ],
         ),
-
       ),
     );
   }
+}
+
+
+class CategoryPopupMenu extends StatelessWidget {
+  final TaskCategoryModel category;
+  final int index;
+  CategoryPopupMenu({this.category, this.index});
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      onSelected: (selectedValue){
+        if(selectedValue==1 ){
+          if(category.deleteAble){
+            category.delete();
+          }
+          else{
+            ScaffoldMessenger.of(context).showSnackBar(showSnackBar('You can\'t delete default categories.'));
+          }
+        }
+        else if(selectedValue==0){
+          showDialog(context: context, useRootNavigator: false, builder: (_) => ShowEditCategoryDialog(category: category,));
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 0,
+          child: Text('Edit'),
+        ),
+        PopupMenuItem(
+          value: 1,
+          child: Text('Delete'),
+        ),
+      ],
+
+      padding: EdgeInsets.all(0),
+      child: Container(
+        padding: EdgeInsets.only(left: 10.0,top: 10.0,bottom: 10.0),
+        child: Icon(
+          Icons.more_vert_outlined,
+          color: Colors.black,
+          size: 24,
+        ),
+      ),
+      iconSize: 24,
+      offset: index%2==0? Offset(30,20) : Offset(-20,20),
+
+      shape: index%2!=0?  RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft : Radius.circular(10.0),
+          bottomLeft : Radius.circular(10.0),
+          bottomRight : Radius.circular(10.0),
+        ),
+      ) : RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight : Radius.circular(10.0),
+          bottomLeft : Radius.circular(10.0),
+          bottomRight : Radius.circular(10.0),
+        ),
+      ) ,
+    );
+  }
+}
+
+
+///adding taskModel to hive database
+void addTaskCategoryModelToHiveDB(TaskCategoryModel taskCategory) {
+  final box = Boxes.getTaskCategoryModel();
+  box.add(taskCategory);
+  print(box.keys);
+  print(box.values);
 }

@@ -14,22 +14,22 @@ class TaskCategory{
         icon: Icons.border_all_rounded,
         title: 'All',
         color: Colors.teal,
-        left: 3,
-        done: 1
+        left: 0,
+        done: 0
       ),
       TaskCategory(
         icon: Icons.person_rounded,
         title: 'Personal',
         color: Color(0xff96032c),
-        left: 3,
-        done: 1
+        left: 0,
+        done: 0
       ),
       TaskCategory(
         icon: Icons.cases_rounded,
         title: 'Work',
         color: Colors.blue,
-        left: 3,
-        done: 1
+        left: 0,
+        done: 0
       ),
     ];
   }

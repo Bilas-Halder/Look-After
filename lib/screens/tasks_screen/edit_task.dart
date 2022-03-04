@@ -1,15 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:look_after/Models/hive_task_model.dart';
-import 'package:look_after/Models/tasks.dart';
 import 'package:look_after/Services/notification_services.dart';
-import 'package:look_after/boxes.dart';
-import 'package:look_after/controllers/task_controller.dart';
-import 'package:look_after/providers/task_providers.dart';
 import 'package:look_after/utilities/buttons.dart';
 import 'package:look_after/utilities/input_field.dart';
 import 'package:provider/provider.dart';
@@ -284,7 +279,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _colorPallete(),
-                    AddTask(
+                    AddTaskButton(
                       label: "Save",
                       onTap: () {
                         if(_validate()) {
@@ -312,14 +307,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
         ),
       ),
     );
-  }
-
-  ///adding taskModel to hive database
-  void addTaskModelToHiveDB(TaskModel task) {
-    final box = Boxes.getTaskModel();
-    box.add(task);
-    print(box.keys);
-    print(box.values);
   }
 
   bool _validate() {

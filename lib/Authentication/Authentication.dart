@@ -32,6 +32,7 @@ class AuthenticationService {
   }
 
 
+
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
