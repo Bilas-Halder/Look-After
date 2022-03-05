@@ -45,6 +45,7 @@ class _TaskCategoriesState extends State<TaskCategories> {
         return Container(
           padding: EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 15),
           child: GridView.builder(
+            physics: BouncingScrollPhysics(),
             itemCount: taskCategories.length + 1,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -97,7 +98,9 @@ class BuildTaskCategory extends StatelessWidget {
       size: 35,
     ):
     Icon(
-        IconData(category.icon, fontFamily: 'MaterialIcons'),
+      // IconData(category.icon, fontFamily: 'MaterialIcons'),
+      //TODO make change here for dynamic icons and build with --no-tree-shake-icons command
+      Icons.trip_origin,
         color: Color(category.color),
 
     ///Icon color
@@ -107,7 +110,7 @@ class BuildTaskCategory extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => TasksScreen(category)));
+            .push(MaterialPageRoute(builder: (context) => TasksScreen(taskCategory: category, fromDone: false, fromLeft: false,)));
       },
       child: Container(
         padding: EdgeInsets.all(15),
@@ -144,34 +147,46 @@ class BuildTaskCategory extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    decoration: BoxDecoration(
-                        color: Color(category.color).withOpacity(0.35),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) => TasksScreen(taskCategory: category, fromDone: false, fromLeft: true,)));
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                          color: Color(category.color).withOpacity(0.35),
 
-                        ///btn color
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Center(
-                        child: Text(
-                      'Left',
-                      style: TextStyle(color: Colors.black),
-                    )),
+                          ///btn color
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Center(
+                          child: Text(
+                        'Left',
+                        style: TextStyle(color: Colors.black),
+                      )),
+                    ),
                   ),
                 ),
                 SizedBox(
                   width: 10,
                 ),
                 Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Center(
-                        child: Text(
-                      'Done',
-                      style: TextStyle(color: Colors.black),
-                    )),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) => TasksScreen(taskCategory: category, fromDone: true, fromLeft: false,)));
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Center(
+                          child: Text(
+                        'Done',
+                        style: TextStyle(color: Colors.black),
+                      )),
+                    ),
                   ),
                 ),
               ],

@@ -1,21 +1,15 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:intl/intl.dart';
 import 'package:look_after/Models/hive_task_model.dart';
-import 'package:look_after/Models/taskCategory.dart';
-import 'package:look_after/Models/tasks.dart';
-import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/boxes.dart';
 import 'package:look_after/providers/SelectedDateProvider.dart';
+import 'package:look_after/providers/TaskCountProvider.dart';
 import 'package:look_after/providers/task_providers.dart';
 import 'package:look_after/screens/home_screen/bottomNavigationBar.dart';
 import 'package:look_after/screens/tasks_screen/appbar.dart';
 import 'package:look_after/screens/tasks_screen/taskCard.dart';
 import 'package:look_after/screens/tasks_screen/tasksListBuilder.dart';
 import 'package:look_after/utilities/buttons.dart';
-import 'package:get/get.dart';
-import 'package:look_after/utilities/task_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -25,8 +19,9 @@ import '../../constants.dart';
 class TasksScreen extends StatefulWidget {
   static const String path = '/task_screen';
   final TaskCategoryModel taskCategory;
+  final bool fromDone, fromLeft;
 
-  TasksScreen(this.taskCategory);
+  TasksScreen({this.taskCategory,this.fromDone,this.fromLeft});
 
   @override
   State<TasksScreen> createState() => _TasksScreenState();
@@ -34,14 +29,17 @@ class TasksScreen extends StatefulWidget {
 
 class _TasksScreenState extends State<TasksScreen> {
   DateTime _selectedDate = DateTime.now();
+  bool fromDone ,fromLeft;
+  TaskCategoryModel taskCategory;
 
   @override
   void initState() {
     Provider.of<TaskProvider>(context,listen: false).getTasks();
     context.read<SelectedDateProvider>().setCurrentDate();
-    setState(() {
+    fromDone = widget.fromDone;
+    fromLeft = widget.fromLeft;
+    taskCategory = widget.taskCategory;
 
-    });
     super.initState();
   }
 
@@ -49,8 +47,9 @@ class _TasksScreenState extends State<TasksScreen> {
   Widget build(BuildContext context) {
     // context.read<SelectedDateProvider>().setCurrentDate();
 
+
     return Scaffold(
-      appBar: buildTaskScreenAppbar(widget.taskCategory),
+      appBar: buildTaskScreenAppbar(context.watch<TasksCountProvider>() , taskCategory,fromDone),
       backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -67,7 +66,7 @@ class _TasksScreenState extends State<TasksScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             SelectedDate(),
-            AddDateBar(),
+            fromDone || fromLeft? SizedBox() : AddDateBar(),
             SizedBox(height: 10),
             TasksListBuilder(),
             Expanded(
@@ -77,37 +76,111 @@ class _TasksScreenState extends State<TasksScreen> {
                   final tasks= box.values.toList().cast<TaskModel>();
                   bool isEmpty = true;
                   bool allEmpty = true;
+                  bool isDoneEmpty = true;
+                  bool allDoneEmpty = true;
+                  bool isLeftEmpty =true;
+                  bool allLeftEmpty = true;
+
+                  int leftCount=0, doneCount=0, allLeftCount=0, allDoneCount=0;
 
                   for(var task in tasks){
+                    ///left empty condition
+                    if(task.category==taskCategory.title && task.status!=0 && formatDate(DateTime.now()).compareTo(formatDate(task.date))>0){
+                      isLeftEmpty = false;
+                    }
+                    if(task.status!=0 && formatDate(DateTime.now()).compareTo(formatDate(task.date))>0){
+                      allLeftEmpty = false;
+                    }
+
+                    ///done empty condition
+                    if(task.category==taskCategory.title && task.status==0){
+                      isDoneEmpty = false;
+                      doneCount++;
+                    }
+                    if(task.status==0){
+                      allDoneEmpty = false;
+                      allDoneCount++;
+                    }
+
+                    /// left after today condition
                     if( formatDate(context.watch<SelectedDateProvider>().selectedDate)==formatDate(task.date)
-                        && task.category==widget.taskCategory.title
+                        && task.category==taskCategory.title  && task.status!=0
                     ){
                       isEmpty = false;
+                      leftCount++;
                     }
-                    if(formatDate(context.watch<SelectedDateProvider>().selectedDate)==formatDate(task.date) ){
+
+                    if(formatDate(context.watch<SelectedDateProvider>().selectedDate)==formatDate(task.date)  && task.status!=0 ){
                       allEmpty = false;
+                      allLeftCount++;
                     }
                   }
 
-                  if(isEmpty && widget.taskCategory.title!='All'){
-                    return showNoTask(context, widget.taskCategory.title, formatDate(context.watch<SelectedDateProvider>().selectedDate));
+                  if(taskCategory.title.toLowerCase()=='all'){
+                    context.watch<TasksCountProvider>().setTaskCounts(allLeftCount, allDoneCount);
                   }
-                  else if(allEmpty){
-                    return showNoTask(context, '', formatDate(context.watch<SelectedDateProvider>().selectedDate));
+                  else{
+                    context.watch<TasksCountProvider>().setTaskCounts(leftCount, doneCount);
+                  }
+
+                  if(!fromDone && !fromLeft){
+                    if(isEmpty && taskCategory.title!='All'){
+                      return showNoTask(context, 'No ${taskCategory.title} Tasks to do at ${formatDate(context.watch<SelectedDateProvider>().selectedDate)}.');
+
+                    }
+                    else if(allEmpty){
+                      return showNoTask(context, 'No Tasks to do at ${formatDate(context.watch<SelectedDateProvider>().selectedDate)}.');
+                    }
+                  }
+                  else if(fromDone){
+                    if(isDoneEmpty && taskCategory.title!='All'){
+                      return showNoTask(context, 'No Completed ${taskCategory.title} Task Yet.');
+                    }
+                    else if(allDoneEmpty){
+                      return showNoTask(context, 'No Completed Task Yet.');
+                    }
+                  }
+                  else{
+                    if(isLeftEmpty && taskCategory.title!='All'){
+                      return showNoTask(context, 'No ${taskCategory.title} Tasks Left.');
+                    }
+                    else if(allLeftEmpty){
+                      return showNoTask(context, 'There is No Tasks Left.');
+                    }
                   }
 
                   return ListView.builder(
+                    physics: BouncingScrollPhysics(),
                     itemCount: tasks.length+1,
                     itemBuilder: (context,index){
                       if(index==tasks.length) return TaskCard(task: null,);
-                      if(widget.taskCategory.title=='All' && formatDate(context.watch<SelectedDateProvider>().selectedDate)==formatDate(tasks[index].date)) return TaskCard(task: tasks[index],);
 
-                      if(
-                      formatDate(context.watch<SelectedDateProvider>().selectedDate)==formatDate(tasks[index].date)
-                      && tasks[index].category==widget.taskCategory.title
-                      ){
-                        return TaskCard(task: tasks[index],);
+                      if(!fromDone && !fromLeft){
+                        if(taskCategory.title=='All'  && tasks[index].status!=0 && formatDate(context.watch<SelectedDateProvider>().selectedDate)==formatDate(tasks[index].date)) return TaskCard(task: tasks[index],);
+
+                        if(
+                        formatDate(context.watch<SelectedDateProvider>().selectedDate)==formatDate(tasks[index].date)
+                            && tasks[index].category==taskCategory.title  && tasks[index].status!=0
+                        ){
+                          return TaskCard(task: tasks[index],);
+                        }
                       }
+                      else if(fromDone){
+                        if(taskCategory.title=='All' && tasks[index].status==0) return TaskCard(task: tasks[index],);
+
+                        if(tasks[index].category==taskCategory.title  && tasks[index].status==0){
+                          return TaskCard(task: tasks[index],);
+                        }
+                      }
+                      else{
+                        if(taskCategory.title=='All' && tasks[index].status!=0  && formatDate(DateTime.now()).compareTo(formatDate(tasks[index].date))>0) return TaskCard(task: tasks[index],);
+
+                        if(tasks[index].category==taskCategory.title  && tasks[index].status!=0  && formatDate(DateTime.now()).compareTo(formatDate(tasks[index].date))>0){
+                          return TaskCard(task: tasks[index],);
+                        }
+                      }
+
+
                       return Container();
                     },
                   );
@@ -124,12 +197,12 @@ class _TasksScreenState extends State<TasksScreen> {
 
 }
 
-Widget showNoTask (BuildContext context, String title, String date){
+Widget showNoTask (BuildContext context, String text){
   return Builder(
     builder: (BuildContext context) => Expanded(
       child: Center(
         child: Text(
-          'No $title task at $date.',
+          text,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w500

@@ -155,7 +155,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           ),
                           onChanged: (int newValue) {
                             setState(() {
-                              _selectedCategory = newValue;
+                              _selectedCategory = newValue+1;
                             });
                           },
                           items: List<DropdownMenuItem<int>>.generate(

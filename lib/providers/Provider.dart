@@ -5,6 +5,8 @@ import 'package:look_after/providers/SelectedDateProvider.dart';
 import 'package:look_after/providers/task_providers.dart';
 import 'package:provider/provider.dart';
 
+import 'TaskCountProvider.dart';
+
 
 class OurProvider extends StatelessWidget {
 
@@ -26,6 +28,7 @@ class OurProvider extends StatelessWidget {
 
           ChangeNotifierProvider(create: (_) => TaskProvider()),
           ChangeNotifierProvider(create: (_) => SelectedDateProvider()),
+          ChangeNotifierProvider(create: (_) => TasksCountProvider()),
         ],
         child: child
     );;

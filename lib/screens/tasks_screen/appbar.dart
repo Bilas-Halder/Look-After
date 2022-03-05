@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:look_after/Models/hive_task_model.dart';
-import 'package:look_after/Models/taskCategory.dart';
-import 'package:look_after/screens/tasks_screen/taskCard.dart';
+import 'package:look_after/providers/TaskCountProvider.dart';
 
-AppBar buildTaskScreenAppbar(TaskCategoryModel taskCategory){
+AppBar buildTaskScreenAppbar(TasksCountProvider tasksCount , TaskCategoryModel taskCategory, bool fromDone){
   return AppBar(
     backgroundColor: Colors.white,
     automaticallyImplyLeading: false,
@@ -44,13 +43,21 @@ AppBar buildTaskScreenAppbar(TaskCategoryModel taskCategory){
                   ),
                 ),
                 SizedBox(height: 3,),
-                Text(
-                  'You have ${taskCategory.left} tasks for today.',
+               fromDone != null && !fromDone ? Text(
+                  'You have ${tasksCount.tasksLeft} tasks for today.',
                   style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey
                   ),
-                ),
+                ) :
+               Text(
+                 'You have done ${tasksCount.tasksDone} tasks.',
+                 style: TextStyle(
+                     fontSize: 14,
+                     color: Colors.grey
+                 ),
+               )
+                ,
               ],
             )
           ],

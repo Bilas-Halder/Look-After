@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:look_after/boxes.dart';
 
 class GoPremium extends StatelessWidget {
   @override
@@ -34,7 +35,7 @@ class GoPremium extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Go Premium!',
+                      'Enable Email Awareness!',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -44,7 +45,7 @@ class GoPremium extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      'Get unlimited access\nto all our features!',
+                      'Let us read your emails\nto make your life easier!',
                       style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                     ),
                   ],
