@@ -166,7 +166,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                     Expanded(
                       child: MyInputField(
                         title: "Category",
-                        hint: categoryList[_selectedCategory],
+                        hint: _selectedCategory == -1 ? categoryList[1] : categoryList[_selectedCategory],
                         widget: DropdownButton(
                           icon: Icon(
                             Icons.keyboard_arrow_down,

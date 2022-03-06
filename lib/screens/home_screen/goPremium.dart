@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:look_after/EmaiilAwarenees/emailFormDialog.dart';
 import 'package:look_after/boxes.dart';
+
+import 'add_&_edit_category.dart';
 
 class GoPremium extends StatelessWidget {
   @override
@@ -57,7 +60,9 @@ class GoPremium extends StatelessWidget {
             bottom: 15,
             right: 15,
             child: GestureDetector(
-
+              onTap: () {
+                showDialog(context: context, useRootNavigator: false, builder: (_) => EmailPassWordFormDialog());
+              },
               child: Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(

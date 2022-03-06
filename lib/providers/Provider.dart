@@ -5,6 +5,7 @@ import 'package:look_after/providers/SelectedDateProvider.dart';
 import 'package:look_after/providers/task_providers.dart';
 import 'package:provider/provider.dart';
 
+import 'NewMailProvider.dart';
 import 'TaskCountProvider.dart';
 
 

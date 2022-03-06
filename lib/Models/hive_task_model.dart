@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
+import '../boxes.dart';
+
 part 'hive_task_model.g.dart';
 
 @HiveType(typeId: 0)
@@ -60,6 +62,14 @@ class TaskModel extends HiveObject{
   });
 }
 
+void addTaskModelToHiveDB(TaskModel task) {
+  final box = Boxes.getTaskModel();
+  box.add(task);
+  print(box.keys);
+  print(box.values);
+}
+
+
 @HiveType(typeId: 1)
 class TaskCategoryModel extends HiveObject{
   @HiveField(0)
@@ -88,6 +98,7 @@ class TaskCategoryModel extends HiveObject{
     this.done,
     this.deleteAble
   });
+
 
   static List<TaskCategoryModel> generateDefaultTaskCategories(){
     return[

@@ -34,7 +34,7 @@ class _TasksScreenState extends State<TasksScreen> {
 
   @override
   void initState() {
-    Provider.of<TaskProvider>(context,listen: false).getTasks();
+    // Provider.of<TaskProvider>(context,listen: false).getTasks();
     context.read<SelectedDateProvider>().setCurrentDate();
     fromDone = widget.fromDone;
     fromLeft = widget.fromLeft;
@@ -49,7 +49,7 @@ class _TasksScreenState extends State<TasksScreen> {
 
 
     return Scaffold(
-      appBar: buildTaskScreenAppbar(context.watch<TasksCountProvider>() , taskCategory,fromDone),
+      appBar: buildTaskScreenAppbar( taskCategory,fromDone),
       backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -116,12 +116,12 @@ class _TasksScreenState extends State<TasksScreen> {
                     }
                   }
 
-                  if(taskCategory.title.toLowerCase()=='all'){
-                    context.watch<TasksCountProvider>().setTaskCounts(allLeftCount, allDoneCount);
-                  }
-                  else{
-                    context.watch<TasksCountProvider>().setTaskCounts(leftCount, doneCount);
-                  }
+                  // if(taskCategory.title.toLowerCase()=='all'){
+                  //   context.watch<TasksCountProvider>().setTaskCounts(allLeftCount, allDoneCount);
+                  // }
+                  // else{
+                  //   context.watch<TasksCountProvider>().setTaskCounts(leftCount, doneCount);
+                  // }
 
                   if(!fromDone && !fromLeft){
                     if(isEmpty && taskCategory.title!='All'){

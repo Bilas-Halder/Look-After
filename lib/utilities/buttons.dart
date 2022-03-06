@@ -116,7 +116,7 @@ class AddTaskButton extends StatelessWidget {
         height: 50,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Colors.teal
+            color: onTap==null ? Colors.teal.withOpacity(0.6): Colors.teal
         ),
         child: Center(
           child: Text(
