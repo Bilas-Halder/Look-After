@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:look_after/Services/notification_services.dart';
 
 import '../boxes.dart';
 
@@ -67,6 +68,8 @@ void addTaskModelToHiveDB(TaskModel task) {
   box.add(task);
   print(box.keys);
   print(box.values);
+  NotifyHelper().displayNotification(
+      title: "An event is added from email.", body: task.note);
 }
 
 

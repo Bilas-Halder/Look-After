@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 class MyInputField extends StatelessWidget {
   //const MyInputField({Key? key}) : super(key: key);
 
-  final String title;
-  final String hint;
+  final String title, hint ,initialString, type;
   final TextEditingController controller;
   final Widget widget;
-  final String initialString;
   final int readOnly;
+
   const MyInputField({
     this.title,
     this.hint,
@@ -17,6 +16,7 @@ class MyInputField extends StatelessWidget {
     this.widget,
     this.initialString,
     this.readOnly,
+    this.type
   });
 
   @override
@@ -49,6 +49,8 @@ class MyInputField extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextFormField(
+                    obscuringCharacter: '*',
+                    obscureText: type=='password'?true : false,
                     readOnly: widget!=null || readOnly==1 ?true:false,
                     autofocus: false,
                     cursorColor: Colors.grey[700],

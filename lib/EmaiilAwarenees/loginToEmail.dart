@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:enough_mail/enough_mail.dart';
 import 'package:look_after/Models/hive_task_model.dart';
+import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/constants.dart';
-import 'package:look_after/providers/NewMailProvider.dart';
-import 'package:provider/provider.dart';
+
+import 'AddFromEmailCategory.dart';
 
 Future <bool> loginToMail(String email, String password, BuildContext context) async{
   print('discovering settings for  $email...');
@@ -22,12 +23,13 @@ Future <bool> loginToMail(String email, String password, BuildContext context) a
     print(mailboxes);
     await mailClient.selectInbox();
     final messages = await mailClient.fetchMessages(count: 1);
-    getMsgList(messages[0], context);
+    getMsgList(messages[1], context);
+    await addFromEmailCategory();
 
     mailClient.eventBus.on<MailLoadEvent>().listen((event) async{
       await mailClient.selectInbox();
       final messages = await mailClient.fetchMessages(count: 1);
-      getMsgList(messages[0],context);
+      getMsgList(messages[1],context);
     });
 
     await mailClient.startPolling();
@@ -52,42 +54,93 @@ void getMsgList(MimeMessage message, BuildContext context) {
       msgList.add(line);
     }
   }
-  addMailedTaskToHive(msgList, message.decodeSubject());
+  addMailedTaskToHive(msgList, message.decodeSubject(),message.to[0].toString());
 
 }
 
-void addMailedTaskToHive(List <String> msgList, String sub){
+void addMailedTaskToHive(List <String> msgList, String sub, String email){
    String time=null;
    String date=null;
+   print(sub);
 
    for(var str in msgList){
      time = findTime(str)??time;
-     print('time = $time');
-     if(time!=null){
-       date = findDate(str)??date;
+     date = findDate(str)??date;
+     if(time!=null && date!=null){
+       print('time = $time');
        print('date = $date');
-       if(date!=null){
-         addTaskModelToHiveDB(
-             TaskModel(
-               email: 'lookafter110@gmail.com',
-               title: 'Probable event from email',
-               note: sub,
-               status: 2,
-               category: 'From Email',
-               priority: 2,
-               color: Colors.teal.value,
-               date: DateTime.now(),
-               startTime: '8:30 PM',
-               endTime: '9:30 PM',
-               remind: 5,
-               repeat: '',
-             )
-         );
-         print('task added');
-         break;
-       }
+       break;
      }
    }
+
+   if(time!=null && date!=null){
+     String s='';
+     int flag = 0 ;
+     String month, day, year;
+     for(int i=0; i<date.length; i++){
+       if(date[i]==' ' || date[i]=='/' || date[i]=='-' || date[i]=='.'){
+         if(flag==0){
+           if(s.length==2){
+             day = s;
+           }
+           else day = '0'+s;
+           flag++;
+           s='';
+         }
+         else if(flag==1){
+           month = monthInt[s];
+           if(month==null){
+             if(month.length==1){
+               month = '0'+s;
+             }
+             else{
+               month = s;
+             }
+           }
+           flag++;
+           s='';
+         }
+       }
+       else{
+         s+=date[i];
+       }
+     }
+     if(s.length==2){
+       year = '20'+s;
+     }
+     else year = s;
+
+     print('$year$month$day');
+     DateTime dateTime = DateTime.parse('$year$month$day');
+
+     addTaskModelToHiveDB(
+         TaskModel(
+           email: email,
+           title: 'Probable event from email',
+           note: sub,
+           status: 2,
+           category: 'From Email',
+           priority: 2,
+           color: Colors.teal.value,
+           date: dateTime,
+           startTime: '8:30 PM',
+           endTime: '9:30 PM',
+           remind: 5,
+           repeat: '',
+         )
+     );
+     print('task added');
+   }
+   else if(time!=null && date == null){
+     NotifyHelper().displayNotification(
+         title: "There is a probable event at $time.", body: 'You might add the task for future.');
+   }
+   else if(time==null && date != null){
+     NotifyHelper().displayNotification(
+         title: "There is a probable upcoming event.", body: 'Date : $date');
+   }
+
+
 }
 
 

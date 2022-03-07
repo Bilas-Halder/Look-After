@@ -15,6 +15,8 @@ class _EmailPassWordFormDialogState extends State<EmailPassWordFormDialog> {
   final TextEditingController _passwordController =  TextEditingController();
 
   bool checkedValue = false;
+  bool checkBox1 = false;
+  bool checkBox2 = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +52,7 @@ class _EmailPassWordFormDialogState extends State<EmailPassWordFormDialog> {
                     title: "Password",
                     hint: "Enter Your Password",
                     controller: _passwordController,
+                    type: 'password',
                   ),
                   SizedBox(
                     height: 15,
@@ -60,10 +63,46 @@ class _EmailPassWordFormDialogState extends State<EmailPassWordFormDialog> {
                         width: 20,
                         height: 20,
                         child: Checkbox(
-                          value: checkedValue,
+                          value: checkBox2,
                           onChanged: (bool value) {
                             setState(() {
-                              checkedValue = value;
+                              checkBox2 = value;
+                              if(checkBox1 && checkBox2){
+                                checkedValue = true;
+                              }
+                              else checkedValue = false;
+                            });
+                          },
+                          activeColor: Colors.teal,
+                        ),
+                      ),
+                      SizedBox(width: 10,),
+                      Text(
+                        'Allow the read access of mails.',
+                        style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 14
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: Checkbox(
+                          value: checkBox1,
+                          onChanged: (bool value) {
+                            setState(() {
+                              checkBox1 = value;
+                              if(checkBox1 && checkBox2){
+                                checkedValue = true;
+                              }
+                              else checkedValue = false;
                             });
                           },
                           activeColor: Colors.teal,

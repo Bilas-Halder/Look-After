@@ -55,6 +55,27 @@ bool isBrightColor(Color color){
 String formatDate(DateTime date) => DateFormat.yMMMd().format(date);
 
 
-RegExp timeRegEx = RegExp(r"(0?[1-9]|1[012])(:[0-5][0-9]) [APap][mM]");
+RegExp timeRegEx = RegExp(r"((1[0-2]|0?[1-9])(:|.)([0-5]?[0-9])( ?([AP]M|[ap]m)))");
 
 RegExp dateRegEx =  RegExp(r"(?:(?:31(\/|-| |\.)(?:0?[13578]|1[02]|(?:Jan|Mar|May|Jul|Aug|Oct|Dec)))\1|(?:(?:29|30)(\/|-| |\.)(?:0?[1,3-9]|1[0-2]|(?:Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})|(?:29(\/|-| |\.)(?:0?2|(?:Feb))\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))|(?:0?[1-9]|1\d|2[0-8])(\/|-| |\.)(?:(?:0?[1-9]|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep))|(?:1[0-2]|(?:Oct|Nov|Dec)))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})");
+
+Map<String, String> monthInt = {
+  'Jan' : '01',
+  'Feb' : '02',
+  'Mar' : '03',
+  'Apr' : '04',
+  'May' : '05',
+  'Jun' : '06',
+  'Jul' : '07',
+  'Aug' : '08',
+  'Sep' : '09',
+  'Oct' : '10',
+  'Nov' : '11',
+  'Dec' : '12',
+};
+
+
+
+
+
+
