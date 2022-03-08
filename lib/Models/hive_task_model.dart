@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Services/notification_services.dart';
 
 import '../boxes.dart';
@@ -43,6 +44,8 @@ class TaskModel extends HiveObject{
 
   @HiveField(13)
   int color;
+  @HiveField(14)
+  DateTime time_stamp;
 
   Color givenColor;
 
@@ -59,19 +62,51 @@ class TaskModel extends HiveObject{
     this.repeat,
     this.priority,
     this.category,
-    this.color
+    this.color,
+    this.time_stamp,
   });
-}
 
-void addTaskModelToHiveDB(TaskModel task) {
-  final box = Boxes.getTaskModel();
-  box.add(task);
-  print(box.keys);
-  print(box.values);
-  NotifyHelper().displayNotification(
-      title: "An event is added from email.", body: task.note);
-}
+  TaskModel.fromJson(Map<String, dynamic> json){
+    email = json['email'];
+    title = json['title'];
+    note = json['note'];
+    status = json['status'];
+    date = json['date'];
+    startTime = json['startTime'];
+    endTime = json['endTime'];
+    remind = json['remind'];
+    repeat = json['repeat'];
+    priority = json['priority'];
+    category = json['category'];
+    color = json['color'];
+    time_stamp = json['time_stamp'];
+  }
 
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['email'] = this.email;
+    data['title'] = this.title;
+    data['note'] = this.note;
+    data['status'] = this.status;
+    data['date'] = this.date;
+    data['startTime'] = this.startTime;
+    data['endTime'] = this.endTime;
+    data['remind'] = this.remind;
+    data['repeat'] = this.repeat;
+    data['priority'] = this.priority;
+    data['category'] = this.category;
+    data['color'] = this.color;
+    data['time_stamp'] = this.time_stamp;
+    return data;
+  }
+
+
+
+  void saveTask(){
+    this.save();
+    dbHelper.updateToFirebase(this);
+  }
+}
 
 @HiveType(typeId: 1)
 class TaskCategoryModel extends HiveObject{
@@ -131,4 +166,5 @@ class TaskCategoryModel extends HiveObject{
       ),
     ];
   }
+
 }

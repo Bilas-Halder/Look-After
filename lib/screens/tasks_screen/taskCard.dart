@@ -3,15 +3,10 @@ import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/screens/tasks_screen/edit_task.dart';
 import 'package:look_after/screens/tasks_screen/taskDetails.dart';
 import 'package:timeline_tile/timeline_tile.dart';
+import 'package:look_after/DB/db_helper.dart';
 
 import '../../boxes.dart';
 import '../../constants.dart';
-
-///adding taskModel to hive database
-void deleteTaskFromHiveDB(int key){
-  final box = Boxes.getTaskModel();
-  box.delete(key);
-}
 
 class TaskCard extends StatelessWidget {
   final borderRadius = BorderRadius.only(
@@ -204,7 +199,7 @@ class PriorityPopupMenu extends StatelessWidget {
       initialValue: value,
       onSelected: (selectedValue) {
         task.priority=selectedValue;
-        task.save();
+        task.saveTask();
       },
       itemBuilder: (context) => [
         PopupMenuItem(
@@ -310,7 +305,7 @@ class ProgressPopupMenu extends StatelessWidget {
       onSelected: (selectedValue) {
         onProgressionSelection(context , selectedValue, task.status, task);
         task.status=selectedValue;
-        task.save();
+        task.saveTask();
       },
       itemBuilder: (context) => [
         PopupMenuItem(
@@ -377,6 +372,7 @@ class TaskPopupMenu extends StatelessWidget {
       onSelected: (selectedValue){
         if(selectedValue==1){
           task.delete();
+          dbHelper.deleteFromFirebase(task);
         }
         else if(selectedValue==0){
           Navigator.of(context).push(
@@ -438,7 +434,7 @@ SnackBar showSnackBar(String text, int lastStatus, TaskModel task){
       label: 'Undo',
       onPressed: () {
         task.status=lastStatus;
-        task.save();
+        task.saveTask();
       },
     ),
   );

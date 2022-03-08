@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:enough_mail/enough_mail.dart';
+import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/constants.dart';
@@ -113,7 +114,7 @@ void addMailedTaskToHive(List <String> msgList, String sub, String email){
      print('$year$month$day');
      DateTime dateTime = DateTime.parse('$year$month$day');
 
-     addTaskModelToHiveDB(
+     dbHelper.addTaskModelToHiveDB(
          TaskModel(
            email: email,
            title: 'Probable event from email',

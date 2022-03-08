@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:look_after/Authentication/Authentication.dart';
+import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/screens/registration_screen.dart';
 import 'package:look_after/utilities/buttons.dart';
 import 'package:look_after/utilities/customClipPath.dart';
@@ -133,6 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                     print(msg);
                                     if (msg == 'Signed In') {
+                                      await dbHelper.fetchTasksFromFirebase();
                                       setState(() {
                                         error = false;
                                       });

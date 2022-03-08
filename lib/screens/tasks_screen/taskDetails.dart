@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/Models/tasks.dart';
 import 'package:look_after/constants.dart';
@@ -225,6 +226,7 @@ class BottomDesign extends StatelessWidget {
                           onPressed: (){
                             ///deleting task from hive database
                             task.delete();
+                            dbHelper.deleteFromFirebase(task);
                             Navigator.pop(context);
                           },
                           color: Colors.teal,
@@ -236,7 +238,7 @@ class BottomDesign extends StatelessWidget {
                         CustomButton(
                           onPressed: (){
                             task.status=0;
-                            task.save();
+                            task.saveTask();
                             Navigator.pop(context);
                           },
                           color: Colors.teal,

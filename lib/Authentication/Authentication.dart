@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../boxes.dart';
+
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
   AuthenticationService(this._firebaseAuth);
@@ -8,6 +10,8 @@ class AuthenticationService {
   Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
 
   Future <void> signOut() async {
+    await Boxes.getTaskCategoryModel().clear();
+    await Boxes.getTaskModel().clear();
     await _firebaseAuth.signOut();
   }
 

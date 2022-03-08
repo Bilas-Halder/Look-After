@@ -293,7 +293,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                           widget.task.color= _selectedColor.value;
                           widget.task.priority= _selectedPriority;
 
-                          widget.task.save();
+                          widget.task.saveTask();
                           Navigator.pop(context);
                         }
                       },

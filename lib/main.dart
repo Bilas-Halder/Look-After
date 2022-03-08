@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter/material.dart';
+import 'package:look_after/Chat/contactInfo.dart';
 import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/providers/Provider.dart';
 import 'package:look_after/screens/OnBoarding_screen.dart';
@@ -56,6 +57,7 @@ class LookAfter extends StatelessWidget {
           ChatScreen.path: (context) => ChatScreen(),
           HomeScreen.path: (context) => HomeScreen(),
           AddTaskPage.path: (context) => AddTaskPage(),
+          ContactScreen.path: (context) => ContactScreen(),
 // TasksScreen.path:(context) => TasksScreen()
         },
       ),

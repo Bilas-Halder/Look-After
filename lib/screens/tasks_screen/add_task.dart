@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:intl/intl.dart';
+import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/boxes.dart';
@@ -259,24 +260,25 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         label: "Add Task",
                         onTap: () {
                           if(_validate()) {
-                            addTaskModelToHiveDB(
+
+                            dbHelper.addTaskModelToHiveDB(
                               TaskModel(
-                                email: user.email,
-                                note: _noteController.text,
-                                title: _titleController.text,
-                                date: _selectedDate,
-                                startTime: _startTime,
-                                endTime: _endTime,
-                                remind: _selectedRemind,
-                                repeat: _selectedRepeat,
-                                color: _selectedColor.value,
-                                status: 2,
-                                priority: _selectedPriority,
-                                category: categoryList[_selectedCategory].title,
-                                // remind:
-                                // repeat:
+                                  email: user.email,
+                                  title: _titleController.text,
+                                  note: _noteController.text,
+                                  date: _selectedDate,
+                                  startTime: _startTime,
+                                  endTime: _endTime,
+                                  remind: _selectedRemind,
+                                  repeat: _selectedRepeat,
+                                  color: _selectedColor.value,
+                                  status: 2,
+                                  priority: _selectedPriority,
+                                  category: categoryList[_selectedCategory].title,
+                                  time_stamp: DateTime.now()
                               ),
                             );
+
                             Navigator.pop(context);
                           }
                         },
@@ -292,13 +294,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
     );
   }
 
-  ///adding taskModel to hive database
-  void addTaskModelToHiveDB(TaskModel task) {
-    final box = Boxes.getTaskModel();
-    box.add(task);
-    print(box.keys);
-    print(box.values);
-  }
 
   bool _validate() {
     if (_titleController.text.isNotEmpty) {

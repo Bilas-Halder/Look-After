@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:look_after/Chat/contactInfo.dart';
+import 'package:look_after/screens/home_screen/home_screen.dart';
 
 class BottomNavBar extends StatelessWidget {
 
@@ -30,6 +32,15 @@ class BottomNavBar extends StatelessWidget {
           showUnselectedLabels: false,
           selectedItemColor: Colors.blueAccent,
           unselectedItemColor: Colors.grey.withOpacity(0.5),
+
+          onTap: (int index){
+            if(index==1){
+              Navigator.pushNamed(context, ContactScreen.path);
+            }
+            else if(index==0){
+              Navigator.pushNamed(context, HomeScreen.path);
+            }
+          },
 
           items: [
           BottomNavigationBarItem(
