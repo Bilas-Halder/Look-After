@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:look_after/Chat/contactInfo.dart';
 import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/providers/Provider.dart';
+import 'package:look_after/screens/Chat/chat_room_screen.dart';
 import 'package:look_after/screens/OnBoarding_screen.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
+import 'package:look_after/screens/profile_screen.dart';
 import 'package:look_after/screens/tasks_screen/add_task.dart';
 import 'package:look_after/screens/welcome_screen.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:look_after/screens/registration_screen.dart';
-import 'package:look_after/screens/chat_screen.dart';
+import 'package:look_after/screens/Chat/chat_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -33,6 +35,8 @@ Future<void> main() async {
   await Hive.openBox<TaskModel>('taskModels');
   Hive.registerAdapter(TaskCategoryModelAdapter());
   await Hive.openBox<TaskCategoryModel>('taskCategoryModels');
+  Hive.registerAdapter(UserModelAdapter());
+  await Hive.openBox<UserModel>('userModel');
 
   runApp(LookAfter());
 }
@@ -54,10 +58,11 @@ class LookAfter extends StatelessWidget {
           WelcomeScreen.path: (context) => WelcomeScreen(),
           LoginScreen.path: (context) => LoginScreen(),
           RegistrationScreen.path: (context) => RegistrationScreen(),
-          ChatScreen.path: (context) => ChatScreen(),
           HomeScreen.path: (context) => HomeScreen(),
           AddTaskPage.path: (context) => AddTaskPage(),
           ContactScreen.path: (context) => ContactScreen(),
+          ChatRoomScreen.path: (context) => ChatRoomScreen(),
+          ProfileScreen.path: (context) => ProfileScreen(),
 // TasksScreen.path:(context) => TasksScreen()
         },
       ),

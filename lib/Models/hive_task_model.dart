@@ -168,3 +168,60 @@ class TaskCategoryModel extends HiveObject{
   }
 
 }
+
+@HiveType(typeId: 2)
+class UserModel{
+
+  @HiveField(0)
+  String name;
+  @HiveField(1)
+  String email;
+  @HiveField(2)
+  String phone;
+  @HiveField(3)
+  String imgURL;
+  @HiveField(4)
+  String username;
+  @HiveField(5)
+  String userID;
+  @HiveField(6)
+  bool verified;
+  @HiveField(7)
+  bool edited;
+
+  UserModel({
+    this.userID,
+    this.name,
+    this.email,
+    this.phone,
+    this.imgURL,
+    this.username,
+    this.verified,
+    this.edited,
+  });
+
+  UserModel.fromJson(Map<String, dynamic> json){
+    userID = json['userID'];
+    name = json['name'];
+    email = json['email'];
+    phone = json['phone'];
+    imgURL = json['imgURL'];
+    username = json['username'];
+    verified = json['verified'];
+    edited = json['edited'];
+  }
+
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['userID'] = this.userID;
+    data['name'] = this.name;
+    data['email'] = this.email;
+    data['phone'] = this.phone;
+    data['imgURL'] = this.imgURL;
+    data['username'] = this.username;
+    data['verified'] = this.verified;
+    data['edited'] = this.edited;
+
+    return data;
+  }
+}

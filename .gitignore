@@ -49,9 +49,6 @@ app.*.map.json
 
 
 /lib/utilities/messageBubble.dart
-
-/lib/screens/chat_screen.dart
 /lib/screens/welcome_screen.dart
-
 messageStreamBuilder.dart
 

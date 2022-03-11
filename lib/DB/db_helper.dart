@@ -90,6 +90,66 @@ class dbHelper{
 
   ///Firebase Starts Here
   ///adding taskModel to hive database
+
+  static Future addUserToFirebase(UserModel user) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    var  currentUser = _auth.currentUser;
+    user.userID = currentUser.uid;
+    user.verified = currentUser.emailVerified;
+
+    CollectionReference _collectionRef = FirebaseFirestore.instance.collection("users");
+    var box = await Boxes.getUserModel();
+    await box.clear();
+    await box.add(user);
+    return _collectionRef.doc(currentUser?.uid).set(
+        user.toJson()
+    ).then((value) => print("user added :)"));
+  }
+
+  static UserModel getCurrentUser(){
+    var b = Boxes.getUserModel().values;
+    var user;
+    for(var i in b){
+      user = i;
+    }
+    return user;
+  }
+  static Future <UserModel> getCurrentUserFromFirebase()async{
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    var  userID  = _auth.currentUser?.uid;
+    DocumentSnapshot  doc = await FirebaseFirestore.instance.collection("users").doc(userID).get();
+    Map<String,dynamic> map = {
+    'userID' : doc['userID'],
+    'name' : doc['name'],
+    'email' : doc['email'],
+    'phone' : doc['phone'],
+    'imgURL' : doc['imgURL'],
+    'username' : doc['username'],
+    'verified' : doc['verified'],
+    'edited' : doc['edited'],
+  };
+    UserModel user = UserModel.fromJson(map);
+    var box = await Boxes.getUserModel();
+    await box.clear();
+    await box.add(user);
+    return user ;
+  }
+
+  static Future <UserModel> updateUserToFirebase(UserModel user) async{
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    var  currentUser = _auth.currentUser;
+    user.userID = currentUser.uid;
+    user.verified = currentUser.emailVerified;
+
+    CollectionReference _collectionRef = FirebaseFirestore.instance.collection("users");
+
+    await _collectionRef.doc(currentUser?.uid).update(
+        user.toJson()
+    ).then((value) => print("user updated :)"));
+
+    return getCurrentUserFromFirebase();
+  }
+
   static void addTaskModelToHiveDB(TaskModel task) {
 
     addTaskToFirebase(task);
@@ -133,16 +193,6 @@ class dbHelper{
     CollectionReference _collectionRef = FirebaseFirestore.instance.collection("task_details");
     return _collectionRef.doc(currentUser?.email).collection("personal").doc(taskId).set(
         task.toJson()
-    ).then((value) => print("Hello"));
-  }
-
-  static Future addUserToFirebase(UserModel user){
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    var  currentUser = _auth.currentUser;
-
-    CollectionReference _collectionRef = FirebaseFirestore.instance.collection("user_details");
-    return _collectionRef.doc(currentUser?.email).set(
-        user.toJson()
     ).then((value) => print("Hello"));
   }
 
@@ -209,5 +259,6 @@ class dbHelper{
     box.add(task);
 
   }
+
 
 }

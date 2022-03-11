@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import 'chat_screen.dart';
+import 'Chat/chat_screen.dart';
 import 'home_screen/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -238,14 +238,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   try {
                     final msg = await context
                         .read<AuthenticationService>()
-                        .signInWithGoogle();
+                        .signInWithGoogle(context);
 
                     print(msg);
                     if (msg == 'Signed In') {
                       setState(() {
                         error = false;
                       });
-                      Navigator.pushNamed(context, ChatScreen.path);
+                      Navigator.pushReplacementNamed(context, ChatScreen.path);
                     }
                   } catch (e) {
                     print(e);

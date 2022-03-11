@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:look_after/DB/chatDB_helper.dart';
 import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
-import 'package:look_after/Models/userModel.dart';
+import 'package:look_after/screens/Chat/chat_screen.dart';
 import 'package:look_after/screens/home_screen/bottomNavigationBar.dart';
 import 'package:look_after/utilities/buttons.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -20,6 +21,7 @@ class _ContactScreenState extends State<ContactScreen> {
   List<Contact> contacts = [];
   List<UserModel> friends = [];
   List<Contact> contactsFiltered = [];
+  UserModel currentUser;
   var userInfo;
   TextEditingController searchController = new TextEditingController();
 
@@ -27,27 +29,33 @@ class _ContactScreenState extends State<ContactScreen> {
   void initState(){
     super.initState();
     getAllContacts();
+    currentUser = dbHelper.getCurrentUser();
     searchController.addListener(() {
       filterContacts();
     });
   }
 
-  /*
+
   void getUserInfo(String num){
     final _firestoreInstance = FirebaseFirestore.instance;
-    _firestoreInstance.collection("user_details").where('phone', isEqualTo: num).get().then((QuerySnapshot val){
+    _firestoreInstance.collection("users").where('phone', isEqualTo: num).get().then((QuerySnapshot val){
       if(val.docs.isNotEmpty){
-        Map<String, dynamic> user = {
-          'name' : val.docs[0]['name'],
-          'email' : val.docs[0]['email'],
-          'phone' : val.docs[0]['phone'],
+        var doc = val.docs[0];
+        Map<String,dynamic> map = {
+          'userID' : doc['userID'],
+          'name' : doc['name'],
+          'email' : doc['email'],
+          'phone' : doc['phone'],
+          'imgURL' : doc['imgURL'],
+          'username' : doc['username'],
+          'verified' : doc['verified'],
+          'edited' : doc['edited'],
         };
-        userFriend.add(UserModel.fromJson(user));
+        friends.add(UserModel.fromJson(map));
       }
     });
   }
 
-   */
 
   void filterContacts(){
     List<Contact> _contacts = [];
@@ -79,38 +87,49 @@ class _ContactScreenState extends State<ContactScreen> {
       List<Contact> _contacts = await FlutterContacts.getContacts(
           withProperties: true, withPhoto: true);
 
-      // final _firestoreInstance = FirebaseFirestore.instance;
-      // final _collection = _firestoreInstance.collection("user_details");
-      // for(int i=0; i<_contacts.length; i++){
-      //   String phoneNum;
-      //   try{
-      //     if(_contacts[i].phones.elementAt(0).number[0]=='+'){
-      //       int len = _contacts[i].phones.elementAt(0).number.length;
-      //       phoneNum = _contacts[i].phones.elementAt(0).number.substring(3,len);
-      //     }else{
-      //       phoneNum = _contacts[i].phones.elementAt(0).number;
-      //     }
-      //
-      //     _collection.where('phone', isEqualTo: phoneNum).get().then((QuerySnapshot val){
-      //       if(val.docs.isNotEmpty){
-      //         Map<String, dynamic> user = {
-      //           'name' : val.docs[0]['name'],
-      //           'email' : val.docs[0]['email'],
-      //           'phone' : val.docs[0]['phone'],
-      //         };
-      //
-      //         _userFriend.add(UserModel.fromJson(user));
-      //       }
-      //
-      //     });
-      //   }catch (e){
-      //     print("*************There was an Error*********");
-      //     print(e);
-      //   }
-      // }
+      final _firestoreInstance = FirebaseFirestore.instance;
+      final _collection = _firestoreInstance.collection("users");
+      for(int i=0; i<_contacts.length; i++){
+        String phoneNum;
+        try{
+          if(_contacts[i].phones.elementAt(0).number[0]=='+'){
+            int len = _contacts[i].phones.elementAt(0).number.length;
+            phoneNum = _contacts[i].phones.elementAt(0).number.substring(3,len);
+          }else{
+            phoneNum = _contacts[i].phones.elementAt(0).number;
+          }
+
+          print(phoneNum);
+
+          _collection.where('phone', isEqualTo: phoneNum).get().then((QuerySnapshot val){
+            if(val.docs.isNotEmpty){
+              var doc = val.docs[0];
+              Map<String,dynamic> map = {
+                'userID' : doc['userID'],
+                'name' : doc['name'],
+                'email' : doc['email'],
+                'phone' : doc['phone'],
+                'imgURL' : doc['imgURL'],
+                'username' : doc['username'],
+                'verified' : doc['verified'],
+                'edited' : doc['edited'],
+              };
+
+              if(map['phone']!=currentUser.phone){
+                _userFriend.add(UserModel.fromJson(map));
+              }
+            }
+
+          });
+        }catch (e){
+          print("*************There was an Error*********");
+          print(e);
+        }
+      }
 
 
       setState(() {
+        friends = _userFriend;
         contacts = _contacts;
         // friends = _userFriend;
       });
@@ -150,24 +169,40 @@ class _ContactScreenState extends State<ContactScreen> {
               Expanded(
                 child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: (isSearching == true)? contactsFiltered.length : contacts.length,
+                  itemCount: friends.length,
                   itemBuilder: (context, index){
-                    Contact contact = (isSearching == true)? contactsFiltered[index]: contacts[index];
-                    return ListTile(
-                      title: Text(contact.displayName),
-                      subtitle: Text(
-                        contact.phones.elementAt(0).number,
-                      ),
-                      leading: (contact.thumbnail!=null && contact.thumbnail.length>0)?
-                      CircleAvatar(
-                        backgroundImage: MemoryImage(contact.thumbnail),
-                      ):
-                      CircleAvatar(
-                        child: Text(
-                            "C"
+                    var user =friends[index];
+                    return GestureDetector(
+                      onTap: (){
+                        ChatHelper.createChatRoom(currentUser, user);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatScreen(user)));
+                      },
+                      child: ListTile(
+                        title: Text(user.name),
+                        subtitle: Text(
+                          user.phone,
                         ),
-                      ),
+                        leading: user?.imgURL != null?
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(user.imgURL),
+                        ):
+                        CircleAvatar(
+                          backgroundColor: Colors.teal[700],
+                          child: Center(
+                            child: Text(
+                                user?.name != null ? user?.name[0].toUpperCase() :"C",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                              ),
+                            ),
+                          ),
+                        ),
 
+                      ),
                     );
                   },
                 ),
