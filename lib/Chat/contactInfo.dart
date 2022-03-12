@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:look_after/Chat/getContacts.dart';
 import 'package:look_after/DB/chatDB_helper.dart';
 import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
-import 'package:look_after/screens/Chat/chat_screen.dart';
+import 'package:look_after/Chat/chat_screen.dart';
 import 'package:look_after/screens/home_screen/bottomNavigationBar.dart';
 import 'package:look_after/utilities/buttons.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -101,7 +102,7 @@ class _ContactScreenState extends State<ContactScreen> {
 
           print(phoneNum);
 
-          _collection.where('phone', isEqualTo: phoneNum).get().then((QuerySnapshot val){
+          await _collection.where('phone', isEqualTo: phoneNum).get().then((QuerySnapshot val){
             if(val.docs.isNotEmpty){
               var doc = val.docs[0];
               Map<String,dynamic> map = {
@@ -143,7 +144,21 @@ class _ContactScreenState extends State<ContactScreen> {
     return Scaffold(
       appBar: _appBar(context),
       bottomNavigationBar: BottomNavBar(),
-      floatingActionButton: floatingAddButton(context),
+      floatingActionButton: FloatingActionButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        backgroundColor: Colors.teal,
+        onPressed: ()async {
+          print('88888888');
+          var friends = await getAllFriendsInfo();
+          for( var i in friends){
+            print(i.name);
+            print(i.email);
+            print(i.phone);
+          }
+          print('88888888');
+        },
+        child: Icon(Icons.add, size: 30,),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: Container(
           padding: EdgeInsets.all(20.0),

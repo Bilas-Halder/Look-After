@@ -118,21 +118,27 @@ class dbHelper{
     final FirebaseAuth _auth = FirebaseAuth.instance;
     var  userID  = _auth.currentUser?.uid;
     DocumentSnapshot  doc = await FirebaseFirestore.instance.collection("users").doc(userID).get();
-    Map<String,dynamic> map = {
-    'userID' : doc['userID'],
-    'name' : doc['name'],
-    'email' : doc['email'],
-    'phone' : doc['phone'],
-    'imgURL' : doc['imgURL'],
-    'username' : doc['username'],
-    'verified' : doc['verified'],
-    'edited' : doc['edited'],
-  };
-    UserModel user = UserModel.fromJson(map);
-    var box = await Boxes.getUserModel();
-    await box.clear();
-    await box.add(user);
-    return user ;
+
+    try{
+      Map<String,dynamic> map = {
+        'userID' : doc['userID'],
+        'name' : doc['name'],
+        'email' : doc['email'],
+        'phone' : doc['phone'],
+        'imgURL' : doc['imgURL'],
+        'username' : doc['username'],
+        'verified' : doc['verified'],
+        'edited' : doc['edited'],
+      };
+      UserModel user = await UserModel.fromJson(map);
+      var box = await Boxes.getUserModel();
+      await box.clear();
+      await box.add(user);
+      return user ;
+    }
+    catch(e){
+      return null;
+    }
   }
 
   static Future <UserModel> updateUserToFirebase(UserModel user) async{

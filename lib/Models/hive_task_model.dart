@@ -100,6 +100,23 @@ class TaskModel extends HiveObject{
     return data;
   }
 
+  static DummyChatTask(){
+    return TaskModel(
+      email: 'email',
+      title: 'A task is shared',
+      note: 'Task is loading',
+      status: 2,
+      category: '',
+      priority: 2,
+      color: Colors.teal.value,
+      date: DateTime.now(),
+      startTime: '8:30 PM',
+      endTime: '9:30 PM',
+      remind: 5,
+      repeat: '',
+    );
+  }
+
 
 
   void saveTask(){

@@ -95,6 +95,8 @@ class AuthenticationService {
       user.username= userDetails.displayName.replaceAll(' ', '');
 
       if(user!=null){
+        await print(user);
+        await print('------------------------------');
         await dbHelper.updateUserToFirebase(user);
 
         Navigator.pushReplacementNamed(context, HomeScreen.path);

@@ -5,7 +5,7 @@ import 'package:look_after/DB/chatDB.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:provider/src/provider.dart';
 
-import '../../boxes.dart';
+import '../boxes.dart';
 import 'chat_screen.dart';
 
 class ChatRoomScreen extends StatefulWidget {
@@ -33,7 +33,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   getChatRoomIdByUsernames(String a, String b) {
-    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+    if (a.compareTo(b) == 1) {
       return "$b\_$a";
     } else {
       return "$a\_$b";

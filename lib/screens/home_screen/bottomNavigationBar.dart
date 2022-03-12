@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:look_after/Chat/contactInfo.dart';
-import 'package:look_after/screens/Chat/chat_room_screen.dart';
+import 'package:look_after/Chat/chat_room_screen.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
 
 class BottomNavBar extends StatelessWidget {

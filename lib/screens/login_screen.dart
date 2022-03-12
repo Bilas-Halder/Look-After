@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import 'Chat/chat_screen.dart';
+import '../Chat/chat_screen.dart';
 import 'home_screen/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -234,6 +234,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 onTap: () async {
+
+                  setState(() {
+                  showSpinner = true;
+                });
 
                   try {
                     final msg = await context

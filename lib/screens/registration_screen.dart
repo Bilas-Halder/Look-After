@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:look_after/Authentication/Authentication.dart';
-import 'package:look_after/screens/Chat/chat_screen.dart';
+import 'package:look_after/Chat/chat_screen.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:look_after/utilities/buttons.dart';
 import 'package:look_after/utilities/customClipPath.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:look_after/screens/Chat/chat_screen.dart';
+import 'package:look_after/Chat/chat_screen.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
 import 'package:look_after/screens/welcome_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';

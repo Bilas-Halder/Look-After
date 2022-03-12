@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:look_after/Chat/showSharedTaskChat.dart';
 import 'package:look_after/DB/chatDB.dart';
 import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 import 'package:random_string/random_string.dart';
 
-import '../../boxes.dart';
+import '../boxes.dart';
 
 class ChatScreen extends StatefulWidget {
   static String path = '/chatScreen';
@@ -20,7 +21,8 @@ class _ChatScreenState extends State<ChatScreen> {
   String chatRoomId, messageId = "";
   Stream messageStream;
   String myName, myProfilePic, myUserName, myEmail;
-  TextEditingController messageTextEdittingController = TextEditingController();
+  TextEditingController messageTextEditingController = TextEditingController();
+  String lastMassageSendBy = null, currentMessageSendBy = null;
 
   getMyInfoFromHive() async {
     user = dbHelper.getCurrentUser();
@@ -32,7 +34,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   getChatRoomIdByUsernames(String a, String b) {
-    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+    if (a.compareTo(b) == 1) {
       return "$b\_$a";
     } else {
       return "$a\_$b";
@@ -40,8 +42,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   addMessage(bool sendClicked) {
-    if (messageTextEdittingController.text != "") {
-      String message = messageTextEdittingController.text;
+    if (messageTextEditingController.text != "") {
+      String message = messageTextEditingController.text;
 
       var lastMessageTs = DateTime.now();
       //messageId
@@ -70,7 +72,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
         if (sendClicked) {
           // remove the text in the message input field
-          messageTextEdittingController.text = "";
+          messageTextEditingController.text = "";
           // make message id blank to get regenerated on next message send
           messageId = "";
         }
@@ -78,14 +80,17 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Widget chatMessageTile(String message, bool sendByMe) {
+  Widget chatMessageTile(String message, bool sendByMe, bool flag, String messageId, bool isTask) {
+    if(isTask == true){
+      return ShowSharedTaskChat(messageId: messageId,);
+    }
     return Row(
       mainAxisAlignment:
       sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         Flexible(
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
 
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -115,15 +120,15 @@ class _ChatScreenState extends State<ChatScreen> {
                       minWidth: 70,
                       maxWidth: MediaQuery.of(context).size.width*0.7,
                     ),
-                    margin: EdgeInsets.only(left: sendByMe? 16 : 10, right: sendByMe ? 10 : 16, top: 4, bottom: 4),
+                    margin: EdgeInsets.only(left: sendByMe? 16 : 10, right: sendByMe ? 10 : 16,  bottom: 4),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(17),
+                        topLeft: !sendByMe ? Radius.circular(12) : Radius.circular(15),
                         bottomRight:
-                        sendByMe ? Radius.circular(0) : Radius.circular(17),
-                        topRight: Radius.circular(17),
+                        sendByMe ? Radius.circular(0) : Radius.circular(15),
+                        topRight: sendByMe ? Radius.circular(12) : Radius.circular(15),
                         bottomLeft:
-                        sendByMe ? Radius.circular(17) : Radius.circular(0),
+                        sendByMe ? Radius.circular(15) : Radius.circular(0),
                       ),
                       color: sendByMe ? Colors.teal : Colors.teal.withOpacity(0.5),
                     ),
@@ -173,8 +178,13 @@ class _ChatScreenState extends State<ChatScreen> {
             reverse: true,
             itemBuilder: (context, index) {
               DocumentSnapshot ds = snapshot.data.docs[index];
-              return chatMessageTile(
-                  ds["message"], user.email == ds["sendBy"]);
+              Widget msgWidget;
+
+                msgWidget = chatMessageTile(
+                    ds["message"], user.email == ds["sendBy"], lastMassageSendBy == ds["sendBy"], ds['messageId'], ds['isTask']);
+                lastMassageSendBy = ds["sendBy"];
+
+              return msgWidget;
             })
             : Center(child: CircularProgressIndicator());
       },
@@ -217,7 +227,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     Expanded(
                         child: TextField(
-                          controller: messageTextEdittingController,
+                          controller: messageTextEditingController,
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                               border: InputBorder.none,
