@@ -14,7 +14,7 @@ Future <List<UserModel>> getAllFriendsInfo() async{
     final _firestoreInstance = FirebaseFirestore.instance;
     final _collection = _firestoreInstance.collection("users");
     for(int i=0; i<_contacts.length; i++){
-      String phoneNum;
+      String phoneNum, pn;
       try{
         if(_contacts[i].phones.elementAt(0).number[0]=='+'){
           int len = _contacts[i].phones.elementAt(0).number.length;
@@ -22,6 +22,8 @@ Future <List<UserModel>> getAllFriendsInfo() async{
         }else{
           phoneNum = _contacts[i].phones.elementAt(0).number;
         }
+        phoneNum = await phoneNum.replaceAll(new RegExp(r'[^0-9]'),'');
+        print('phone : ----  ' + phoneNum);
 
         await _collection.where('phone', isEqualTo: phoneNum).get().then((QuerySnapshot val){
 

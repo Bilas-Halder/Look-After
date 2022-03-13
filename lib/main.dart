@@ -2,9 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter/material.dart';
 import 'package:look_after/Chat/contactInfo.dart';
+import 'package:look_after/Chat/chatRoom.dart';
 import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/providers/Provider.dart';
-import 'package:look_after/Chat/chat_room_screen.dart';
 import 'package:look_after/screens/OnBoarding_screen.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
 import 'package:look_after/screens/profile_screen.dart';
@@ -12,7 +12,6 @@ import 'package:look_after/screens/tasks_screen/add_task.dart';
 import 'package:look_after/screens/welcome_screen.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:look_after/screens/registration_screen.dart';
-import 'package:look_after/Chat/chat_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -61,8 +60,9 @@ class LookAfter extends StatelessWidget {
           HomeScreen.path: (context) => HomeScreen(),
           AddTaskPage.path: (context) => AddTaskPage(),
           ContactScreen.path: (context) => ContactScreen(),
-          ChatRoomScreen.path: (context) => ChatRoomScreen(),
           ProfileScreen.path: (context) => ProfileScreen(),
+          ChatRooms.path: (context) => ChatRooms(),
+
 // TasksScreen.path:(context) => TasksScreen()
         },
       ),

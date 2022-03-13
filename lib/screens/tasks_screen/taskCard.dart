@@ -6,7 +6,6 @@ import 'package:look_after/screens/tasks_screen/taskDetails.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:look_after/DB/db_helper.dart';
 
-import '../../boxes.dart';
 import '../../constants.dart';
 
 class TaskCard extends StatelessWidget {
@@ -31,7 +30,7 @@ class TaskCard extends StatelessWidget {
             onTap: (){
               showDialog(
                   context: context,
-                  builder: (_) => TaskDetailDialog(task: task,)
+                  builder: (_) => TaskDetailDialog(task: task,fromChat: false, isMe: true,)
               );
             },
             child: TaskCardMain(task: task,),

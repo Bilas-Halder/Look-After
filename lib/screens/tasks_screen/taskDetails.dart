@@ -9,8 +9,10 @@ import 'package:look_after/utilities/buttons.dart';
 class TaskDetailDialog extends StatelessWidget {
   static const priorityTitles = ['High', 'Medium', 'Low'];
 
+  final bool fromChat;
   final TaskModel task;
-  TaskDetailDialog({this.task});
+  final bool isMe;
+  TaskDetailDialog({this.task,this.fromChat, this.isMe});
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -130,7 +132,7 @@ class TaskDetailDialog extends StatelessWidget {
                     ],
                   ),
                 ),
-                BottomDesign(task: task,),
+                BottomDesign(task: task,fromChat: fromChat,isMe: isMe,),
               ],
             ),
           ),
@@ -191,7 +193,9 @@ class TaskCategoryDesign extends StatelessWidget {
 
 class BottomDesign extends StatelessWidget {
   final TaskModel task;
-  BottomDesign({@required this.task});
+  final bool fromChat;
+  final bool isMe;
+  BottomDesign({@required this.task, this.fromChat,this.isMe});
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +226,17 @@ class BottomDesign extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        fromChat ?
                         CustomButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
+                          color: Colors.teal,
+                          title: 'Cancel',
+                          width: 70,
+                          reversed: true,
+                        )
+                            : CustomButton(
                           onPressed: (){
                             ///deleting task from hive database
                             task.delete();
@@ -235,7 +249,17 @@ class BottomDesign extends StatelessWidget {
                           reversed: true,
                         ),
                         SizedBox(width: 5,),
+                        fromChat ?
                         CustomButton(
+                          onPressed:isMe ?(){}: ()async{
+                            await dbHelper.addTaskModelToHiveDB(task);
+                            Navigator.pop(context);
+                          },
+                          color: Colors.teal,
+                          title: 'Add task',
+                          width: 100,
+                        )
+                        : CustomButton(
                           onPressed: (){
                             task.status=0;
                             task.saveTask();

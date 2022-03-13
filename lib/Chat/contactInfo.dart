@@ -100,6 +100,7 @@ class _ContactScreenState extends State<ContactScreen> {
             phoneNum = _contacts[i].phones.elementAt(0).number;
           }
 
+          phoneNum = await phoneNum.replaceAll(new RegExp(r'[^0-9]'),'');
           print(phoneNum);
 
           await _collection.where('phone', isEqualTo: phoneNum).get().then((QuerySnapshot val){
@@ -196,7 +197,12 @@ class _ContactScreenState extends State<ContactScreen> {
                                 builder: (context) => ChatScreen(user)));
                       },
                       child: ListTile(
-                        title: Text(user.name),
+                        title: Text(
+                            user.name,
+                          style: TextStyle(
+                            fontSize: 20
+                          ),
+                        ),
                         subtitle: Text(
                           user.phone,
                         ),

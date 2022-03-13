@@ -54,6 +54,10 @@ bool isBrightColor(Color color){
 
 String formatDate(DateTime date) => DateFormat.yMMMd().format(date);
 
+RegExp validName = RegExp(r'^[a-z A-Z,.\-]+$', caseSensitive: false);
+RegExp validPassword = RegExp(r'^[a-z A-Z 0-9,.\-]{5,}$', caseSensitive: false);
+
+
 
 RegExp timeRegEx = RegExp(r"((1[0-2]|0?[1-9])(:|.)([0-5]?[0-9])( ?([AP]M|[ap]m)))");
 

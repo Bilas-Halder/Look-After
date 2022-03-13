@@ -9,7 +9,7 @@ import '../boxes.dart';
 import 'chat_screen.dart';
 
 class ChatRoomScreen extends StatefulWidget {
-  static String path = '/chatroom';
+  static String path = '/chatroomScreen';
   @override
   _ChatRoomScreenState createState() => _ChatRoomScreenState();
 }

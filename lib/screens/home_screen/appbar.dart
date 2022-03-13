@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:look_after/DB/db_helper.dart';
@@ -6,45 +7,49 @@ import 'package:provider/src/provider.dart';
 
 import '../profile_screen.dart';
 
-AppBar buildAppbar(BuildContext context) {
+AppBar buildAppbar(BuildContext context, {bool fromHome, String title}) {
   UserModel user = dbHelper.getCurrentUser();
-  print(user?.imgURL);
+  String t = fromHome==true ? 'Hi, ' : '';
+
   return AppBar(
     backgroundColor: Colors.white,
     automaticallyImplyLeading: false,
     elevation: 0,
     title: Row(
       children: [
-        GestureDetector(
-          onTap: () {
-            context.read<AuthenticationService>().signOut(context);
-          },
-          child: Container(
-            height: 45,
-            width: 45,
-            decoration: BoxDecoration(
-                color: Colors.teal[700],
-                borderRadius: BorderRadius.circular(12.0)),
-            child: user?.imgURL != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: Image.network(user?.imgURL),
-                  )
-                : Center(
-                    child: Text(
-                      user?.name != null ? user?.name[0].toUpperCase() : 'P',
-                      style: TextStyle(
-                        fontSize: 24
-                      ),
+        Container(
+          height: 45,
+          width: 45,
+          decoration: BoxDecoration(
+              color: Colors.teal[700],
+              borderRadius: BorderRadius.circular(12.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                offset: Offset(-1.0, -1.0), //(x,y)
+                blurRadius: 2.0,
+              ),
+            ],
+          ),
+          child: user?.imgURL != null
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.network(user?.imgURL),
+                )
+              : Center(
+                  child: Text(
+                    user?.name != null ? user?.name[0].toUpperCase() : 'P',
+                    style: TextStyle(
+                      fontSize: 24
                     ),
                   ),
-          ),
+                ),
         ),
         SizedBox(
           width: 15,
         ),
         Text(
-          'Hi, ${user?.name != null ?user?.name?.split(' ')[0]:'Mr.'}!',
+          t+'${user?.name != null ?user?.name?.split(' ')[0]:'Mr.'}!',
           style: TextStyle(
             color: Colors.black,
             fontSize: 26,
@@ -54,19 +59,89 @@ AppBar buildAppbar(BuildContext context) {
       ],
     ),
     actions: [
-      GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(context, ProfileScreen.path);
-        },
-        child: Icon(
-          Icons.more_vert_outlined,
-          color: Colors.black,
-          size: 30,
-        ),
-      ),
-      SizedBox(
-        width: 5,
-      )
+      AppbarPopupMenu(),
     ],
   );
+}
+
+
+
+class AppbarPopupMenu extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      onSelected: (selectedValue){
+        if(selectedValue==1){
+          context.read<AuthenticationService>().signOut(context);
+        }
+        else if(selectedValue==0){
+          Navigator.of(context).pushNamed(ProfileScreen.path);
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 0,
+          padding: EdgeInsets.all(0),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox(width: 15,),
+              Icon(
+                Icons.manage_accounts_outlined,
+                size: 22,
+                color: Colors.black,
+              ),
+              SizedBox(width: 7,),
+              Text(
+                  'Profile',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(width: 7,),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 1,
+          padding: EdgeInsets.all(0),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox(width: 15,),
+              Icon(
+                Icons.logout,
+                size: 22,
+                color: Colors.black,
+              ),
+              SizedBox(width: 7,),
+              Text(
+                'Log Out',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(width: 7,),
+            ],
+          ),
+        ),
+      ],
+
+      padding: EdgeInsets.all(0),
+      child: Icon(
+        Icons.more_vert_outlined,
+        color: Colors.black,
+        size: 30,
+      ),
+      iconSize: 30,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft : Radius.circular(10.0),
+          bottomLeft : Radius.circular(10.0),
+          bottomRight : Radius.circular(10.0),
+        ),
+      ),
+      offset: Offset(-20, 30),
+    );
+  }
 }

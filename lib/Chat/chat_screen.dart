@@ -81,9 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget chatMessageTile(String message, bool sendByMe, bool flag, String messageId, bool isTask) {
-    if(isTask == true){
-      return ShowSharedTaskChat(messageId: messageId,);
-    }
+
     return Row(
       mainAxisAlignment:
       sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -115,6 +113,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                 ):SizedBox(),
+                isTask == true ?  ShowSharedTaskChat(messageId: messageId, sendByMe: sendByMe,):
                 Container(
                     constraints: BoxConstraints(
                       minWidth: 70,

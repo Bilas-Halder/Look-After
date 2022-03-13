@@ -114,6 +114,7 @@ class dbHelper{
     }
     return user;
   }
+
   static Future <UserModel> getCurrentUserFromFirebase()async{
     final FirebaseAuth _auth = FirebaseAuth.instance;
     var  userID  = _auth.currentUser?.uid;
@@ -141,6 +142,28 @@ class dbHelper{
     }
   }
 
+  static Future <UserModel> getUserByUserID(String userID)async{
+    DocumentSnapshot  doc = await FirebaseFirestore.instance.collection("users").doc(userID).get();
+
+    try{
+      Map<String,dynamic> map = {
+        'userID' : doc['userID'],
+        'name' : doc['name'],
+        'email' : doc['email'],
+        'phone' : doc['phone'],
+        'imgURL' : doc['imgURL'],
+        'username' : doc['username'],
+        'verified' : doc['verified'],
+        'edited' : doc['edited'],
+      };
+
+      return await UserModel.fromJson(map);
+    }
+    catch(e){
+      return null;
+    }
+  }
+
   static Future <UserModel> updateUserToFirebase(UserModel user) async{
     final FirebaseAuth _auth = FirebaseAuth.instance;
     var  currentUser = _auth.currentUser;
@@ -156,9 +179,9 @@ class dbHelper{
     return getCurrentUserFromFirebase();
   }
 
-  static void addTaskModelToHiveDB(TaskModel task) {
+  static void addTaskModelToHiveDB(TaskModel task) async {
 
-    addTaskToFirebase(task);
+    await addTaskToFirebase(task);
 
     //Set Alarm for the task
     // handleScheduleNotifications(task);

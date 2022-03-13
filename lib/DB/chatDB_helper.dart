@@ -38,11 +38,8 @@ class ChatHelper{
   }
 
   static Future<Stream<QuerySnapshot>> getChatRooms() async {
-    final hiveBox = Boxes.getUserModel();
-    return FirebaseFirestore.instance
-        .collection("chat_rooms")
-        .orderBy("lastMessageTs", descending: true)
-        .where("usersId", arrayContains: user.userID)
+    return await FirebaseFirestore.instance
+        .collection("chat_rooms").where("usersId", arrayContains: user.userID)
         .snapshots();
   }
 

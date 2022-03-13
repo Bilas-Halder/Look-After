@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
-import 'package:look_after/providers/TaskCountProvider.dart';
-import 'package:provider/provider.dart';
 
 AppBar buildTaskScreenAppbar(TaskCategoryModel taskCategory, bool fromDone){
+  UserModel user = dbHelper.getCurrentUser();
+
   return AppBar(
     backgroundColor: Colors.white,
     automaticallyImplyLeading: false,
@@ -12,16 +13,35 @@ AppBar buildTaskScreenAppbar(TaskCategoryModel taskCategory, bool fromDone){
       children: [
         Row(
           children: [
-            Container(
-              height: 45,
-              width: 45,
-              decoration: BoxDecoration(
-                  color: Color(0xff020248),
-                  borderRadius: BorderRadius.circular(12.0)
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
-                child: Image.asset('images/userImg.png'),
+            Hero(
+              tag: 'Profile pic',
+              child: Container(
+                height: 45,
+                width: 45,
+                decoration: BoxDecoration(
+                    color: Colors.teal[700],
+                    borderRadius: BorderRadius.circular(12.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      offset: Offset(-1.0, -1.0), //(x,y)
+                      blurRadius: 2.0,
+                    ),
+                  ],
+                ),
+                child: user?.imgURL != null
+                    ? ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.network(user?.imgURL),
+                )
+                    : Center(
+                  child: Text(
+                    user?.name != null ? user?.name[0].toUpperCase() : 'P',
+                    style: TextStyle(
+                        fontSize: 24
+                    ),
+                  ),
+                ),
               ),
             ),
             SizedBox(width: 15,),
@@ -44,6 +64,8 @@ AppBar buildTaskScreenAppbar(TaskCategoryModel taskCategory, bool fromDone){
                   ),
                 ),
                 SizedBox(height: 3,),
+
+               ///TODO remove from here
                fromDone != null && !fromDone ? Text(
                   'You have 0 tasks for today.',
                   style: TextStyle(

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:look_after/Chat/chat_screen.dart';
+import 'package:look_after/constants.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:look_after/utilities/buttons.dart';
 import 'package:look_after/utilities/customClipPath.dart';
@@ -9,6 +10,7 @@ import 'package:look_after/utilities/inputField.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:email_validator/email_validator.dart';
 
 import 'home_screen/home_screen.dart';
 
@@ -172,6 +174,39 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             });
                             return;
                           }
+                          if(!validName.hasMatch(username)){
+                            setState(() {
+                              error = true;
+                              errorMsg = "Please enter a valid name.";
+                              showSpinner = false;
+                            });
+                            return;
+                          }
+                          if(!EmailValidator.validate(email)){
+                            setState(() {
+                              error = true;
+                              errorMsg = "Please Use a valid email.";
+                              showSpinner = false;
+                            });
+                            return;
+                          }
+                          if(password.length<6){
+                            setState(() {
+                              error = true;
+                              errorMsg = "Password have to be more then 6 character.";
+                              showSpinner = false;
+                            });
+                            return;
+                          }
+                          if(!validPassword.hasMatch(password)){
+                            setState(() {
+                              error = true;
+                              errorMsg = "Please don't use any spacial character.";
+                              showSpinner = false;
+                            });
+                            return;
+                          }
+
 
                           if (password != cPass) {
                             setState(() {
