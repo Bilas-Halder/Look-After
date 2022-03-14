@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:look_after/DB/db_helper.dart';
+import 'package:look_after/EmaiilAwarenees/emailFormDialog.dart';
 import 'package:look_after/Models/hive_task_model.dart';
+import 'package:look_after/providers/EmailEnabledProvider.dart';
 import 'package:provider/src/provider.dart';
 
 import '../profile_screen.dart';
@@ -77,55 +79,95 @@ class AppbarPopupMenu extends StatelessWidget {
         else if(selectedValue==0){
           Navigator.of(context).pushNamed(ProfileScreen.path);
         }
+        else if(selectedValue==2){
+          bool x =context.read<EmailEnabledProvider>().isEmailAwarenessEnabled;
+          if(x){
+            context.read<EmailEnabledProvider>().setisEmailAwarenessEnabled(!x);
+          }
+          else{
+            showDialog(context: context, useRootNavigator: false, builder: (_) => EmailPassWordFormDialog());
+          }
+
+          print(x);
+        }
       },
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          value: 0,
-          padding: EdgeInsets.all(0),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              SizedBox(width: 15,),
-              Icon(
-                Icons.manage_accounts_outlined,
-                size: 22,
-                color: Colors.black,
-              ),
-              SizedBox(width: 7,),
-              Text(
+      itemBuilder: (context) {
+        bool x=context.read<EmailEnabledProvider>().isEmailAwarenessEnabled;
+        return [
+          PopupMenuItem(
+            value: 0,
+            padding: EdgeInsets.all(0),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(width: 15,),
+                Icon(
+                  Icons.manage_accounts_outlined,
+                  size: 24,
+                  color: Colors.black,
+                ),
+                SizedBox(width: 7,),
+                Text(
                   'Profile',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 19
+                  ),
                 ),
-              ),
-              SizedBox(width: 7,),
-            ],
+                SizedBox(width: 7,),
+              ],
+            ),
           ),
-        ),
-        PopupMenuItem(
-          value: 1,
-          padding: EdgeInsets.all(0),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              SizedBox(width: 15,),
-              Icon(
-                Icons.logout,
-                size: 22,
-                color: Colors.black,
-              ),
-              SizedBox(width: 7,),
-              Text(
-                'Log Out',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
+          PopupMenuItem(
+            value: 2,
+            padding: EdgeInsets.all(0),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(width: 15,),
+                Icon(
+                  x ? Icons.unpublished_outlined : Icons.email_outlined,
+                  size: 22,
+                  color: Colors.black,
                 ),
-              ),
-              SizedBox(width: 7,),
-            ],
+                SizedBox(width: 7,),
+                Text(
+                  x ? 'Disable Email' : 'Enable Email',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 19
+                  ),
+                ),
+                SizedBox(width: 8,),
+              ],
+            ),
           ),
-        ),
-      ],
+          PopupMenuItem(
+            value: 1,
+            padding: EdgeInsets.all(0),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(width: 15,),
+                Icon(
+                  Icons.logout,
+                  size: 24,
+                  color: Colors.black,
+                ),
+                SizedBox(width: 7,),
+                Text(
+                  'Log Out',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 19
+                  ),
+                ),
+                SizedBox(width: 7,),
+              ],
+            ),
+          ),
+        ];
+      },
 
       padding: EdgeInsets.all(0),
       child: Icon(
@@ -141,7 +183,7 @@ class AppbarPopupMenu extends StatelessWidget {
           bottomRight : Radius.circular(10.0),
         ),
       ),
-      offset: Offset(-20, 30),
+      offset: Offset(-30, 30),
     );
   }
 }

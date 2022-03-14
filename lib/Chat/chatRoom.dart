@@ -167,6 +167,8 @@ class _ChatTileState extends State<ChatTile> {
             ),),
           subtitle: Text(
             chatroom['lastMessage']??"",
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
           leading: chatUser?.imgURL != null?
           CircleAvatar(

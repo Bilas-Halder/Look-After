@@ -1,7 +1,12 @@
+import 'package:another_flushbar/flushbar.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:look_after/EmaiilAwarenees/loginToEmail.dart';
+import 'package:look_after/providers/EmailEnabledProvider.dart';
 import 'package:look_after/utilities/buttons.dart';
+import 'package:look_after/utilities/errorMessage.dart';
 import 'package:look_after/utilities/input_field.dart';
+import 'package:provider/src/provider.dart';
 
 class EmailPassWordFormDialog extends StatefulWidget {
 
@@ -17,9 +22,13 @@ class _EmailPassWordFormDialogState extends State<EmailPassWordFormDialog> {
   bool checkedValue = false;
   bool checkBox1 = false;
   bool checkBox2 = false;
+  bool error = false;
+  bool loading = false;
+  String errorMsg = "Failed to Connect, try again";
 
   @override
   Widget build(BuildContext context) {
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -31,13 +40,16 @@ class _EmailPassWordFormDialogState extends State<EmailPassWordFormDialog> {
 
           return Container(
             width: width + 100,
-            child: SingleChildScrollView(
+            child:SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: Text(
+                    child: loading ?  CircularProgressIndicator(
+                      color: Colors.teal,
+
+                    ) :  Text(
                       'Enable Email Awareness',
                       style:
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -53,6 +65,14 @@ class _EmailPassWordFormDialogState extends State<EmailPassWordFormDialog> {
                     hint: "Enter Your Password",
                     controller: _passwordController,
                     type: 'password',
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ErrorMessage(
+                    errorMsg: errorMsg,
+                    error: error,
+                    fontSize: 14,
                   ),
                   SizedBox(
                     height: 15,
@@ -133,8 +153,51 @@ class _EmailPassWordFormDialogState extends State<EmailPassWordFormDialog> {
                       AddTaskButton(
                         label: 'Enable',
                         onTap: !checkedValue ? null : ()async{
-                         await loginToMail(_emailController.text, _passwordController.text,context);
-                         print('Mail connection successful');
+                          setState(() {
+                            loading = true;
+                          });
+
+                          if(!EmailValidator.validate(_emailController.text)){
+                            setState(() {
+                              error = true;
+                              errorMsg = "Please Use a valid email.";
+                              loading = false;
+                            });
+                            return;
+                          }
+                          if(_passwordController.text.length<6){
+                            setState(() {
+                              error = true;
+                              errorMsg = "Wrong Password. Try again.";
+                              loading = false;
+                            });
+                            return;
+                          }
+
+                         bool s = await loginToMail(_emailController.text, _passwordController.text,context);
+                         setState(() {
+                           loading = false;
+                           error = !s;
+                           errorMsg = "Failed to Connect, try again";
+                         });
+                         if(s){
+                           Navigator.pop(context);
+                           context.read<EmailEnabledProvider>().setisEmailAwarenessEnabled(true);
+
+                           await Flushbar(
+                             leftBarIndicatorColor: Colors.teal,
+                             icon: Icon(
+                               Icons.sentiment_very_satisfied_rounded,
+                               color: Colors.red[200],
+                               size: 30,
+                             ),
+                             title: 'Email Awareness Enabled.',
+                             message:
+                             'Enjoy the easiness of task scheduling & never miss the events again.',
+                             duration: Duration(seconds: 2),
+                           ).show(context);
+                         }
+
                          },
                       ),
                     ],

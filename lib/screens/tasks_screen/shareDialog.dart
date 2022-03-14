@@ -156,6 +156,20 @@ class _ShareDialogState extends State<ShareDialog> {
 
                                 await shareTask(
                                     user, friends[selected], widget.task);
+                                Navigator.pop(context);
+
+                                Flushbar(
+                                  leftBarIndicatorColor: Colors.teal,
+                                  icon: Icon(
+                                    Icons.done,
+                                    color: Colors.teal[200],
+                                    size: 30,
+                                  ),
+                                  title: 'Task is Shared.',
+                                  message:
+                                  'Task is Shared with ${friends[selected].name}.',
+                                  duration: Duration(seconds: 3),
+                                ).show(context);
                               },
                               color: Colors.teal,
                               title: 'Share',

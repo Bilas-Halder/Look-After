@@ -5,4 +5,5 @@ class Boxes{
   static Box<TaskModel> getTaskModel() => Hive.box<TaskModel>('taskModels');
   static Box<TaskCategoryModel> getTaskCategoryModel() => Hive.box<TaskCategoryModel>('taskCategoryModels');
   static Box<UserModel> getUserModel() => Hive.box<UserModel>('userModel');
+  static Box<IsNew> getIsNewBox() => Hive.box<IsNew>('isNew');
 }

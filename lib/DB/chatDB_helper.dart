@@ -39,7 +39,8 @@ class ChatHelper{
 
   static Future<Stream<QuerySnapshot>> getChatRooms() async {
     return await FirebaseFirestore.instance
-        .collection("chat_rooms").where("usersId", arrayContains: user.userID)
+        .collection("chat_rooms")
+        .where("usersId", arrayContains: user.userID)
         .snapshots();
   }
 

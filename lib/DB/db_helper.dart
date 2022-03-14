@@ -114,6 +114,13 @@ class dbHelper{
     }
     return user;
   }
+  static bool getIsNewUser(){
+    var b = Boxes.getIsNewBox().values;
+
+    if(b.length>0)return false;
+
+    return true;
+  }
 
   static Future <UserModel> getCurrentUserFromFirebase()async{
     final FirebaseAuth _auth = FirebaseAuth.instance;

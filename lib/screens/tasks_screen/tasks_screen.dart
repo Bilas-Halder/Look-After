@@ -35,12 +35,16 @@ class _TasksScreenState extends State<TasksScreen> {
   @override
   void initState() {
     // Provider.of<TaskProvider>(context,listen: false).getTasks();
-    context.read<SelectedDateProvider>().setCurrentDate();
+    super.initState();
+
+    setCurrentDate();
     fromDone = widget.fromDone;
     fromLeft = widget.fromLeft;
     taskCategory = widget.taskCategory;
 
-    super.initState();
+  }
+  setCurrentDate(){
+    context.read<SelectedDateProvider>().setCurrentDate();
   }
 
   @override
@@ -199,16 +203,21 @@ class _TasksScreenState extends State<TasksScreen> {
 
 Widget showNoTask (BuildContext context, String text){
   return Builder(
-    builder: (BuildContext context) => Expanded(
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500
+    builder: (BuildContext context) => Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     ),
   );
 }

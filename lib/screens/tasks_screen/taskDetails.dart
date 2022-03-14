@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:look_after/DB/db_helper.dart';
@@ -251,7 +252,21 @@ class BottomDesign extends StatelessWidget {
                         SizedBox(width: 5,),
                         fromChat ?
                         CustomButton(
-                          onPressed:isMe ?(){}: ()async{
+                          onPressed:isMe ?(){
+                            Flushbar(
+                              leftBarIndicatorColor: Colors.red,
+                              icon: Icon(
+                                Icons.sentiment_dissatisfied_outlined,
+                                color: Colors.red[200],
+                                size: 30,
+                              ),
+                              title: 'You can\'t add this task.',
+                              message:
+                              'You can\'t add the tasks you shared.',
+                              duration: Duration(seconds: 2),
+                            ).show(context);
+
+                          }: ()async{
                             await dbHelper.addTaskModelToHiveDB(task);
                             Navigator.pop(context);
                           },

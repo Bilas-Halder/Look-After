@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 class ErrorMessage extends StatelessWidget {
   final errorMsg;
   final error;
-  ErrorMessage({this.errorMsg, this.error});
+  final double fontSize;
+  ErrorMessage({this.errorMsg, this.error, this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class ErrorMessage extends StatelessWidget {
           height: 10.0,
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
@@ -31,6 +32,7 @@ class ErrorMessage extends StatelessWidget {
               errorMsg,
               style: TextStyle(
                   color: Color(0xffBC0C00),
+                fontSize: fontSize ?? 15,
               ),
             )
 

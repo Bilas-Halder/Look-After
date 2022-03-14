@@ -242,3 +242,16 @@ class UserModel{
     return data;
   }
 }
+
+
+@HiveType(typeId: 3)
+class IsNew{
+
+  @HiveField(0)
+  bool oldUser;
+
+  IsNew({
+    this.oldUser,
+  });
+
+}

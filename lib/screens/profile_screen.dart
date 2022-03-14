@@ -1,11 +1,17 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:look_after/DB/chatDB.dart';
 import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
+import 'package:look_after/screens/home_screen/appbar.dart';
 import 'package:provider/src/provider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
 
 class ProfileScreen extends StatefulWidget {
   //const ({Key? key}) : super(key: key);
@@ -18,6 +24,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String phone = "", name = "";
   UserModel user;
+  XFile _image;
+  bool isImgPicked = false;
 
   @override
   void initState() {
@@ -26,10 +34,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
     user = dbHelper.getCurrentUser();
   }
 
+
+  Future getImage() async{
+    try{
+      final ImagePicker _picker = ImagePicker();
+      // Pick an image
+      final XFile image = await _picker.pickImage(source: ImageSource.gallery);
+
+      setState(() {
+        _image = image;
+        isImgPicked = true;
+        print(_image.path);
+      });
+    }
+    catch(e){ }
+  }
+
+  Future<String> uploadPic() async{
+    var user = await dbHelper.getCurrentUser();
+    String fileName = await basename(_image.path);
+    FirebaseStorage storage = await FirebaseStorage.instance;
+    Reference ref = await storage.ref().child("user/profile/${user.phone}/${fileName}");
+    await ref.putFile(File(_image.path));
+    String url = await ref.getDownloadURL();
+    print('url ------- $url');
+    return url;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appBar(context),
+      appBar: buildAppbar(context),
       body: Container(
         padding: EdgeInsets.only(left: 16, top: 25, right: 16),
         child: GestureDetector(
@@ -49,7 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Container(
                       width: 130,
                       height: 130,
-                      child: user?.imgURL == null
+                      child: !isImgPicked || user?.imgURL == null
                           ? Center(
                               child: Text(
                                 user?.name==null?'P':user?.name[0].toUpperCase(),
@@ -76,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         shape: BoxShape.circle,
                         image: user?.imgURL != null
                             ? DecorationImage(
-                                image: NetworkImage(user.imgURL),
+                                image: isImgPicked? FileImage(File(_image.path))  : NetworkImage(user.imgURL),
                                 fit: BoxFit.cover,
                               )
                             : null,
@@ -85,19 +120,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Positioned(
                         bottom: 0,
                         right: 0,
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  width: 4,
-                                  color: Theme.of(context)
-                                      .scaffoldBackgroundColor),
-                              color: Colors.teal),
-                          child: Icon(
-                            Icons.edit,
-                            color: Colors.white,
+                        child: GestureDetector(
+                          onTap: () => getImage(),
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    width: 4,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor),
+                                color: Colors.teal),
+                            child: Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                            ),
                           ),
                         ))
                   ],
@@ -132,6 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                     onPressed: () async {
+                      user.imgURL = await uploadPic();
                       var newUser = await dbHelper.updateUserToFirebase(user);
                       setState(() {
                         user = newUser;
@@ -179,36 +218,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 fontWeight: FontWeight.bold,
                 color: Colors.grey[500])),
       ),
-    );
-  }
-
-  _appBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      leading: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-        },
-        child: Icon(
-          Icons.arrow_back_ios,
-          color: Colors.black,
-          size: 20,
-        ),
-      ),
-      actions: [
-        GestureDetector(
-          onTap: () {
-            dbHelper.getCurrentUserFromFirebase();
-          },
-          child: CircleAvatar(
-            backgroundImage: AssetImage("images/hridoy.png"),
-          ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-      ],
     );
   }
 }

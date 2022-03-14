@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:look_after/Authentication/Authentication.dart';
+import 'package:look_after/providers/EmailEnabledProvider.dart';
 import 'package:look_after/providers/SelectedDateProvider.dart';
 import 'package:look_after/providers/task_providers.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +31,7 @@ class OurProvider extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => TaskProvider()),
           ChangeNotifierProvider(create: (_) => SelectedDateProvider()),
           ChangeNotifierProvider(create: (_) => TasksCountProvider()),
+          ChangeNotifierProvider(create: (_) => EmailEnabledProvider()),
         ],
         child: child
     );;

@@ -36,6 +36,9 @@ Future<void> main() async {
   await Hive.openBox<TaskCategoryModel>('taskCategoryModels');
   Hive.registerAdapter(UserModelAdapter());
   await Hive.openBox<UserModel>('userModel');
+  Hive.registerAdapter(IsNewAdapter());
+  await Hive.openBox<IsNew>('isNew');
+
 
   runApp(LookAfter());
 }

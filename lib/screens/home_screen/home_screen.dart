@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(left: 15,right: 15,top: 10),
             child: Text(
-              'Tasks',
+              'Categories',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:look_after/Chat/chat_screen.dart';
+import 'package:look_after/DB/db_helper.dart';
+import 'package:look_after/Models/hive_task_model.dart';
+import 'package:look_after/boxes.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
 import 'package:look_after/screens/welcome_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'login_screen.dart';
 
 class OnBoardingPage extends StatefulWidget {
   static const String path = '/';
@@ -15,41 +14,36 @@ class OnBoardingPage extends StatefulWidget {
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
-  dynamic prefs;
-  bool isBack, isSignedIn;
+  UserModel user = null;
+  bool isNew = false;
 
   @override
   void initState() {
     // TODO: implement initState
-    // getIsBack();
     super.initState();
-  }
-  void getIsBack () async {
-    prefs = await SharedPreferences.getInstance();
-    isBack = prefs.getBool('isBack');
-    isSignedIn = prefs.getBool('signedIn');
-    print(isBack.toString()+'..............................................');
-  }
-  void setIsBack () async {
-    await prefs.setBool('isBack', true);
-    await getIsBack();
 
-    print(isBack.toString()+'..............................................');
+    ///code for going to home/login screen.
+    Future.microtask(() async{
+      await getIsBack();
+      if (user != null) {
+        Navigator.pushReplacementNamed(context, HomeScreen.path);
+      } else if (isNew == false) {
+        Navigator.pushReplacementNamed(context, WelcomeScreen.path);
+      }
+    });
   }
 
+  void getIsBack() async {
+    user = await dbHelper.getCurrentUser();
+    isNew = await dbHelper.getIsNewUser();
+    setState(() {});
+  }
 
-  void _onIntroEnd(context) {
+  void _onIntroEnd(context) async{
+    var box = await Boxes.getIsNewBox();
+    await box.clear();
+    await box.add(IsNew(oldUser: true));
     Navigator.pushReplacementNamed(context, WelcomeScreen.path);
-  }
-
-  Widget _buildFullscrenImage() {
-    return Image.asset(
-      'assets/fullscreen.jpg',
-      fit: BoxFit.cover,
-      height: double.infinity,
-      width: double.infinity,
-      alignment: Alignment.center,
-    );
   }
 
   Widget _buildImage(String assetName, [double width = 350]) {
@@ -68,18 +62,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       imagePadding: EdgeInsets.zero,
     );
 
-    ///code for going to home/login screen.
-    // if(isBack==null || isBack==false){
-    //   setIsBack();
-    //   getIsBack();
-    // }
-    // else if(isSignedIn==null || isSignedIn==false){
-    //   Navigator.pushReplacementNamed(context, WelcomeScreen.path);
-    // }
-    // else{
-    //   Navigator.pushReplacementNamed(context, ChatScreen.path);
-    // }
-
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -91,9 +73,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           height: 60,
           color: Colors.teal[600],
           child: MaterialButton(
-            child : Text(
+            child: Text(
               'Let\s go right away!',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold,color: Colors.white),
+              style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
             onPressed: () => _onIntroEnd(context),
           ),
@@ -101,22 +86,21 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         pages: [
           PageViewModel(
             title: "Welcome to Look After",
-            body:
-            "This is a task scheduling app with context awareness.",
+            body: "This is a task scheduling app with context awareness.",
             image: _buildImage('images/img1.jpg'),
             decoration: pageDecoration,
           ),
           PageViewModel(
             title: "Save your regular tasks",
             body:
-            "Save your everyday tasks too so we can notify you everyday and you will never be late for any work.",
+                "Save your everyday tasks too so we can notify you everyday and you will never be late for any work.",
             image: _buildImage('images/img2.jpg'),
             decoration: pageDecoration,
           ),
           PageViewModel(
             title: "Secure online & offline Database",
             body:
-            "We offer fully secure database with double protection system.",
+                "We offer fully secure database with double protection system.",
             image: _buildImage('images/img3.jpg'),
             decoration: pageDecoration,
           ),

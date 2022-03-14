@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:look_after/Chat/showSharedTaskChat.dart';
 import 'package:look_after/DB/chatDB.dart';
+import 'package:look_after/DB/chatDB_helper.dart';
 import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 import 'package:random_string/random_string.dart';
@@ -24,22 +25,28 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageTextEditingController = TextEditingController();
   String lastMassageSendBy = null, currentMessageSendBy = null;
 
+
+  doThisOnLaunch() async {
+    await getMyInfoFromHive();
+    await getAndSetMessages();
+  }
+
+  @override
+  void initState() {
+    doThisOnLaunch();
+    super.initState();
+  }
+
   getMyInfoFromHive() async {
-    user = dbHelper.getCurrentUser();
+    user = await dbHelper.getCurrentUser();
     myName=user.name;
     myProfilePic = user.imgURL;
     myUserName = user.imgURL;
     myEmail = user.email;
-    chatRoomId = getChatRoomIdByUsernames(user.email, widget.chatWith.email);
+    chatRoomId = await ChatHelper.getChatRoomId(user.email, widget.chatWith.email);
   }
 
-  getChatRoomIdByUsernames(String a, String b) {
-    if (a.compareTo(b) == 1) {
-      return "$b\_$a";
-    } else {
-      return "$a\_$b";
-    }
-  }
+
 
   addMessage(bool sendClicked) {
     if (messageTextEditingController.text != "") {
@@ -132,11 +139,16 @@ class _ChatScreenState extends State<ChatScreen> {
                       color: sendByMe ? Colors.teal : Colors.teal.withOpacity(0.5),
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 16,vertical: 12),
-                    child: Flexible(
-                      child: Text(
-                        message,
-                        style: TextStyle(color: sendByMe ? Colors.white : Colors.black),
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            message,
+                            style: TextStyle(color: sendByMe ? Colors.white : Colors.black),
+                          ),
+                        ),
+                      ],
                     )),
 
                 sendByMe ? user?.imgURL != null?
@@ -195,16 +207,7 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {});
   }
 
-  doThisOnLaunch() async {
-    await getMyInfoFromHive();
-    getAndSetMessages();
-  }
 
-  @override
-  void initState() {
-    doThisOnLaunch();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
