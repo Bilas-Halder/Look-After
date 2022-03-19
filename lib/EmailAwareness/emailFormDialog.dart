@@ -1,7 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:look_after/EmaiilAwarenees/loginToEmail.dart';
+import 'package:look_after/EmailAwareness/loginToEmail.dart';
 import 'package:look_after/providers/EmailEnabledProvider.dart';
 import 'package:look_after/utilities/buttons.dart';
 import 'package:look_after/utilities/errorMessage.dart';

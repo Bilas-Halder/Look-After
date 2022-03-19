@@ -1,16 +1,12 @@
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:look_after/Authentication/Authentication.dart';
-import 'package:look_after/DB/chatDB.dart';
 import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/screens/home_screen/appbar.dart';
-import 'package:provider/src/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:look_after/screens/profile_screen/cropImage.dart';
+import 'package:look_after/utilities/navDrawer.dart';
 import 'package:path/path.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -24,8 +20,10 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String phone = "", name = "";
   UserModel user;
-  XFile _image;
+  File _image = null;
   bool isImgPicked = false;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -40,22 +38,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final ImagePicker _picker = ImagePicker();
       // Pick an image
       final XFile image = await _picker.pickImage(source: ImageSource.gallery);
-
-      setState(() {
-        _image = image;
-        isImgPicked = true;
-        print(_image.path);
-      });
+      if (image != null) {
+        final file = File(image.path);
+        _image =  await cropSquareImage(file);
+        if(_image!=null){
+          setState(() {
+            isImgPicked = true;
+            print(_image.path);
+          });
+        }
+      }
+      else return;
     }
     catch(e){ }
   }
 
   Future<String> uploadPic() async{
+    if(_image==null) return null;
+
     var user = await dbHelper.getCurrentUser();
     String fileName = await basename(_image.path);
+    print('file name => $fileName');
     FirebaseStorage storage = await FirebaseStorage.instance;
-    Reference ref = await storage.ref().child("user/profile/${user.phone}/${fileName}");
-    await ref.putFile(File(_image.path));
+    Reference ref = await storage.ref().child("user/profile/${user.email}/${user.email}.jpg");
+    await ref.putFile(_image);
     String url = await ref.getDownloadURL();
     print('url ------- $url');
     return url;
@@ -64,7 +70,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppbar(context),
+      key: _scaffoldKey,
+      drawer: NavigationDrawer(context),
+      appBar: buildAppbar(context,myScaffoldKey: _scaffoldKey),
       body: Container(
         padding: EdgeInsets.only(left: 16, top: 25, right: 16),
         child: GestureDetector(
@@ -81,40 +89,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Center(
                 child: Stack(
                   children: [
-                    Container(
-                      width: 130,
-                      height: 130,
-                      child: !isImgPicked || user?.imgURL == null
-                          ? Center(
-                              child: Text(
-                                user?.name==null?'P':user?.name[0].toUpperCase(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 56,
+                    Hero(
+                      tag:'profile-img',
+                      child: Container(
+                        width: 130,
+                        height: 130,
+                        child: !isImgPicked && user?.imgURL == null
+                            ? Center(
+                                child: Text(
+                                  user?.name==null?'P':user?.name[0].toUpperCase(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 56,
+                                  ),
                                 ),
-                              ),
-                            )
-                          : null,
-                      decoration: BoxDecoration(
-                        color: Colors.teal[700],
-                        border: Border.all(
-                          width: 4,
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                              spreadRadius: 2,
-                              blurRadius: 10,
-                              color: Colors.black.withOpacity(0.1),
-                              offset: Offset(0, 10))
-                        ],
-                        shape: BoxShape.circle,
-                        image: user?.imgURL != null
-                            ? DecorationImage(
-                                image: isImgPicked? FileImage(File(_image.path))  : NetworkImage(user.imgURL),
-                                fit: BoxFit.cover,
                               )
                             : null,
+                        decoration: BoxDecoration(
+                          color: Colors.teal[700],
+                          border: Border.all(
+                            width: 4,
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                                spreadRadius: 2,
+                                blurRadius: 10,
+                                color: Colors.black.withOpacity(0.1),
+                                offset: Offset(0, 10))
+                          ],
+                          shape: BoxShape.circle,
+                          image: user?.imgURL != null || isImgPicked
+                              ? DecorationImage(
+                                  image: isImgPicked? FileImage(File(_image.path))  : NetworkImage(user.imgURL),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
                       ),
                     ),
                     Positioned(
@@ -170,7 +181,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                     onPressed: () async {
-                      user.imgURL = await uploadPic();
+                      final url = isImgPicked?await uploadPic() : null;
+                      if(url!=null){
+                        user.imgURL = url;
+                      }
                       var newUser = await dbHelper.updateUserToFirebase(user);
                       setState(() {
                         user = newUser;

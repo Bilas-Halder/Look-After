@@ -1,5 +1,3 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/screens/registration_screen.dart';
@@ -11,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import '../Chat/chat_screen.dart';
 import 'home_screen/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -138,7 +135,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       setState(() {
                                         error = false;
                                       });
-                                      Navigator.pushNamed(context, HomeScreen.path);
+
+                                      Navigator.pushNamedAndRemoveUntil(context,HomeScreen.path,(Route<dynamic> route) => false);
                                     } else {
                                       setState(() {
                                         error = true;
@@ -249,7 +247,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       setState(() {
                         error = false;
                       });
-                      Navigator.pushReplacementNamed(context, ChatScreen.path);
+
+                      Navigator.pushNamedAndRemoveUntil(context,HomeScreen.path,(Route<dynamic> route) => false);
                     }
                   } catch (e) {
                     print(e);

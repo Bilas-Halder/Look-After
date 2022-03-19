@@ -7,6 +7,7 @@ import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/screens/home_screen/appbar.dart';
 import 'package:look_after/screens/home_screen/bottomNavigationBar.dart';
 import 'package:look_after/utilities/buttons.dart';
+import 'package:look_after/utilities/navDrawer.dart';
 
 class ChatRooms extends StatefulWidget {
   static String path = '/chatRooms';
@@ -18,6 +19,8 @@ class _ChatRoomsState extends State<ChatRooms> {
   UserModel chatUser;
   Stream chatRooms;
   TextEditingController searchController = new TextEditingController();
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   var user = dbHelper.getCurrentUser();
 
@@ -37,7 +40,9 @@ class _ChatRoomsState extends State<ChatRooms> {
   Widget build(BuildContext context) {
     bool isSearching = searchController.text.isNotEmpty;
     return Scaffold(
-      appBar: buildAppbar(context),
+      key: _scaffoldKey,
+      appBar: buildAppbar(context, myScaffoldKey: _scaffoldKey),
+      drawer: NavigationDrawer(context),
       bottomNavigationBar: BottomNavBar(),
       floatingActionButton: floatingAddButton(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

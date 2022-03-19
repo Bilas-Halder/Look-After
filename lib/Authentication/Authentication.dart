@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
-import 'package:look_after/DB/chatDB.dart';
 import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
@@ -22,18 +21,19 @@ class AuthenticationService {
   }
 
   Future<void> signOut(BuildContext context) async {
+    Navigator.pop(context);
+
     await Boxes.getTaskCategoryModel().clear();
     await Boxes.getTaskModel().clear();
     await Boxes.getUserModel().clear();
 
     await _firebaseAuth.signOut();
-    Navigator.pushReplacementNamed(context,WelcomeScreen.path);
+    Navigator.pushNamedAndRemoveUntil(context,WelcomeScreen.path,(Route<dynamic> route) => false);
   }
 
   Future<String> signIn({String email, String password}) async {
     try {
-      var result = await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
+      await _firebaseAuth.signInWithEmailAndPassword( email: email, password: password);
       await dbHelper.getCurrentUserFromFirebase();
 
       return 'Signed In';

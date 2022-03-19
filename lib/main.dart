@@ -7,7 +7,7 @@ import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/providers/Provider.dart';
 import 'package:look_after/screens/OnBoarding_screen.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
-import 'package:look_after/screens/profile_screen.dart';
+import 'package:look_after/screens/profile_screen/profile_screen.dart';
 import 'package:look_after/screens/tasks_screen/add_task.dart';
 import 'package:look_after/screens/welcome_screen.dart';
 import 'package:look_after/screens/login_screen.dart';

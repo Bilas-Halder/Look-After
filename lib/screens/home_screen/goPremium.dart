@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:look_after/EmaiilAwarenees/emailFormDialog.dart';
+import 'package:look_after/EmailAwareness/emailFormDialog.dart';
 import 'package:look_after/providers/EmailEnabledProvider.dart';
 import 'package:provider/provider.dart';
 

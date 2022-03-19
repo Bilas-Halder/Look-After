@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:look_after/DB/db_helper.dart';
-import 'package:look_after/EmaiilAwarenees/emailFormDialog.dart';
+import 'package:look_after/EmailAwareness/emailFormDialog.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/providers/EmailEnabledProvider.dart';
 import 'package:provider/src/provider.dart';
 
-import '../profile_screen.dart';
+import '../profile_screen/profile_screen.dart';
 
-AppBar buildAppbar(BuildContext context, {bool fromHome, String title}) {
+AppBar buildAppbar(BuildContext context, {bool fromHome, String title, GlobalKey<ScaffoldState> myScaffoldKey}) {
   UserModel user = dbHelper.getCurrentUser();
   String t = fromHome==true ? 'Hi, ' : '';
 
@@ -61,129 +61,18 @@ AppBar buildAppbar(BuildContext context, {bool fromHome, String title}) {
       ],
     ),
     actions: [
-      AppbarPopupMenu(),
-    ],
-  );
-}
-
-
-
-class AppbarPopupMenu extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton(
-      onSelected: (selectedValue){
-        if(selectedValue==1){
-          context.read<AuthenticationService>().signOut(context);
-        }
-        else if(selectedValue==0){
-          Navigator.of(context).pushNamed(ProfileScreen.path);
-        }
-        else if(selectedValue==2){
-          bool x =context.read<EmailEnabledProvider>().isEmailAwarenessEnabled;
-          if(x){
-            context.read<EmailEnabledProvider>().setisEmailAwarenessEnabled(!x);
-          }
-          else{
-            showDialog(context: context, useRootNavigator: false, builder: (_) => EmailPassWordFormDialog());
-          }
-
-          print(x);
-        }
-      },
-      itemBuilder: (context) {
-        bool x=context.read<EmailEnabledProvider>().isEmailAwarenessEnabled;
-        return [
-          PopupMenuItem(
-            value: 0,
-            padding: EdgeInsets.all(0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SizedBox(width: 15,),
-                Icon(
-                  Icons.manage_accounts_outlined,
-                  size: 24,
-                  color: Colors.black,
-                ),
-                SizedBox(width: 7,),
-                Text(
-                  'Profile',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 19
-                  ),
-                ),
-                SizedBox(width: 7,),
-              ],
-            ),
-          ),
-          PopupMenuItem(
-            value: 2,
-            padding: EdgeInsets.all(0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SizedBox(width: 15,),
-                Icon(
-                  x ? Icons.unpublished_outlined : Icons.email_outlined,
-                  size: 22,
-                  color: Colors.black,
-                ),
-                SizedBox(width: 7,),
-                Text(
-                  x ? 'Disable Email' : 'Enable Email',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 19
-                  ),
-                ),
-                SizedBox(width: 8,),
-              ],
-            ),
-          ),
-          PopupMenuItem(
-            value: 1,
-            padding: EdgeInsets.all(0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SizedBox(width: 15,),
-                Icon(
-                  Icons.logout,
-                  size: 24,
-                  color: Colors.black,
-                ),
-                SizedBox(width: 7,),
-                Text(
-                  'Log Out',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 19
-                  ),
-                ),
-                SizedBox(width: 7,),
-              ],
-            ),
-          ),
-        ];
-      },
-
-      padding: EdgeInsets.all(0),
-      child: Icon(
-        Icons.more_vert_outlined,
-        color: Colors.black,
-        size: 30,
-      ),
-      iconSize: 30,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft : Radius.circular(10.0),
-          bottomLeft : Radius.circular(10.0),
-          bottomRight : Radius.circular(10.0),
+      GestureDetector(
+        onTap: (){
+          myScaffoldKey.currentState.openDrawer();
+        },
+        child: Icon(
+          Icons.menu_rounded,
+          color: Colors.black,
+          size: 30,
         ),
       ),
-      offset: Offset(-30, 30),
-    );
-  }
+      SizedBox(width: 16,),
+
+    ],
+  );
 }

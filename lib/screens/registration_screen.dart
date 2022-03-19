@@ -1,6 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:look_after/Authentication/Authentication.dart';
-import 'package:look_after/Chat/chat_screen.dart';
 import 'package:look_after/constants.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:look_after/utilities/buttons.dart';
@@ -227,7 +225,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               setState(() {
                                 error = false;
                               });
-                              Navigator.pushReplacementNamed(context, HomeScreen.path);
+                              Navigator.pushNamedAndRemoveUntil(context,HomeScreen.path,(Route<dynamic> route) => false);
                             } else {
                               setState(() {
                                 error = true;
