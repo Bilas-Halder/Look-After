@@ -6,6 +6,9 @@ import 'package:look_after/Chat/chatRoom.dart';
 import 'package:look_after/Services/notification_services.dart';
 import 'package:look_after/providers/Provider.dart';
 import 'package:look_after/screens/OnBoarding_screen.dart';
+import 'package:look_after/screens/createRoom_screen/comment_screen.dart';
+import 'package:look_after/screens/createRoom_screen/create_room_home.dart';
+import 'package:look_after/screens/createRoom_screen/event_room.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
 import 'package:look_after/screens/profile_screen/profile_screen.dart';
 import 'package:look_after/screens/tasks_screen/add_task.dart';
@@ -38,6 +41,8 @@ Future<void> main() async {
   await Hive.openBox<UserModel>('userModel');
   Hive.registerAdapter(IsNewAdapter());
   await Hive.openBox<IsNew>('isNew');
+  Hive.registerAdapter(EventModelAdapter());
+  await Hive.openBox<EventModel>('eventModel');
 
 
   runApp(LookAfter());
@@ -65,6 +70,9 @@ class LookAfter extends StatelessWidget {
           ContactScreen.path: (context) => ContactScreen(),
           ProfileScreen.path: (context) => ProfileScreen(),
           ChatRooms.path: (context) => ChatRooms(),
+          EventRoomScreen.path: (context) => EventRoomScreen(),
+          CommentScreen.path: (context) => CommentScreen(),
+          CreateRoomHomeScreen.path: (context) => CreateRoomHomeScreen(),
 
 // TasksScreen.path:(context) => TasksScreen()
         },

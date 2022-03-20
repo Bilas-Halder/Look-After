@@ -1,21 +1,25 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:look_after/Chat/chatRoom.dart';
 import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/EmailAwareness/emailFormDialog.dart';
 import 'package:look_after/providers/EmailEnabledProvider.dart';
+import 'package:look_after/screens/createRoom_screen/create_room_home.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
 import 'package:look_after/screens/profile_screen/profile_screen.dart';
 import 'package:provider/src/provider.dart';
 
-Drawer NavigationDrawer(BuildContext context) {
+import 'package:flutter_icons/flutter_icons.dart';
+
+Drawer NavigationDrawer(BuildContext context, {String from}) {
   final user = dbHelper.getCurrentUser();
   bool isEmailEnable =
       context.watch<EmailEnabledProvider>().isEmailAwarenessEnabled;
   const navTextColor = Colors.white;
   const navIconColor = Colors.white;
+
+  var routeName = ModalRoute.of(context)?.settings?.name;
 
   return Drawer(
     backgroundColor: Colors.teal[700],
@@ -78,7 +82,12 @@ Drawer NavigationDrawer(BuildContext context) {
         ListTile(
           textColor: navTextColor,
           iconColor: navIconColor,
-          onTap: () => NavigateOnTap(context, HomeScreen.path),
+          onTap: () {
+            Navigator.pop(context);
+            if(routeName !=HomeScreen.path){
+              NavigateOnTap(context, HomeScreen.path);
+            }
+          },
           leading: Icon(
             Icons.home,
             size: 26,
@@ -91,8 +100,12 @@ Drawer NavigationDrawer(BuildContext context) {
         ListTile(
           textColor: navTextColor,
           iconColor: navIconColor,
-          onTap: () => NavigateOnTap(context, ChatRooms.path),
-          leading: Padding(
+          onTap: () {
+            Navigator.pop(context);
+            if(routeName !=ChatRooms.path){
+              NavigateOnTap(context, ChatRooms.path);
+            }
+          },          leading: Padding(
             padding: const EdgeInsets.all(3.0),
             child: Icon(
               Icons.chat,
@@ -107,8 +120,12 @@ Drawer NavigationDrawer(BuildContext context) {
         ListTile(
           textColor: navTextColor,
           iconColor: navIconColor,
-          onTap: () => NavigateOnTap(context, ProfileScreen.path),
-          leading: Icon(
+          onTap: () {
+            Navigator.pop(context);
+            if(routeName !=ProfileScreen.path){
+              NavigateOnTap(context, ProfileScreen.path);
+            }
+          },          leading: Icon(
             Icons.person_rounded,
             size: 26,
           ),
@@ -122,7 +139,7 @@ Drawer NavigationDrawer(BuildContext context) {
           thickness: 1,
           color: Colors.white,
         ),
-        ListTile(
+        from!=ChatRooms.path ? ListTile(
           textColor: navTextColor,
           iconColor: navIconColor,
           onTap: () async {
@@ -159,60 +176,198 @@ Drawer NavigationDrawer(BuildContext context) {
             isEmailEnable ? 'Disable Email' : 'Enable Email',
             style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
           ),
-        ),
-        Expanded(
-          child: Text(
-            't',
-            style: TextStyle(color: Colors.teal),
-          ),
-        ),
-        ListTile(
+        ) : Container(),
+        from!=ChatRooms.path ? ListTile(
           textColor: navTextColor,
           iconColor: navIconColor,
-          contentPadding: EdgeInsets.zero,
-          onTap: () {
-            context.read<AuthenticationService>().signOut(context);
+          onTap: () async {
+            if (isEmailEnable) {
+              Navigator.pop(context);
+              context
+                  .read<EmailEnabledProvider>()
+                  .setisEmailAwarenessEnabled(!isEmailEnable);
+
+              await Flushbar(
+                leftBarIndicatorColor: Colors.teal,
+                icon: Icon(
+                  Icons.check_circle,
+                  color: Colors.red[200],
+                  size: 30,
+                ),
+                title: 'Email Awareness Disabled.',
+                message: 'Your email awareness is disabled.',
+                duration: Duration(seconds: 2),
+              ).show(context);
+            } else {
+              Navigator.pop(context);
+              showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (_) => EmailPassWordFormDialog());
+            }
           },
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 16.0),
-            child: Icon(
-              Icons.logout,
-              size: 24,
-            ),
+          leading: Icon(
+            isEmailEnable ? Icons.unsubscribe_rounded : Icons.email_rounded,
+            size: 24,
           ),
           title: Text(
-            'Log Out',
+            isEmailEnable ? 'Disable Email' : 'Enable Email',
             style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
           ),
-          trailing: GestureDetector(
-            onTap: (){
+        ) : Container(),
+        from!=ChatRooms.path ? ListTile(
+          textColor: navTextColor,
+          iconColor: navIconColor,
+          onTap: () async {
+            if (isEmailEnable) {
               Navigator.pop(context);
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8.0, left: 30.0, bottom: 8.0, right: 16),
-              child: Icon(
-                Icons.menu_open,
-                size: 28,
-              ),
-            ),
+              context
+                  .read<EmailEnabledProvider>()
+                  .setisEmailAwarenessEnabled(!isEmailEnable);
+
+              await Flushbar(
+                leftBarIndicatorColor: Colors.teal,
+                icon: Icon(
+                  Icons.check_circle,
+                  color: Colors.red[200],
+                  size: 30,
+                ),
+                title: 'Email Awareness Disabled.',
+                message: 'Your email awareness is disabled.',
+                duration: Duration(seconds: 2),
+              ).show(context);
+            } else {
+              Navigator.pop(context);
+              showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (_) => EmailPassWordFormDialog());
+            }
+          },
+          leading: Icon(
+            isEmailEnable ? Icons.unsubscribe_rounded : Icons.email_rounded,
+            size: 24,
           ),
-        ),
-        SizedBox(height: 10,),
-        Divider(
-          height: 1,
-          thickness: 1,
-          color: Colors.white,
-        ),
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: Text(
-              '2022 \u00a9 Bilas & Hridoy',
-              style: TextStyle(
-                color: Colors.grey[300],
-                fontSize: 16
+          title: Text(
+            isEmailEnable ? 'Disable Email' : 'Enable Email',
+            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
+          ),
+        ) : Container(),
+
+
+        from==ChatRooms.path ? ListTile(
+          textColor: navTextColor,
+          iconColor: navIconColor,
+          onTap: () async { },
+          leading: Icon(
+            AntDesign.wechat,
+            size: 24,
+          ),
+          title: Text(
+            'Create Group',
+            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
+          ),
+        ) : Container(),
+        from==ChatRooms.path ? ListTile(
+          textColor: navTextColor,
+          iconColor: navIconColor,
+          onTap: () async { },
+          leading: Icon(
+            AntDesign.wechat,
+            size: 24,
+          ),
+          title: Text(
+            'Create Group',
+            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
+          ),
+        ) : Container(),
+        from==ChatRooms.path ? ListTile(
+          textColor: navTextColor,
+          iconColor: navIconColor,
+          onTap: () async { },
+          leading: Icon(
+            AntDesign.wechat,
+            size: 24,
+          ),
+          title: Text(
+            'Create Group',
+            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
+          ),
+        ) : Container(),
+
+        from==ChatRooms.path ? ListTile(
+          textColor: navTextColor,
+          iconColor: navIconColor,
+          onTap: () async {
+            Navigator.pop(context);
+            Navigator.pushNamed(context, CreateRoomHomeScreen.path);
+          },
+          leading: Icon(
+            AntDesign.wechat,
+            size: 24,
+          ),
+          title: Text(
+            'Create Group',
+            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
+          ),
+        ) : Container(),
+
+
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ListTile(
+                textColor: navTextColor,
+                iconColor: navIconColor,
+                contentPadding: EdgeInsets.zero,
+                onTap: () {
+                  context.read<AuthenticationService>().signOut(context);
+                },
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Icon(
+                    Icons.logout,
+                    size: 24,
+                  ),
+                ),
+                title: Text(
+                  'Log Out',
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
+                ),
+                trailing: GestureDetector(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8.0, left: 30.0, bottom: 8.0, right: 16),
+                    child: Icon(
+                      Icons.menu_open,
+                      size: 28,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              SizedBox(height: 10,),
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.white,
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text(
+                    '2022 \u00a9 Bilas & Hridoy',
+                    style: TextStyle(
+                        color: Colors.grey[300],
+                        fontSize: 16
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
         )
       ],

@@ -37,7 +37,9 @@ class _TasksScreenState extends State<TasksScreen> {
     // Provider.of<TaskProvider>(context,listen: false).getTasks();
     super.initState();
 
-    setCurrentDate();
+    Future.microtask((){
+      setCurrentDate();
+    });
     fromDone = widget.fromDone;
     fromLeft = widget.fromLeft;
     taskCategory = widget.taskCategory;

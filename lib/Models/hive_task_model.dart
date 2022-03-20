@@ -255,3 +255,85 @@ class IsNew{
   });
 
 }
+
+
+
+
+@HiveType(typeId: 4)
+class EventModel extends HiveObject{
+
+  @HiveField(0)
+  String name;
+  @HiveField(1)
+  String eventID;
+  @HiveField(2)
+  String owner;
+  @HiveField(3)
+  List<String> members;
+
+  EventModel({
+    this.eventID,
+    this.name,
+    this.owner,
+    this.members,
+  });
+
+  EventModel.fromJson(Map<String, dynamic> json){
+    eventID = json['eventID'];
+    name = json['name'];
+    owner = json['owner'];
+    members = json['members'];
+  }
+
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['eventID'] = this.eventID;
+    data['name'] = this.name;
+    data['owner'] = this.owner;
+    data['members'] = this.members;
+    return data;
+  }
+}
+
+
+class PostModel {
+  String description;
+  String uid;
+  String eventID;
+  String postID;
+  DateTime datePublished;
+  String profImg;
+  String userName;
+
+  PostModel({
+    this.description,
+    this.uid,
+    this.postID,
+    this.datePublished,
+    this.profImg,
+    this.userName,
+    this.eventID
+  });
+
+  PostModel.fromJson(Map<String, dynamic> json){
+    description = json['description'];
+    uid = json['uid'];
+    postID = json['postID'];
+    datePublished = json['datePublished'];
+    profImg = json['profImg'];
+    eventID = json['eventID'];
+    userName = json['userName'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['description'] = this.description;
+    data['uid'] = this.uid;
+    data['postID'] = this.postID;
+    data['datePublished'] = this.datePublished;
+    data['profImg'] = this.profImg;
+    data['eventID'] = this.eventID;
+    data['userName'] = this.userName;
+    return data;
+  }
+}

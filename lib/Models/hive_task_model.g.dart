@@ -213,3 +213,46 @@ class IsNewAdapter extends TypeAdapter<IsNew> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+class EventModelAdapter extends TypeAdapter<EventModel> {
+  @override
+  final int typeId = 4;
+
+  @override
+  EventModel read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return EventModel(
+      eventID: fields[1] as String,
+      name: fields[0] as String,
+      owner: fields[2] as String,
+      members: (fields[3] as List)?.cast<String>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, EventModel obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.eventID)
+      ..writeByte(2)
+      ..write(obj.owner)
+      ..writeByte(3)
+      ..write(obj.members);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EventModelAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}

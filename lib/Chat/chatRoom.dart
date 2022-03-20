@@ -42,8 +42,8 @@ class _ChatRoomsState extends State<ChatRooms> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: buildAppbar(context, myScaffoldKey: _scaffoldKey),
-      drawer: NavigationDrawer(context),
-      bottomNavigationBar: BottomNavBar(),
+      drawer: NavigationDrawer(context,from: ChatRooms.path,),
+      bottomNavigationBar: BottomNavBar(from: ChatRooms.path,),
       floatingActionButton: floatingAddButton(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: Container(

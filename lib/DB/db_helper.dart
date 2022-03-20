@@ -5,12 +5,15 @@ import 'package:flutter_alarm_clock/flutter_alarm_clock.dart';
 import 'package:intl/intl.dart';
 import 'package:look_after/Models/userModel.dart';
 import 'package:look_after/providers/SelectedDateProvider.dart';
+import 'package:random_string/random_string.dart';
 import 'package:sqflite/sqflite.dart';
 import '../Models/hive_task_model.dart';
 import '../Models/tasks.dart';
 import '../Services/notification_services.dart';
 import '../boxes.dart';
 import 'dart:isolate';
+import 'package:uuid/uuid.dart';
+
 
 void printHello() {
   final DateTime now = DateTime.now();
@@ -294,6 +297,122 @@ class dbHelper{
     final box = Boxes.getTaskModel();
     box.add(task);
 
+  }
+
+
+
+
+  ///Event Related
+
+  static void addEventModelToHiveDB(EventModel event) async {
+
+    await addEventToFirebase(event);
+    await addEventToUserEventList(event);
+
+    final box = Boxes.getEventModel();
+    box.add(event);
+
+  }
+  static void addEventToFirebase(EventModel event) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    var  currentUser = _auth.currentUser;
+    String eventId = randomAlphaNumeric(6);
+    CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_details");
+    DocumentReference ref = _collectionRef.doc(eventId);
+    event.eventID = eventId;
+    event.owner = currentUser.email;
+
+    return ref.set(
+        event.toJson()
+    ).then((value) => print("Hello"));
+  }
+
+  static void addEventToUserEventList(EventModel event) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    var  currentUser = _auth.currentUser;
+    CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_lists");
+    return _collectionRef.doc(currentUser?.email).collection('lists').doc(event.eventID).set(
+        event.toJson()
+    ).then((value) => print("Added"));
+  }
+
+  static void addPostToFirebase(PostModel post) async {
+    CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_details");
+    return _collectionRef.doc(post.eventID).collection('posts').doc(post.postID).set(
+        post.toJson()
+    ).then((value) => print("Added Post"));
+  }
+
+  static void fetchEventRoomFromFirebase()async{
+
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    var  currentUser = _auth.currentUser;
+    QuerySnapshot qn = await _firestoreInstance.collection("event_lists").doc(currentUser?.email).collection('lists').get();
+
+    for(int i=0; i<qn.docs.length; i++){
+
+      Map<String, dynamic> event = {
+        'name' : qn.docs[i]['name'],
+        'eventID' : qn.docs[i]['eventID'],
+        'owner' : qn.docs[i]['owner'],
+        'members' : qn.docs[i]['members'],
+      };
+      addAllEventModelToHiveDB(EventModel.fromJson(event));
+    }
+  }
+
+  static void addAllEventModelToHiveDB(EventModel event) {
+    final box = Boxes.getEventModel();
+    box.add(event);
+  }
+
+  static void handleJoinEventRoom(String roomCode) async{
+
+    DocumentSnapshot  doc = await FirebaseFirestore.instance.collection("event_details").doc(roomCode).get();
+    try{
+      Map<String,dynamic> event = {
+        'eventID' : doc['eventID'],
+        'name' : doc['name'],
+        'owner' : doc['owner'],
+        'members' : doc['members'],
+      };
+      EventModel newEvent = await EventModel.fromJson(event);
+      var box = await Boxes.getEventModel();
+      await box.add(newEvent);
+      await addEventToUserEventList(newEvent);
+    }
+    catch(e){
+      return null;
+    }
+  }
+
+  static void postCommentToFirebase(String eventID, String postID, String text, String uid, String name, String profileImg)async{
+    try{
+      if(text.isNotEmpty){
+        String commentID = Uuid().v1();
+        await _firestoreInstance.collection('event_details').doc(eventID).collection('posts').doc(postID).collection('comments').doc(commentID).set(
+            {
+              'eventID' : eventID,
+              'profileImg' : profileImg,
+              'name' : name,
+              'uid' : uid,
+              'text' : text,
+              'commentID' : commentID,
+              'datePublished' : DateTime.now()
+            }
+        );
+
+        print("comment Added");
+      }
+    }catch(e){
+      print(e.toString());
+    }
+  }
+
+  static Future<void> deletePostFromFirebase(String eventID, String postID)async{
+
+    CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_details");
+    await _collectionRef.doc(eventID).collection("posts").doc(postID).delete().then((value) => print("Hello"));
   }
 
 
