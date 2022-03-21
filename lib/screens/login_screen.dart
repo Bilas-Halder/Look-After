@@ -131,6 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                     print(msg);
                                     if (msg == 'Signed In') {
+                                      await dbHelper.fetchEventRoomFromFirebase();
+
                                       await dbHelper.fetchTasksFromFirebase();
                                       setState(() {
                                         error = false;

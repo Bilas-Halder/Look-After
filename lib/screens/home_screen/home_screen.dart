@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
-      drawer: NavigationDrawer(context),
+      drawer: NavigationDrawer(context,from:HomeScreen.path, ),
       appBar: buildAppbar(context, fromHome: true, myScaffoldKey: _scaffoldKey),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,

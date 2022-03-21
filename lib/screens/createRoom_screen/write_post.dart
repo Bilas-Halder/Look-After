@@ -10,7 +10,7 @@ class WritePost extends StatelessWidget {
   WritePost({this.eventId});
   //const WritePost({Key? key}) : super(key: key);
 
-  UserModel user = dbHelper.getCurrentUser();
+  final UserModel user = dbHelper.getCurrentUser();
   final TextEditingController _descriptionController = TextEditingController();
 
   @override
@@ -20,7 +20,7 @@ class WritePost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -42,6 +42,9 @@ class WritePost extends StatelessWidget {
             ),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.teal
+            ),
               onPressed: (){
                 dbHelper.addPostToFirebase(
                     PostModel(

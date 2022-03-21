@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/screens/createRoom_screen/comment_card.dart';
+import 'package:look_after/screens/home_screen/appbar.dart';
+import 'package:look_after/utilities/navDrawer.dart';
 
 class CommentScreen extends StatefulWidget {
   //const CommentScreen({Key? key}) : super(key: key);
@@ -20,14 +22,15 @@ class _CommentScreenState extends State<CommentScreen> {
   TextEditingController _commentController = TextEditingController();
 
   UserModel user = dbHelper.getCurrentUser();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Comments"),
-        centerTitle: false,
-      ),
+      key: _scaffoldKey,
+      drawer: NavigationDrawer(context, from: CommentScreen.path),
+      appBar: buildAppbar(context, myScaffoldKey: _scaffoldKey, title: "Comments", fromEvent: true),
+      drawerEnableOpenDragGesture: true,
       bottomNavigationBar: SafeArea(
         child: Container(
           height: 80,
@@ -51,19 +54,22 @@ class _CommentScreenState extends State<CommentScreen> {
                   ),
                 ),
               ),
-              InkWell(
-                onTap: (){
-                  dbHelper.postCommentToFirebase(widget.eventId, widget.postId, _commentController.text, user.userID, user.name, user.imgURL);
-                },
-                child: Container(
-                  padding: EdgeInsets.all(8),
-                  child: Text("Post", style: TextStyle(color: Colors.blue)),
-                ),
-              )
+
+
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.teal
+                  ),
+                  onPressed: (){
+                    dbHelper.postCommentToFirebase(widget.eventId, widget.postId, _commentController.text, user.userID, user.name, user.imgURL);
+                  },
+                  child: Text("Comment")
+              ),
             ],
           ),
         ),
       ),
+
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('event_details').doc(widget.eventId).collection('posts').doc(widget.postId).collection('comments').orderBy('datePublished', descending: true).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){

@@ -13,43 +13,70 @@ class showCreateRoomDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20.0))),
       contentPadding: EdgeInsets.all(0),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            color: Colors.white,
-            child: Column(
-              children: [
-                Container(
-                  height: 200,
-                  width: 600,
-                  padding: EdgeInsets.all(10),
-                  child: Center(
-                    child: ListView(
+      content: Builder(
+        builder: (context) {
+          var width = MediaQuery.of(context).size.width;
+
+          return Container(
+            width: width -100,
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child:SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    color: Colors.white,
+                    child: Column(
+
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        MyInputField(
-                          title: "Room Name",
-                          controller: _titleController,
+                        Container(
+                          height: 175,
+                          width: 600,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Center(
+                              child: ListView(
+                                children: [
+                                  MyInputField(
+                                    title: "Room Name",
+                                    controller: _titleController,
+                                  ),
+                                  SizedBox(height: 10,),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.teal,
+                                      shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                                    ),
+
+
+                                      onPressed: (){
+                                      Navigator.pop(context);
+                                        dbHelper.addEventModelToHiveDB(
+                                            EventModel(
+                                              name: _titleController.text,
+                                            )
+                                        );
+                                      },
+                                      child: Text("Create")
+                                  )
+                                ],
+                              )
+                          ),
                         ),
-                        ElevatedButton(
-                            onPressed: (){
-                              dbHelper.addEventModelToHiveDB(
-                                EventModel(
-                                  name: _titleController.text,
-                                )
-                              );
-                            },
-                            child: Text("Create")
-                        )
                       ],
-                    )
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

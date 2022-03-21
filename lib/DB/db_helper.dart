@@ -1,10 +1,7 @@
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_alarm_clock/flutter_alarm_clock.dart';
 import 'package:intl/intl.dart';
-import 'package:look_after/Models/userModel.dart';
-import 'package:look_after/providers/SelectedDateProvider.dart';
 import 'package:random_string/random_string.dart';
 import 'package:sqflite/sqflite.dart';
 import '../Models/hive_task_model.dart';
@@ -321,6 +318,7 @@ class dbHelper{
     DocumentReference ref = _collectionRef.doc(eventId);
     event.eventID = eventId;
     event.owner = currentUser.email;
+    event.ownerID = currentUser.uid;
 
     return ref.set(
         event.toJson()
@@ -330,6 +328,8 @@ class dbHelper{
   static void addEventToUserEventList(EventModel event) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     var  currentUser = _auth.currentUser;
+    event.ownerID = currentUser.uid;
+
     CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_lists");
     return _collectionRef.doc(currentUser?.email).collection('lists').doc(event.eventID).set(
         event.toJson()

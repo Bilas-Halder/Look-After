@@ -228,6 +228,7 @@ class EventModelAdapter extends TypeAdapter<EventModel> {
       eventID: fields[1] as String,
       name: fields[0] as String,
       owner: fields[2] as String,
+      ownerID: fields[4] as String,
       members: (fields[3] as List)?.cast<String>(),
     );
   }
@@ -235,7 +236,7 @@ class EventModelAdapter extends TypeAdapter<EventModel> {
   @override
   void write(BinaryWriter writer, EventModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -243,7 +244,9 @@ class EventModelAdapter extends TypeAdapter<EventModel> {
       ..writeByte(2)
       ..write(obj.owner)
       ..writeByte(3)
-      ..write(obj.members);
+      ..write(obj.members)
+      ..writeByte(4)
+      ..write(obj.ownerID);
   }
 
   @override

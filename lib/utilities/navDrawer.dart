@@ -6,6 +6,9 @@ import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/EmailAwareness/emailFormDialog.dart';
 import 'package:look_after/providers/EmailEnabledProvider.dart';
 import 'package:look_after/screens/createRoom_screen/create_room_home.dart';
+import 'package:look_after/screens/createRoom_screen/event_room.dart';
+import 'package:look_after/screens/createRoom_screen/show_create_room_dialog.dart';
+import 'package:look_after/screens/createRoom_screen/show_join_roomDialog.dart';
 import 'package:look_after/screens/home_screen/home_screen.dart';
 import 'package:look_after/screens/profile_screen/profile_screen.dart';
 import 'package:provider/src/provider.dart';
@@ -84,7 +87,7 @@ Drawer NavigationDrawer(BuildContext context, {String from}) {
           iconColor: navIconColor,
           onTap: () {
             Navigator.pop(context);
-            if(routeName !=HomeScreen.path){
+            if (routeName != HomeScreen.path) {
               NavigateOnTap(context, HomeScreen.path);
             }
           },
@@ -102,10 +105,11 @@ Drawer NavigationDrawer(BuildContext context, {String from}) {
           iconColor: navIconColor,
           onTap: () {
             Navigator.pop(context);
-            if(routeName !=ChatRooms.path){
+            if (routeName != ChatRooms.path) {
               NavigateOnTap(context, ChatRooms.path);
             }
-          },          leading: Padding(
+          },
+          leading: Padding(
             padding: const EdgeInsets.all(3.0),
             child: Icon(
               Icons.chat,
@@ -122,10 +126,11 @@ Drawer NavigationDrawer(BuildContext context, {String from}) {
           iconColor: navIconColor,
           onTap: () {
             Navigator.pop(context);
-            if(routeName !=ProfileScreen.path){
+            if (routeName != ProfileScreen.path) {
               NavigateOnTap(context, ProfileScreen.path);
             }
-          },          leading: Icon(
+          },
+          leading: Icon(
             Icons.person_rounded,
             size: 26,
           ),
@@ -134,185 +139,159 @@ Drawer NavigationDrawer(BuildContext context, {String from}) {
             style: TextStyle(fontSize: 18),
           ),
         ),
+        ListTile(
+          textColor: navTextColor,
+          iconColor: navIconColor,
+          onTap: () {
+            Navigator.pop(context);
+            if (routeName != CreateRoomHomeScreen.path) {
+              Navigator.pushNamed(context, CreateRoomHomeScreen.path);
+            }
+          },
+          leading: Icon(
+            Icons.event_note,
+            size: 26,
+          ),
+          title: Text(
+            'Event Room',
+            style: TextStyle(fontSize: 18),
+          ),
+        ),
         Divider(
           height: 1,
           thickness: 1,
           color: Colors.white,
         ),
-        from!=ChatRooms.path ? ListTile(
-          textColor: navTextColor,
-          iconColor: navIconColor,
-          onTap: () async {
-            if (isEmailEnable) {
-              Navigator.pop(context);
-              context
-                  .read<EmailEnabledProvider>()
-                  .setisEmailAwarenessEnabled(!isEmailEnable);
 
-              await Flushbar(
-                leftBarIndicatorColor: Colors.teal,
-                icon: Icon(
-                  Icons.check_circle,
-                  color: Colors.red[200],
-                  size: 30,
+        from == HomeScreen.path
+            ? ListTile(
+                textColor: navTextColor,
+                iconColor: navIconColor,
+                onTap: () async {
+                  if (isEmailEnable) {
+                    Navigator.pop(context);
+                    context
+                        .read<EmailEnabledProvider>()
+                        .setisEmailAwarenessEnabled(!isEmailEnable);
+
+                    await Flushbar(
+                      leftBarIndicatorColor: Colors.teal,
+                      icon: Icon(
+                        Icons.check_circle,
+                        color: Colors.red[200],
+                        size: 30,
+                      ),
+                      title: 'Email Awareness Disabled.',
+                      message: 'Your email awareness is disabled.',
+                      duration: Duration(seconds: 2),
+                    ).show(context);
+                  } else {
+                    Navigator.pop(context);
+                    showDialog(
+                        context: context,
+                        useRootNavigator: false,
+                        builder: (_) => EmailPassWordFormDialog());
+                  }
+                },
+                leading: Icon(
+                  isEmailEnable
+                      ? Icons.unsubscribe_rounded
+                      : Icons.email_rounded,
+                  size: 24,
                 ),
-                title: 'Email Awareness Disabled.',
-                message: 'Your email awareness is disabled.',
-                duration: Duration(seconds: 2),
-              ).show(context);
-            } else {
-              Navigator.pop(context);
-              showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (_) => EmailPassWordFormDialog());
-            }
-          },
-          leading: Icon(
-            isEmailEnable ? Icons.unsubscribe_rounded : Icons.email_rounded,
-            size: 24,
-          ),
-          title: Text(
-            isEmailEnable ? 'Disable Email' : 'Enable Email',
-            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
-          ),
-        ) : Container(),
-        from!=ChatRooms.path ? ListTile(
-          textColor: navTextColor,
-          iconColor: navIconColor,
-          onTap: () async {
-            if (isEmailEnable) {
-              Navigator.pop(context);
-              context
-                  .read<EmailEnabledProvider>()
-                  .setisEmailAwarenessEnabled(!isEmailEnable);
-
-              await Flushbar(
-                leftBarIndicatorColor: Colors.teal,
-                icon: Icon(
-                  Icons.check_circle,
-                  color: Colors.red[200],
-                  size: 30,
+                title: Text(
+                  isEmailEnable ? 'Disable Email' : 'Enable Email',
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
                 ),
-                title: 'Email Awareness Disabled.',
-                message: 'Your email awareness is disabled.',
-                duration: Duration(seconds: 2),
-              ).show(context);
-            } else {
-              Navigator.pop(context);
-              showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (_) => EmailPassWordFormDialog());
-            }
-          },
-          leading: Icon(
-            isEmailEnable ? Icons.unsubscribe_rounded : Icons.email_rounded,
-            size: 24,
-          ),
-          title: Text(
-            isEmailEnable ? 'Disable Email' : 'Enable Email',
-            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
-          ),
-        ) : Container(),
-        from!=ChatRooms.path ? ListTile(
-          textColor: navTextColor,
-          iconColor: navIconColor,
-          onTap: () async {
-            if (isEmailEnable) {
-              Navigator.pop(context);
-              context
-                  .read<EmailEnabledProvider>()
-                  .setisEmailAwarenessEnabled(!isEmailEnable);
-
-              await Flushbar(
-                leftBarIndicatorColor: Colors.teal,
-                icon: Icon(
-                  Icons.check_circle,
-                  color: Colors.red[200],
-                  size: 30,
+              )
+            : Container(),
+        from == ChatRooms.path
+            ? ListTile(
+                textColor: navTextColor,
+                iconColor: navIconColor,
+                onTap: () async {},
+                leading: Icon(
+                  AntDesign.wechat,
+                  size: 24,
                 ),
-                title: 'Email Awareness Disabled.',
-                message: 'Your email awareness is disabled.',
-                duration: Duration(seconds: 2),
-              ).show(context);
-            } else {
-              Navigator.pop(context);
-              showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (_) => EmailPassWordFormDialog());
-            }
-          },
-          leading: Icon(
-            isEmailEnable ? Icons.unsubscribe_rounded : Icons.email_rounded,
-            size: 24,
-          ),
-          title: Text(
-            isEmailEnable ? 'Disable Email' : 'Enable Email',
-            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
-          ),
-        ) : Container(),
+                title: Text(
+                  'Create Group',
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
+                ),
+              )
+            : Container(),
+        from == CreateRoomHomeScreen.path || from == EventRoomScreen.path
+            ? ListTile(
+                textColor: navTextColor,
+                iconColor: navIconColor,
+                onTap: () async {
+                  Navigator.pop(context);
+                  showDialog(
+                      context: context,
+                      useRootNavigator: false,
+                      builder: (context) => showCreateRoomDialog());
+                },
+                leading: Stack(
+                  children: [
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 24,
+                    ),
+                    Positioned(
+                      right: -3,
+                      bottom: 3,
+                      child: Icon(
+                        Icons.edit,
+                        size: 17,
+                      ),
+                    ),
+                  ],
+                ),
+                title: Text(
+                  'Create Event',
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
+                ),
+              )
+            : Container(),
+        from == CreateRoomHomeScreen.path || from == EventRoomScreen.path
+            ? ListTile(
+                textColor: navTextColor,
+                iconColor: navIconColor,
+                onTap: () async {
+                  Navigator.pop(context);
 
-
-        from==ChatRooms.path ? ListTile(
-          textColor: navTextColor,
-          iconColor: navIconColor,
-          onTap: () async { },
-          leading: Icon(
-            AntDesign.wechat,
-            size: 24,
-          ),
-          title: Text(
-            'Create Group',
-            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
-          ),
-        ) : Container(),
-        from==ChatRooms.path ? ListTile(
-          textColor: navTextColor,
-          iconColor: navIconColor,
-          onTap: () async { },
-          leading: Icon(
-            AntDesign.wechat,
-            size: 24,
-          ),
-          title: Text(
-            'Create Group',
-            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
-          ),
-        ) : Container(),
-        from==ChatRooms.path ? ListTile(
-          textColor: navTextColor,
-          iconColor: navIconColor,
-          onTap: () async { },
-          leading: Icon(
-            AntDesign.wechat,
-            size: 24,
-          ),
-          title: Text(
-            'Create Group',
-            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
-          ),
-        ) : Container(),
-
-        from==ChatRooms.path ? ListTile(
-          textColor: navTextColor,
-          iconColor: navIconColor,
-          onTap: () async {
-            Navigator.pop(context);
-            Navigator.pushNamed(context, CreateRoomHomeScreen.path);
-          },
-          leading: Icon(
-            AntDesign.wechat,
-            size: 24,
-          ),
-          title: Text(
-            'Create Group',
-            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
-          ),
-        ) : Container(),
-
-
+                  showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: (context) => showJoinRoomDialog(),
+                  );
+                },
+                leading: Stack(
+                  children: [
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 24,
+                    ),
+                    Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 2.0),
+                          child: Icon(
+                            Icons.add,
+                            size: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                title: Text(
+                  'Join Event Room',
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
+                ),
+              )
+            : Container(),
         Expanded(
           child: Column(
             mainAxisSize: MainAxisSize.max,
@@ -337,11 +316,12 @@ Drawer NavigationDrawer(BuildContext context, {String from}) {
                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 19),
                 ),
                 trailing: GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.pop(context);
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0, left: 30.0, bottom: 8.0, right: 16),
+                    padding: const EdgeInsets.only(
+                        top: 8.0, left: 30.0, bottom: 8.0, right: 16),
                     child: Icon(
                       Icons.menu_open,
                       size: 28,
@@ -349,7 +329,9 @@ Drawer NavigationDrawer(BuildContext context, {String from}) {
                   ),
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Divider(
                 height: 1,
                 thickness: 1,
@@ -360,10 +342,7 @@ Drawer NavigationDrawer(BuildContext context, {String from}) {
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: Text(
                     '2022 \u00a9 Bilas & Hridoy',
-                    style: TextStyle(
-                        color: Colors.grey[300],
-                        fontSize: 16
-                    ),
+                    style: TextStyle(color: Colors.grey[300], fontSize: 16),
                   ),
                 ),
               )
@@ -376,6 +355,5 @@ Drawer NavigationDrawer(BuildContext context, {String from}) {
 }
 
 void NavigateOnTap(BuildContext context, String path) {
-  Navigator.pop(context);
   Navigator.pushNamed(context, path);
 }

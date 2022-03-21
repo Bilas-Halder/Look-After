@@ -26,6 +26,7 @@ class AuthenticationService {
     await Boxes.getTaskCategoryModel().clear();
     await Boxes.getTaskModel().clear();
     await Boxes.getUserModel().clear();
+    await Boxes.getEventModel().clear();
 
     await _firebaseAuth.signOut();
     Navigator.pushNamedAndRemoveUntil(context,WelcomeScreen.path,(Route<dynamic> route) => false);
@@ -112,8 +113,14 @@ class AuthenticationService {
               edited: false,
               verified: userDetails.emailVerified,
               username: userDetails.displayName.replaceAll(' ', '')))
-          .then((value) {
-        Navigator.pushReplacementNamed(context, HomeScreen.path);
+          .then((value) async{
+
+        try{
+          await dbHelper.fetchEventRoomFromFirebase();
+        }
+        catch(e) { }
+
+        Navigator.pushNamedAndRemoveUntil(context,HomeScreen.path,(Route<dynamic> route) => false);
       });
     }
     else{

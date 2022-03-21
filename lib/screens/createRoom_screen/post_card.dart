@@ -10,7 +10,7 @@ import 'package:look_after/screens/tasks_screen/add_task.dart';
 class PostCard extends StatefulWidget {
   //const PostCard({Key? key}) : super(key: key);
   final snap;
-  String eventId;
+  final String eventId;
   PostCard({this.snap, this.eventId});
 
   @override
@@ -43,19 +43,32 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      decoration: BoxDecoration(
+        // color: Color(0xffc6e5e4),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(1.0, 1.0), //(x,y)
+            blurRadius: 3.0,
+          ),
+        ]
+      ),
+
+      
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4).copyWith(right: 0),
-          ),
-          Container(
-            child:
-            Row(
+            padding: EdgeInsets.symmetric(vertical: 4),
+            child: Row(
               children: [
                 CircleAvatar(
-                  radius: 16,
+                  radius: 17,
                   backgroundImage: NetworkImage(widget.snap['profImg']),
                 ),
                 Expanded(
@@ -68,7 +81,8 @@ class _PostCardState extends State<PostCard> {
                           Text(
                             widget.snap['userName'],
                             style: TextStyle(
-                                fontWeight: FontWeight.bold
+                                fontWeight: FontWeight.bold,
+                              fontSize: 17
                             ),
                           )
                         ],
@@ -107,71 +121,85 @@ class _PostCardState extends State<PostCard> {
           ),
 
           SizedBox(
-            width: double.infinity,
+            width: MediaQuery.of(context).size.width*0.8,
             child: Text(
               widget.snap['description']
             ),
           ),
 
-          Row(
-            children: [
-              IconButton(
-                  onPressed: (){
+          SizedBox(height: 15,),
 
-                  },
-                  icon: Icon(Icons.create_outlined)
-              ),
-              IconButton(
-                  onPressed: (){
-                    print(widget.snap['postID']);
-                    //Navigator.pushNamed(context, CommentScreen.path);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CommentScreen(postId: widget.snap['postID'], eventId: widget.eventId)
-                        )
-                    );
-                  },
-                  icon: Icon(Icons.comment_outlined)
-              ),
-              Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: IconButton(
-                      onPressed: (){},
-                      icon: Icon(Icons.bookmark_outlined),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+
+              Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: (){
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CommentScreen(postId: widget.snap['postID'], eventId: widget.eventId)
+                            )
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          commentLength==0? "Be first to comment" : "View all ${commentLength} comments",
+                          style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                        ),
+                      ),
                     ),
-                  )),
+                    InkWell(
+                      onTap: (){},
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          DateFormat.yMMMd().format(widget.snap['datePublished'].toDate()),
+                          style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              Expanded(
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: (){
+
+                        },
+                        icon: Icon(Icons.create_outlined)
+                    ),
+                    IconButton(
+                        onPressed: (){
+                          print(widget.snap['postID']);
+                          //Navigator.pushNamed(context, CommentScreen.path);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CommentScreen(postId: widget.snap['postID'], eventId: widget.eventId)
+                              )
+                          );
+                        },
+                        icon: Icon(Icons.comment_outlined)
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
-          Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  onTap: (){},
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 4),
-                    child: Text(
-                      "View all ${commentLength} comments",
-                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: (){},
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 4),
-                    child: Text(
-                      DateFormat.yMMMd().format(widget.snap['datePublished'].toDate()),
-                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
         ],
       ),
     );

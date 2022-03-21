@@ -270,11 +270,14 @@ class EventModel extends HiveObject{
   String owner;
   @HiveField(3)
   List<String> members;
+  @HiveField(4)
+  String ownerID;
 
   EventModel({
     this.eventID,
     this.name,
     this.owner,
+    this.ownerID,
     this.members,
   });
 
@@ -282,6 +285,7 @@ class EventModel extends HiveObject{
     eventID = json['eventID'];
     name = json['name'];
     owner = json['owner'];
+    ownerID = json['ownerID'];
     members = json['members'];
   }
 
@@ -290,6 +294,7 @@ class EventModel extends HiveObject{
     data['eventID'] = this.eventID;
     data['name'] = this.name;
     data['owner'] = this.owner;
+    data['ownerID'] = this.ownerID;
     data['members'] = this.members;
     return data;
   }

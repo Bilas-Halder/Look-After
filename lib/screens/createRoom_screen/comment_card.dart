@@ -17,9 +17,11 @@ class _CommentCardState extends State<CommentCard> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage("images/hridoy.png"),
+            backgroundImage: NetworkImage(widget.snap['profileImg']),
             radius: 18,
           ),
           Expanded(
@@ -27,34 +29,28 @@ class _CommentCardState extends State<CommentCard> {
               padding: const EdgeInsets.only(left: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                            text: widget.snap['name'],
-                            style: TextStyle(fontWeight: FontWeight.bold,
-                              color: Colors.black
-                            )
-                        ),
-                        TextSpan(
-                          text: "  "
-                        ),
-                        TextSpan(
-                          text: widget.snap['text'],
-                          style: TextStyle(color: Colors.black)
-                        ),
-                      ],
+                  SizedBox(height: 5,),
+                  Text(
+                    widget.snap['name'],
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 18
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      DateFormat.yMMMd().format(widget.snap['datePublished'].toDate()),
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400)
-                      ),
-                    ),
+                  SizedBox(height: 5,),
+                  Text(
+                      widget.snap['text'],
+                      style: TextStyle(color: Colors.black87),
+                  ),
+                  SizedBox(height: 10,),
+                  Text(
+                      DateFormat.yMMMd()
+                          .format(widget.snap['datePublished'].toDate()),
+                      style: TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w400)),
                 ],
               ),
             ),

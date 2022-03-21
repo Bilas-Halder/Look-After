@@ -1,15 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:look_after/Authentication/Authentication.dart';
 import 'package:look_after/DB/db_helper.dart';
-import 'package:look_after/EmailAwareness/emailFormDialog.dart';
 import 'package:look_after/Models/hive_task_model.dart';
-import 'package:look_after/providers/EmailEnabledProvider.dart';
-import 'package:provider/src/provider.dart';
 
-import '../profile_screen/profile_screen.dart';
-
-AppBar buildAppbar(BuildContext context, {bool fromHome, String title, GlobalKey<ScaffoldState> myScaffoldKey}) {
+AppBar buildAppbar(BuildContext context, {bool fromHome, bool fromEvent, EventModel event, String title, GlobalKey<ScaffoldState> myScaffoldKey}) {
   UserModel user = dbHelper.getCurrentUser();
   String t = fromHome==true ? 'Hi, ' : '';
 
@@ -19,7 +13,7 @@ AppBar buildAppbar(BuildContext context, {bool fromHome, String title, GlobalKey
     elevation: 0,
     title: Row(
       children: [
-        Container(
+        fromEvent==true ? Container(): Container(
           height: 45,
           width: 45,
           decoration: BoxDecoration(
@@ -47,11 +41,27 @@ AppBar buildAppbar(BuildContext context, {bool fromHome, String title, GlobalKey
                   ),
                 ),
         ),
+
+        fromEvent==true ?  Container(
+          child: Icon(
+            Icons.calendar_today_rounded,
+            color: Colors.white,
+            size: 18,
+          ),
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              color: Colors.red[900],
+              shape: BoxShape.circle),
+        ) : Container(),
+
         SizedBox(
           width: 15,
         ),
+
+
+
         Text(
-          t+'${user?.name != null ?user?.name?.split(' ')[0]:'Mr.'}!',
+          title!=null && title!='' ? title : fromEvent==true ? event.name : t+'${user?.name != null ?user?.name?.split(' ')[0]:'Mr.'}!',
           style: TextStyle(
             color: Colors.black,
             fontSize: 26,

@@ -18,13 +18,17 @@ class RoomPost extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: snapshot.data.docs.length,
-            itemBuilder: (ctx, index) => Container(
-              child: PostCard(
-                  snap: snapshot.data.docs[index].data(),
-                  eventId : eventId
+          return Expanded(
+            child: ListView.builder(
+
+              physics: BouncingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: snapshot.data.docs.length,
+              itemBuilder: (ctx, index) => Container(
+                child: PostCard(
+                    snap: snapshot.data.docs[index].data(),
+                    eventId : eventId
+                ),
               ),
             ),
           );

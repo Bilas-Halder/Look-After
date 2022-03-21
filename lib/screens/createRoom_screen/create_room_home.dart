@@ -5,60 +5,33 @@ import 'package:look_after/screens/createRoom_screen/appbar_room.dart';
 import 'package:look_after/screens/createRoom_screen/event_screen.dart';
 import 'package:look_after/screens/createRoom_screen/show_create_room_dialog.dart';
 import 'package:look_after/screens/createRoom_screen/show_join_roomDialog.dart';
+import 'package:look_after/screens/home_screen/appbar.dart';
+import 'package:look_after/screens/home_screen/bottomNavigationBar.dart';
 import 'package:look_after/screens/tasks_screen/shareDialog.dart';
+import 'package:look_after/utilities/navDrawer.dart';
 
 import '../../utilities/input_field.dart';
 
-class CreateRoomHomeScreen  extends StatelessWidget {
+class CreateRoomHomeScreen extends StatelessWidget {
   static const String path = '/create_room_home';
   //const ({Key? key}) : super(key: key);
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: roomScreenAppbar(),
-      body: Container(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                      onPressed: (){
-                        showDialog(
-                            context: context,
-                            useRootNavigator: false,
-                            builder: (context) => showCreateRoomDialog()
-                        );
-                      },
-                      child: Text(
-                        "Create"
-                      )
-                  ),
-                  ElevatedButton(
-                      onPressed: (){
-                        showDialog(
-                            context: context,
-                            useRootNavigator: false,
-                            builder: (context) => showJoinRoomDialog()
-                        );
-                      },
-                      child: Text(
-                        "Join"
-                      )
-                  )
-                ],
-              ),
-            ),
-            RoomScreen()
-          ],
-        ),
-      )
-    );
+        key: _scaffoldKey,
+        drawer: NavigationDrawer(context, from: CreateRoomHomeScreen.path),
+        appBar: buildAppbar(context, myScaffoldKey: _scaffoldKey),
+        drawerEnableOpenDragGesture: true,
+        bottomNavigationBar: BottomNavBar(from: CreateRoomHomeScreen.path,),
+        body: Container(
+          child: Column(
+            children: [
+              RoomScreen()
+            ],
+          ),
+        ));
   }
 }
 
