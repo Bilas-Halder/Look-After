@@ -259,7 +259,7 @@ class IsNew{
 
 
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 10)
 class EventModel extends HiveObject{
 
   @HiveField(0)
@@ -286,7 +286,7 @@ class EventModel extends HiveObject{
     name = json['name'];
     owner = json['owner'];
     ownerID = json['ownerID'];
-    members = json['members'];
+    members = List.from(json['members']);
   }
 
   Map<String, dynamic> toJson(){

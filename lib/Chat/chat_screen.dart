@@ -66,7 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
         "messageId" : messageId,
       };
 
-      DatabaseMethods()
+      ChatHelper
           .addMessage(chatRoomId, messageId, messageInfoMap)
           .then((value) {
         Map<String, dynamic> lastMessageInfoMap = {
@@ -75,7 +75,7 @@ class _ChatScreenState extends State<ChatScreen> {
           "lastMessageSendBy": myUserName
         };
 
-        DatabaseMethods().updateLastMessageSend(chatRoomId, lastMessageInfoMap);
+        ChatHelper.updateLastMessageSend(chatRoomId, lastMessageInfoMap);
 
         if (sendClicked) {
           // remove the text in the message input field
@@ -203,7 +203,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   getAndSetMessages() async {
-    messageStream = await DatabaseMethods().getChatRoomMessages(chatRoomId);
+    messageStream = await ChatHelper.getChatRoomMessages(chatRoomId);
     setState(() {});
   }
 

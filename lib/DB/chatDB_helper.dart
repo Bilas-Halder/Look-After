@@ -79,6 +79,13 @@ class ChatHelper{
     ).then((value) => print("Task shared completely"));
   }
 
+  static updateLastMessageSend(String chatRoomId, Map lastMessageInfoMap) {
+    return FirebaseFirestore.instance
+        .collection("chat_rooms")
+        .doc(chatRoomId)
+        .update(lastMessageInfoMap);
+  }
+
 
   static getSharedTask(String messageId) async{
 

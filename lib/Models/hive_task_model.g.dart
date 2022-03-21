@@ -216,7 +216,7 @@ class IsNewAdapter extends TypeAdapter<IsNew> {
 
 class EventModelAdapter extends TypeAdapter<EventModel> {
   @override
-  final int typeId = 4;
+  final int typeId = 10;
 
   @override
   EventModel read(BinaryReader reader) {

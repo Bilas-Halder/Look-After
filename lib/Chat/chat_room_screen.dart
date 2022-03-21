@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:look_after/Authentication/Authentication.dart';
 import 'package:look_after/DB/chatDB.dart';
+import 'package:look_after/DB/chatDB_helper.dart';
 import 'package:look_after/screens/login_screen.dart';
 import 'package:provider/src/provider.dart';
 
@@ -129,7 +130,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   getChatRooms() async {
-    chatRoomsStream = await DatabaseMethods().getChatRooms();
+    chatRoomsStream = await ChatHelper.getChatRooms();
     setState(() {});
   }
 
@@ -230,19 +231,8 @@ class ChatRoomListTile extends StatefulWidget {
 class _ChatRoomListTileState extends State<ChatRoomListTile> {
   String profilePicUrl = "", name = "", username = "";
 
-  getThisUserInfo() async {
-    username =
-        widget.chatRoomId.replaceAll(widget.myUsername, "").replaceAll("_", "");
-    username = 'fakeboy250_lookafter110';
-    QuerySnapshot querySnapshot = await DatabaseMethods().getUserInfo(username);
-    name = "${querySnapshot.docs[0]["name"]}";
-    profilePicUrl = "https://firebasestorage.googleapis.com/v0/b/lu-cse-community.appspot.com/o/postImage%2F2022-01-03%2016%3A01%3A12.079290?alt=media&token=b96789dd-61fe-4d2c-acd7-498f1496cc66";
-    setState(() {});
-  }
-
   @override
   void initState() {
-    getThisUserInfo();
     super.initState();
   }
 

@@ -34,6 +34,7 @@ dependencies:
   flutter_zoom_drawer: ^2.3.1+1
   image_cropper: ^1.5.0
   flutter_icons: ^1.1.0
+  rxdart: ^0.27.1
 
 
 

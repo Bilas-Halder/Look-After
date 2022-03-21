@@ -45,18 +45,22 @@ class WritePost extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               primary: Colors.teal
             ),
-              onPressed: (){
-                dbHelper.addPostToFirebase(
-                    PostModel(
-                        description: _descriptionController.text,
-                        datePublished: DateTime.now(),
-                        postID: Uuid().v1(),
-                        eventID: eventId,
-                        profImg: user.imgURL,
-                        uid: user.userID,
-                        userName: user.name
-                    )
-                );
+              onPressed: ()async{
+                try{
+                  await dbHelper.addPostToFirebase(
+                      PostModel(
+                          description: _descriptionController.text,
+                          datePublished: DateTime.now(),
+                          postID: Uuid().v1(),
+                          eventID: eventId,
+                          profImg: user.imgURL,
+                          uid: user.userID,
+                          userName: user.name
+                      )
+                  );
+                  _descriptionController.clear();
+                }
+                catch(e){}
               },
               child: Text("Post")
           ),

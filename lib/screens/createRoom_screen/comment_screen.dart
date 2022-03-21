@@ -29,12 +29,14 @@ class _CommentScreenState extends State<CommentScreen> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: NavigationDrawer(context, from: CommentScreen.path),
-      appBar: buildAppbar(context, myScaffoldKey: _scaffoldKey, title: "Comments", fromEvent: true),
+      appBar: buildAppbar(context,
+          myScaffoldKey: _scaffoldKey, title: "Comments", fromEvent: true),
       drawerEnableOpenDragGesture: true,
       bottomNavigationBar: SafeArea(
         child: Container(
           height: 80,
-          margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          margin:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           padding: EdgeInsets.only(left: 16, right: 8),
           child: Row(
             children: [
@@ -48,44 +50,55 @@ class _CommentScreenState extends State<CommentScreen> {
                   child: TextField(
                     controller: _commentController,
                     decoration: InputDecoration(
-                        hintText: "comment as ${user.name}",
-                        border: InputBorder.none,
+                      hintText: "comment as ${user.name}",
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
               ),
-
-
               ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.teal
-                  ),
-                  onPressed: (){
-                    dbHelper.postCommentToFirebase(widget.eventId, widget.postId, _commentController.text, user.userID, user.name, user.imgURL);
+                  style: ElevatedButton.styleFrom(primary: Colors.teal),
+                  onPressed: () async{
+                    try{
+                      await dbHelper.postCommentToFirebase(
+                          widget.eventId,
+                          widget.postId,
+                          _commentController.text,
+                          user.userID,
+                          user.name,
+                          user.imgURL);
+
+                      _commentController.clear();
+                    }
+                    catch(e){}
                   },
-                  child: Text("Comment")
-              ),
+                  child: Text("Comment")),
             ],
           ),
         ),
       ),
-
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('event_details').doc(widget.eventId).collection('posts').doc(widget.postId).collection('comments').orderBy('datePublished', descending: true).snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot){
-          if(snapshot.connectionState == ConnectionState.waiting){
+        stream: FirebaseFirestore.instance
+            .collection('event_details')
+            .doc(widget.eventId)
+            .collection('posts')
+            .doc(widget.postId)
+            .collection('comments')
+            .orderBy('datePublished', descending: true)
+            .snapshots(),
+        builder: (context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
           return ListView.builder(
               itemCount: snapshot.data.docs.length,
-              itemBuilder: (context, index) => CommentCard(snap: snapshot.data.docs[index])
-          );
+              itemBuilder: (context, index) =>
+                  CommentCard(snap: snapshot.data.docs[index]));
         },
       ),
     );
   }
 }
-
-

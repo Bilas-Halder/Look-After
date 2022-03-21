@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,8 +62,22 @@ class showJoinRoomDialog extends StatelessWidget {
 
                                       onPressed: () async {
 
+                                        var f =await dbHelper.handleJoinEventRoom(_RoomCode.text);
                                         Navigator.pop(context);
-                                        await dbHelper.handleJoinEventRoom(_RoomCode.text);
+                                          if(f==false){
+                                            await Flushbar(
+                                              leftBarIndicatorColor: Colors.red,
+                                              icon: Icon(
+                                                Icons.done,
+                                                color: Colors.red[200],
+                                                size: 30,
+                                              ),
+                                              title: 'You are already in this event.',
+                                              message:
+                                              'You are already joined this event.',
+                                              duration: Duration(seconds: 2),
+                                            ).show(context);
+                                          }
                                       },
                                       child: Text("Join"),
                                   )

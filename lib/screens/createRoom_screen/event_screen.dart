@@ -193,7 +193,7 @@ class _BuildEventListViewState extends State<BuildEventListView> {
                                     SizedBox(
                                       width: 12,
                                     ),
-                                    //TODO - add delete and share option
+
                                     EventPopupMenu(event: event,),
                                   ],
                                 ),

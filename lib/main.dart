@@ -33,15 +33,15 @@ Future<void> main() async {
   /// hive database
   await Hive.initFlutter();
   
-  Hive.registerAdapter(TaskModelAdapter());
+  await Hive.registerAdapter(TaskModelAdapter());
   await Hive.openBox<TaskModel>('taskModels');
-  Hive.registerAdapter(TaskCategoryModelAdapter());
+  await Hive.registerAdapter(TaskCategoryModelAdapter());
   await Hive.openBox<TaskCategoryModel>('taskCategoryModels');
-  Hive.registerAdapter(UserModelAdapter());
+  await Hive.registerAdapter(UserModelAdapter());
   await Hive.openBox<UserModel>('userModel');
-  Hive.registerAdapter(IsNewAdapter());
+  await Hive.registerAdapter(IsNewAdapter());
   await Hive.openBox<IsNew>('isNew');
-  Hive.registerAdapter(EventModelAdapter());
+  await Hive.registerAdapter(EventModelAdapter());
   await Hive.openBox<EventModel>('eventModel');
 
 

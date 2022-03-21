@@ -302,6 +302,13 @@ class dbHelper{
   ///Event Related
 
   static void addEventModelToHiveDB(EventModel event) async {
+    var user = await getCurrentUser();
+    if(event.members==null){
+      event.members = [user.userID];
+    }
+    else{
+      event.members.add(user.userID);
+    }
 
     await addEventToFirebase(event);
     await addEventToUserEventList(event);
@@ -319,6 +326,7 @@ class dbHelper{
     event.eventID = eventId;
     event.owner = currentUser.email;
     event.ownerID = currentUser.uid;
+    event.members=[currentUser.uid];
 
     return ref.set(
         event.toJson()
@@ -328,7 +336,6 @@ class dbHelper{
   static void addEventToUserEventList(EventModel event) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     var  currentUser = _auth.currentUser;
-    event.ownerID = currentUser.uid;
 
     CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_lists");
     return _collectionRef.doc(currentUser?.email).collection('lists').doc(event.eventID).set(
@@ -355,7 +362,8 @@ class dbHelper{
         'name' : qn.docs[i]['name'],
         'eventID' : qn.docs[i]['eventID'],
         'owner' : qn.docs[i]['owner'],
-        'members' : qn.docs[i]['members'],
+        'ownerID' : qn.docs[i]['ownerID'],
+        'members' : List.from(qn.docs[i]['members']),
       };
       addAllEventModelToHiveDB(EventModel.fromJson(event));
     }
@@ -366,23 +374,60 @@ class dbHelper{
     box.add(event);
   }
 
-  static void handleJoinEventRoom(String roomCode) async{
+  static Future<bool> handleJoinEventRoom(String roomCode) async{
 
-    DocumentSnapshot  doc = await FirebaseFirestore.instance.collection("event_details").doc(roomCode).get();
     try{
+    DocumentSnapshot  doc = await FirebaseFirestore.instance.collection("event_details").doc(roomCode).get();
+
+      print(roomCode);
       Map<String,dynamic> event = {
         'eventID' : doc['eventID'],
         'name' : doc['name'],
         'owner' : doc['owner'],
-        'members' : doc['members'],
+        'ownerID' : doc['ownerID'],
+        'members' : List.from(doc['members']),
       };
-      EventModel newEvent = await EventModel.fromJson(event);
+      EventModel newEvent =await EventModel.fromJson(event);
+    print(roomCode+' 1');
+    print(newEvent);
+      var user = await getCurrentUser();
+      bool flag = false;
+
+      print(newEvent.ownerID+' '+user.userID);
+
+      if(newEvent.ownerID==user.userID){
+        flag = true;
+      }
+      else{
+        if(newEvent.members!=null){
+          for(var i in newEvent.members){
+            if(i == user.userID){
+              flag = true;
+              break;
+            }
+          }
+        }
+      }
+
+      if(flag){
+        return false;
+      }
+
+
+      if(newEvent.members==null){
+        newEvent.members = [user.userID];
+      }
+      else{
+        newEvent.members.add(user.userID);
+      }
+
       var box = await Boxes.getEventModel();
       await box.add(newEvent);
       await addEventToUserEventList(newEvent);
+      return true;
     }
     catch(e){
-      return null;
+      return false;
     }
   }
 
@@ -413,6 +458,31 @@ class dbHelper{
 
     CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_details");
     await _collectionRef.doc(eventID).collection("posts").doc(postID).delete().then((value) => print("Hello"));
+  }
+
+  static Future<String> deleteEventFromFirebase(String eventID, EventModel event)async{
+
+    var currentUser= getCurrentUser();
+    if(event.ownerID!=currentUser.userID){
+
+      return 'You are Unauthorized to delete this event';
+    }
+
+    try{
+      CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_details");
+      await _collectionRef.doc(eventID).delete().then((value) async {
+        CollectionReference ref = FirebaseFirestore.instance.collection("event_lists");
+        for(var m in event.members){
+          var user = await getUserByUserID(m);
+          await ref.doc(user.email).collection('lists').doc(eventID).delete();
+        }
+        event.delete();
+      });
+      return 'Successfully Deleted';
+    }
+    catch(e){
+      return 'Something Went wrong';
+    }
   }
 
 
