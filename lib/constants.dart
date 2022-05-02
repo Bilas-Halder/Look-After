@@ -79,7 +79,13 @@ Map<String, String> monthInt = {
 };
 
 
-
+var postBtnText = Text(
+  "Post",
+  style: TextStyle(
+      color: Colors.white,
+      fontSize: 16
+  ),
+);
 
 
 

@@ -21,10 +21,10 @@ class _RoomScreenState extends State<RoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: ValueListenableBuilder<Box<EventModel>>(
-      valueListenable: Boxes.getEventModel().listenable(),
+        child: ValueListenableBuilder<Box<EventsModel>>(
+      valueListenable: Boxes.getEventsModel().listenable(),
       builder: (context, box, _) {
-        final List<EventModel> events = box.values.toList().cast<EventModel>();
+        final List<EventsModel> events = box.values.toList().cast<EventsModel>();
 
         if (events.length == 0) {
           return Column(
@@ -59,7 +59,7 @@ class _RoomScreenState extends State<RoomScreen> {
 }
 
 class BuildEventListView extends StatefulWidget {
-  final EventModel event;
+  final EventsModel event;
   BuildEventListView({this.event});
   @override
   _BuildEventListViewState createState() => _BuildEventListViewState();
@@ -68,7 +68,7 @@ class BuildEventListView extends StatefulWidget {
 class _BuildEventListViewState extends State<BuildEventListView> {
 
   final borderRadius = BorderRadius.circular(15);
-  EventModel event = EventModel();
+  EventsModel event = EventsModel();
   UserModel user = UserModel();
   final double height = 70;
 
@@ -79,7 +79,6 @@ class _BuildEventListViewState extends State<BuildEventListView> {
     Future.microtask(()async{
       event = await widget.event;
       user = await dbHelper.getUserByUserID(event.ownerID);
-      print(user.name);
       setState(() {});
     });
 

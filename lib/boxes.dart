@@ -6,5 +6,5 @@ class Boxes{
   static Box<TaskCategoryModel> getTaskCategoryModel() => Hive.box<TaskCategoryModel>('taskCategoryModels');
   static Box<UserModel> getUserModel() => Hive.box<UserModel>('userModel');
   static Box<IsNew> getIsNewBox() => Hive.box<IsNew>('isNew');
-  static Box<EventModel> getEventModel() => Hive.box<EventModel>('eventModel');
+  static Box<EventsModel> getEventsModel() => Hive.box<EventsModel>('eventsModel');
 }

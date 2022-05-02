@@ -214,17 +214,17 @@ class IsNewAdapter extends TypeAdapter<IsNew> {
           typeId == other.typeId;
 }
 
-class EventModelAdapter extends TypeAdapter<EventModel> {
+class EventsModelAdapter extends TypeAdapter<EventsModel> {
   @override
-  final int typeId = 10;
+  final int typeId = 15;
 
   @override
-  EventModel read(BinaryReader reader) {
+  EventsModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return EventModel(
+    return EventsModel(
       eventID: fields[1] as String,
       name: fields[0] as String,
       owner: fields[2] as String,
@@ -234,7 +234,7 @@ class EventModelAdapter extends TypeAdapter<EventModel> {
   }
 
   @override
-  void write(BinaryWriter writer, EventModel obj) {
+  void write(BinaryWriter writer, EventsModel obj) {
     writer
       ..writeByte(5)
       ..writeByte(0)
@@ -255,7 +255,7 @@ class EventModelAdapter extends TypeAdapter<EventModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is EventModelAdapter &&
+      other is EventsModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

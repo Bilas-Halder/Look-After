@@ -103,7 +103,6 @@ class _ChatRoomsState extends State<ChatRooms> {
                               itemBuilder: (context, index) {
                                 DocumentSnapshot ds = snapshot.data.docs[index];
                                 String userID = user.userID != ds['usersId'][0] ? ds['usersId'][0] : ds['usersId'][1];
-
                                 return ChatTile(chatroom: ds, userID: userID,);
                               })
                               : Center(child: CircularProgressIndicator());
@@ -171,7 +170,9 @@ class _ChatTileState extends State<ChatTile> {
               fontWeight: FontWeight.w600
             ),),
           subtitle: Text(
-            chatroom['lastMessage']??"",
+            //TODO Last msg is null in firestore find why
+            ///chatroom["lastMessage"]??"",
+            "Fix last massage",
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),

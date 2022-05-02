@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:look_after/DB/db_helper.dart';
+import 'package:look_after/Models/PostModel.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/screens/createRoom_screen/comment_card.dart';
 import 'package:look_after/screens/home_screen/appbar.dart';
@@ -10,9 +11,10 @@ import 'package:look_after/utilities/navDrawer.dart';
 class CommentScreen extends StatefulWidget {
   //const CommentScreen({Key? key}) : super(key: key);
   static const String path = "/comment_screen";
+  final PostModel post;
   final String postId;
   final String eventId;
-  CommentScreen({this.postId, this.eventId});
+  CommentScreen({this.postId, this.eventId, this.post});
 
   @override
   State<CommentScreen> createState() => _CommentScreenState();
@@ -67,6 +69,10 @@ class _CommentScreenState extends State<CommentScreen> {
                           user.userID,
                           user.name,
                           user.imgURL);
+
+                      await dbHelper.updatePostDynamicallyToFirebase(widget.post, {
+                        "totalComments" : widget.post.totalComments+1,
+                      });
 
                       _commentController.clear();
                     }

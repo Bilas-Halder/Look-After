@@ -12,7 +12,7 @@ import 'appbar_room.dart';
 class EventRoomScreen extends StatefulWidget {
   //const EventRoomScreen({Key? key}) : super(key: key);
   static const String path = "/event_room_page";
-  final EventModel event;
+  final EventsModel event;
   EventRoomScreen({this.event});
   @override
   _EventRoomScreenState createState() => _EventRoomScreenState();

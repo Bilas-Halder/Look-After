@@ -143,7 +143,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Flexible(
-                          child: Text(
+                          child: SelectableText(
                             message,
                             style: TextStyle(color: sendByMe ? Colors.white : Colors.black),
                           ),

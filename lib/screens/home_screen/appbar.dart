@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:look_after/DB/db_helper.dart';
 import 'package:look_after/Models/hive_task_model.dart';
 
-AppBar buildAppbar(BuildContext context, {bool fromHome, bool fromEvent, EventModel event, String title, GlobalKey<ScaffoldState> myScaffoldKey}) {
+AppBar buildAppbar(BuildContext context, {bool fromHome, bool fromEvent, EventsModel event, String title, GlobalKey<ScaffoldState> myScaffoldKey}) {
   UserModel user = dbHelper.getCurrentUser();
   String t = fromHome==true ? 'Hi, ' : '';
 

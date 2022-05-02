@@ -7,7 +7,7 @@ import 'package:look_after/Models/hive_task_model.dart';
 import 'package:look_after/screens/tasks_screen/shareDialog.dart';
 
 class EventPopupMenu extends StatelessWidget {
-  final EventModel event;
+  final EventsModel event;
   EventPopupMenu({this.event});
   @override
   Widget build(BuildContext context) {

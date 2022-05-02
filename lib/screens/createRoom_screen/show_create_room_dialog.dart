@@ -57,8 +57,8 @@ class showCreateRoomDialog extends StatelessWidget {
 
                                       onPressed: (){
                                       Navigator.pop(context);
-                                        dbHelper.addEventModelToHiveDB(
-                                            EventModel(
+                                        dbHelper.addEventsModelToHiveDB(
+                                            EventsModel(
                                               name: _titleController.text,
                                             )
                                         );

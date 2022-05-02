@@ -41,8 +41,8 @@ Future<void> main() async {
   await Hive.openBox<UserModel>('userModel');
   await Hive.registerAdapter(IsNewAdapter());
   await Hive.openBox<IsNew>('isNew');
-  await Hive.registerAdapter(EventModelAdapter());
-  await Hive.openBox<EventModel>('eventModel');
+  await Hive.registerAdapter(EventsModelAdapter());
+  await Hive.openBox<EventsModel>('eventsModel');
 
 
   runApp(LookAfter());

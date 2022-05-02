@@ -1,9 +1,11 @@
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
 import 'package:sqflite/sqflite.dart';
+import '../Models/PostModel.dart';
 import '../Models/hive_task_model.dart';
 import '../Models/tasks.dart';
 import '../Services/notification_services.dart';
@@ -16,7 +18,7 @@ void printHello() {
   final DateTime now = DateTime.now();
   final int isolateId = Isolate.current.hashCode;
   print("[$now] Hello, world! isolate=${isolateId} function='$printHello'");
-  NotifyHelper().displayNotification(title: "Hello", body: "Fel Amar");
+  NotifyHelper().displayNotification(title: "Hello", body: "Amar");
 
   String currentTime = DateTime.now().toString().split(' ')[1];
   int hour = int.parse(currentTime.split(':')[0]);
@@ -114,6 +116,7 @@ class dbHelper{
     }
     return user;
   }
+
   static bool getIsNewUser(){
     var b = Boxes.getIsNewBox().values;
 
@@ -301,7 +304,7 @@ class dbHelper{
 
   ///Event Related
 
-  static void addEventModelToHiveDB(EventModel event) async {
+  static void addEventsModelToHiveDB(EventsModel event) async {
     var user = await getCurrentUser();
     if(event.members==null){
       event.members = [user.userID];
@@ -313,11 +316,12 @@ class dbHelper{
     await addEventToFirebase(event);
     await addEventToUserEventList(event);
 
-    final box = Boxes.getEventModel();
+    final box = Boxes.getEventsModel();
     box.add(event);
 
   }
-  static void addEventToFirebase(EventModel event) async {
+
+  static void addEventToFirebase(EventsModel event) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     var  currentUser = _auth.currentUser;
     String eventId = randomAlphaNumeric(6);
@@ -333,7 +337,7 @@ class dbHelper{
     ).then((value) => print("Hello"));
   }
 
-  static void addEventToUserEventList(EventModel event) async {
+  static void addEventToUserEventList(EventsModel event) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     var  currentUser = _auth.currentUser;
 
@@ -347,7 +351,72 @@ class dbHelper{
     CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_details");
     return _collectionRef.doc(post.eventID).collection('posts').doc(post.postID).set(
         post.toJson()
+    );
+  }
+
+  static Future<PostModel> fetchPost({@required String eventId, @required String postID}) async{
+    CollectionReference _collectionRef = await FirebaseFirestore.instance.collection("event_details");
+
+    DocumentSnapshot  docs =  await _collectionRef.doc(eventId).collection('posts').doc(postID).get();
+
+    Map <String,dynamic> map = docs.data();
+    PostModel post = await PostModel.fromJson(map);
+
+    return post;
+  }
+
+  static void addPostIdToFirebase(PostModel post) async {
+    CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_details");
+    return _collectionRef.doc(post.eventID).collection('postsID').doc(post.postID).set(
+        {
+          "postID":post.postID,
+          "postingTime" : post.datePublished
+        } );
+  }
+
+  static getPostsIds({String eventId})async{
+    CollectionReference _collectionRef = await FirebaseFirestore.instance.collection("event_details");
+
+    return await _collectionRef.doc(eventId).collection('postsID').orderBy('postingTime', descending: true).get();
+  }
+
+
+
+  static void updatePostToFirebase(PostModel post) async {
+    CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_details");
+    return _collectionRef.doc(post.eventID).collection('posts').doc(post.postID).update(
+        post.toJson()
     ).then((value) => print("Added Post"));
+  }
+
+  static void updatePostDynamicallyToFirebase(PostModel post,Map<String,dynamic> updateJson) async {
+    CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_details");
+    return _collectionRef.doc(post.eventID).collection('posts').doc(post.postID).update(
+        updateJson
+    ).then((value) => print("Updated Post"));
+  }
+
+
+
+  static void postCommentToFirebase(String eventID, String postID, String text, String uid, String name, String profileImg)async{
+    try{
+      if(text.isNotEmpty){
+        String commentID = Uuid().v1();
+        await _firestoreInstance.collection('event_details').doc(eventID).collection('posts').doc(postID).collection('comments').doc(commentID).set(
+            {
+              'eventID' : eventID,
+              'profileImg' : profileImg,
+              'name' : name,
+              'uid' : uid,
+              'text' : text,
+              'commentID' : commentID,
+              'datePublished' : DateTime.now()
+            }
+        );
+      }
+    }catch(e){
+      print(e.toString());
+    }
   }
 
   static void fetchEventRoomFromFirebase()async{
@@ -365,12 +434,24 @@ class dbHelper{
         'ownerID' : qn.docs[i]['ownerID'],
         'members' : List.from(qn.docs[i]['members']),
       };
-      addAllEventModelToHiveDB(EventModel.fromJson(event));
+      addAllEventsModelToHiveDB(EventsModel.fromJson(event));
     }
   }
 
-  static void addAllEventModelToHiveDB(EventModel event) {
-    final box = Boxes.getEventModel();
+  static EventsModel getEventByEventId ({String eventId}){
+    final events =  Boxes.getEventsModel().values;
+
+    for(var event in events){
+      if(eventId == event.eventID) {
+        return event;
+      }
+    }
+    return null;
+  }
+
+
+  static void addAllEventsModelToHiveDB(EventsModel event) {
+    final box = Boxes.getEventsModel();
     box.add(event);
   }
 
@@ -387,7 +468,7 @@ class dbHelper{
         'ownerID' : doc['ownerID'],
         'members' : List.from(doc['members']),
       };
-      EventModel newEvent =await EventModel.fromJson(event);
+      EventsModel newEvent =await EventsModel.fromJson(event);
     print(roomCode+' 1');
     print(newEvent);
       var user = await getCurrentUser();
@@ -421,7 +502,7 @@ class dbHelper{
         newEvent.members.add(user.userID);
       }
 
-      var box = await Boxes.getEventModel();
+      var box = await Boxes.getEventsModel();
       await box.add(newEvent);
       await addEventToUserEventList(newEvent);
       return true;
@@ -431,36 +512,17 @@ class dbHelper{
     }
   }
 
-  static void postCommentToFirebase(String eventID, String postID, String text, String uid, String name, String profileImg)async{
-    try{
-      if(text.isNotEmpty){
-        String commentID = Uuid().v1();
-        await _firestoreInstance.collection('event_details').doc(eventID).collection('posts').doc(postID).collection('comments').doc(commentID).set(
-            {
-              'eventID' : eventID,
-              'profileImg' : profileImg,
-              'name' : name,
-              'uid' : uid,
-              'text' : text,
-              'commentID' : commentID,
-              'datePublished' : DateTime.now()
-            }
-        );
 
-        print("comment Added");
-      }
-    }catch(e){
-      print(e.toString());
-    }
-  }
 
   static Future<void> deletePostFromFirebase(String eventID, String postID)async{
 
     CollectionReference _collectionRef = FirebaseFirestore.instance.collection("event_details");
     await _collectionRef.doc(eventID).collection("posts").doc(postID).delete().then((value) => print("Hello"));
+
+    await _collectionRef.doc(eventID).collection('postsID').doc(postID).delete().then((value) => print("Deleted postID"));
   }
 
-  static Future<String> deleteEventFromFirebase(String eventID, EventModel event)async{
+  static Future<String> deleteEventFromFirebase(String eventID, EventsModel event)async{
 
     var currentUser= getCurrentUser();
     if(event.ownerID!=currentUser.userID){

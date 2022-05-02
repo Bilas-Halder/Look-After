@@ -26,7 +26,7 @@ class AuthenticationService {
     await Boxes.getTaskCategoryModel().clear();
     await Boxes.getTaskModel().clear();
     await Boxes.getUserModel().clear();
-    await Boxes.getEventModel().clear();
+    await Boxes.getEventsModel().clear();
 
     await _firebaseAuth.signOut();
     Navigator.pushNamedAndRemoveUntil(context,WelcomeScreen.path,(Route<dynamic> route) => false);

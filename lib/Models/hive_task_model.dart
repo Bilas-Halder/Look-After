@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:look_after/DB/db_helper.dart';
@@ -258,9 +259,9 @@ class IsNew{
 
 
 
-
-@HiveType(typeId: 10)
-class EventModel extends HiveObject{
+/// type 4 & 10 is used on EventsModel so don't use 4 & 10
+@HiveType(typeId: 15)
+class EventsModel extends HiveObject{
 
   @HiveField(0)
   String name;
@@ -273,7 +274,7 @@ class EventModel extends HiveObject{
   @HiveField(4)
   String ownerID;
 
-  EventModel({
+  EventsModel({
     this.eventID,
     this.name,
     this.owner,
@@ -281,7 +282,7 @@ class EventModel extends HiveObject{
     this.members,
   });
 
-  EventModel.fromJson(Map<String, dynamic> json){
+  EventsModel.fromJson(Map<String, dynamic> json){
     eventID = json['eventID'];
     name = json['name'];
     owner = json['owner'];
@@ -301,44 +302,4 @@ class EventModel extends HiveObject{
 }
 
 
-class PostModel {
-  String description;
-  String uid;
-  String eventID;
-  String postID;
-  DateTime datePublished;
-  String profImg;
-  String userName;
 
-  PostModel({
-    this.description,
-    this.uid,
-    this.postID,
-    this.datePublished,
-    this.profImg,
-    this.userName,
-    this.eventID
-  });
-
-  PostModel.fromJson(Map<String, dynamic> json){
-    description = json['description'];
-    uid = json['uid'];
-    postID = json['postID'];
-    datePublished = json['datePublished'];
-    profImg = json['profImg'];
-    eventID = json['eventID'];
-    userName = json['userName'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['description'] = this.description;
-    data['uid'] = this.uid;
-    data['postID'] = this.postID;
-    data['datePublished'] = this.datePublished;
-    data['profImg'] = this.profImg;
-    data['eventID'] = this.eventID;
-    data['userName'] = this.userName;
-    return data;
-  }
-}
