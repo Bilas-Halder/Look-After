@@ -1,18 +1,18 @@
-# look_after
+# Look After ❓
+### A Context-Aware Mobile Computing Based Smart Agent
 
-## A context aware mobile application.
+##### Some Key Features:
+    It helps the user keep track of all of his tasks and events on one platform.
+    This APP is aware of emails and adds tasks automatically by scanning emails.
+    One-to-one chat & Event Room is available for Mass Communication.
+    One-to-one chat use contact information to connect with other users.
 
-A new Flutter project.
+##### Technologies: 
+    Flutter, Dart, Firebase, Hive, Provider, Enough-Mail.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+### [For Visuals Click Here](https://drive.google.com/drive/folders/1cd0ETEiYgKxUFUVmClnduudj_xVVwAcv?usp=sharing)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## [Download](https://drive.google.com/file/d/1TsBG0Gtjc4YeEsmv2YRbSIT7my8LAMZ5/view?usp=sharing) The Apk File of this App.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
